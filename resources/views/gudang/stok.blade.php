@@ -15,8 +15,9 @@
             <button @click="tab = 'monitoring'" :class="{'bg-white shadow-sm text-cyan font-bold': tab === 'monitoring', 'text-slate-500 font-medium': tab !== 'monitoring'}" class="px-6 py-2 text-sm rounded-lg transition-all">
                 Monitoring Stok Real-time
             </button>
-            <button @click="tab = 'moving'" :class="{'bg-white shadow-sm text-cyan font-bold': tab === 'moving', 'text-slate-500 font-medium': tab !== 'moving'}" class="px-6 py-2 text-sm rounded-lg transition-all">
+            <button @click="tab = 'moving'" :class="{'bg-white shadow-sm text-cyan font-bold': tab === 'moving', 'text-slate-500 font-medium': tab !== 'moving'}" class="px-6 py-2 text-sm rounded-lg transition-all flex items-center gap-2">
                 Moving Slip (Mutasi)
+                <span class="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">Auto</span>
             </button>
         </div>
     </div>
@@ -44,7 +45,7 @@
             </div>
         </div>
 
-        <!-- Tabel Monitoring -->
+        <!-- Tabel Monitoring & Lot -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
             <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <h4 class="font-bold text-navy">Daftar Item Inventaris</h4>
@@ -57,35 +58,105 @@
                     </select>
                 </div>
             </div>
-            <div class="overflow-auto flex-1">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead class="bg-slate-50 sticky top-0">
+            <div class="overflow-auto flex-1 p-0">
+                <table class="w-full text-left text-sm" x-data="{ expanded: null }">
+                    <thead class="bg-slate-50 sticky top-0 z-10 shadow-sm">
                         <tr class="text-xs uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
                             <th class="p-4 pl-6">Kode Item</th>
                             <th class="p-4">Deskripsi / Nama Barang</th>
                             <th class="p-4">Kategori</th>
-                            <th class="p-4 text-right">Stok Fisik</th>
-                            <th class="p-4 text-right">Satuan</th>
+                            <th class="p-4 text-right">Total Stok Fisik</th>
                             <th class="p-4 text-center">Status</th>
+                            <th class="p-4 text-center">Aksi (Lot Tracker)</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        
+                        <!-- Row 1 -->
+                        <tr class="hover:bg-slate-50 transition-colors cursor-pointer" @click="expanded = expanded === 1 ? null : 1">
                             <td class="p-4 pl-6 font-semibold text-navy">RM-PVC-001</td>
                             <td class="p-4 font-medium">Resin PVC S-65</td>
-                            <td class="p-4"><span class="px-2 py-1 rounded bg-slate-100 text-slate-600 text-xs font-bold">Raw Material</span></td>
-                            <td class="p-4 text-right font-bold text-slate-900">8,500</td>
-                            <td class="p-4 text-right text-slate-500">Kg</td>
-                            <td class="p-4 text-center"><span class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold">Aman</span></td>
+                            <td class="p-4"><span class="px-2 py-1 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">Raw Material</span></td>
+                            <td class="p-4 text-right font-bold text-slate-900">8,500 <span class="text-xs font-normal text-slate-500">Kg</span></td>
+                            <td class="p-4 text-center"><span class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-bold">Aman</span></td>
+                            <td class="p-4 text-center">
+                                <button class="px-3 py-1 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1 shadow-sm">
+                                    <span x-text="expanded === 1 ? 'Tutup Detail' : 'Detail Lot'"></span>
+                                    <svg class="w-3 h-3 transition-transform" :class="expanded === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                            </td>
                         </tr>
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <!-- Expandable Lot Details for Row 1 -->
+                        <tr x-show="expanded === 1" x-transition class="bg-slate-50/50">
+                            <td colspan="6" class="p-0">
+                                <div class="px-8 py-4 border-l-4 border-cyan">
+                                    <p class="text-xs font-bold text-navy mb-2 uppercase tracking-wide">Riwayat Kedatangan Barang (Tracking per Lot)</p>
+                                    <table class="w-full text-xs text-left">
+                                        <tr class="text-slate-500 border-b border-slate-200">
+                                            <th class="py-2 w-32">Nomor Lot</th>
+                                            <th class="py-2">Tanggal Masuk (IN)</th>
+                                            <th class="py-2">Supplier</th>
+                                            <th class="py-2 text-right">Kuantitas</th>
+                                            <th class="py-2 pl-4">Catatan QC</th>
+                                        </tr>
+                                        <tr class="border-b border-slate-100">
+                                            <td class="py-2 font-bold text-slate-700">LOT-001-A</td>
+                                            <td class="py-2">01 Aug 2026</td>
+                                            <td class="py-2">PT. Chemindo</td>
+                                            <td class="py-2 text-right font-medium">3,500 Kg</td>
+                                            <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 font-bold text-slate-700">LOT-001-B</td>
+                                            <td class="py-2">10 Aug 2026</td>
+                                            <td class="py-2">PT. Chemindo</td>
+                                            <td class="py-2 text-right font-medium">5,000 Kg</td>
+                                            <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2 -->
+                        <tr class="hover:bg-slate-50 transition-colors cursor-pointer" @click="expanded = expanded === 2 ? null : 2">
                             <td class="p-4 pl-6 font-semibold text-navy">ADD-012</td>
                             <td class="p-4 font-medium">Stabilizer Ca-Zn</td>
-                            <td class="p-4"><span class="px-2 py-1 rounded bg-slate-100 text-slate-600 text-xs font-bold">Additive</span></td>
-                            <td class="p-4 text-right font-bold text-amber-600">45</td>
-                            <td class="p-4 text-right text-slate-500">Kg</td>
-                            <td class="p-4 text-center"><span class="px-2 py-1 rounded bg-amber-50 text-amber-700 border border-amber-100 text-xs font-bold">Menipis</span></td>
+                            <td class="p-4"><span class="px-2 py-1 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">Additive</span></td>
+                            <td class="p-4 text-right font-bold text-amber-600">45 <span class="text-xs font-normal text-slate-500">Kg</span></td>
+                            <td class="p-4 text-center"><span class="px-2 py-1 rounded bg-amber-50 text-amber-700 border border-amber-100 text-[10px] font-bold">Menipis</span></td>
+                            <td class="p-4 text-center">
+                                <button class="px-3 py-1 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1 shadow-sm">
+                                    <span x-text="expanded === 2 ? 'Tutup Detail' : 'Detail Lot'"></span>
+                                    <svg class="w-3 h-3 transition-transform" :class="expanded === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                            </td>
                         </tr>
+                        <!-- Expandable Lot Details for Row 2 -->
+                        <tr x-show="expanded === 2" x-transition class="bg-slate-50/50">
+                            <td colspan="6" class="p-0">
+                                <div class="px-8 py-4 border-l-4 border-amber-400">
+                                    <p class="text-xs font-bold text-navy mb-2 uppercase tracking-wide">Riwayat Kedatangan Barang (Tracking per Lot)</p>
+                                    <table class="w-full text-xs text-left">
+                                        <tr class="text-slate-500 border-b border-slate-200">
+                                            <th class="py-2 w-32">Nomor Lot</th>
+                                            <th class="py-2">Tanggal Masuk (IN)</th>
+                                            <th class="py-2">Supplier</th>
+                                            <th class="py-2 text-right">Kuantitas</th>
+                                            <th class="py-2 pl-4">Catatan QC</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-2 font-bold text-slate-700">LOT-STB-11</td>
+                                            <td class="py-2">20 Jul 2026</td>
+                                            <td class="py-2">CV. Maju Jaya</td>
+                                            <td class="py-2 text-right font-medium text-amber-600">45 Kg (Sisa)</td>
+                                            <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -94,63 +165,105 @@
 
     <!-- Tab Moving Slip -->
     <div class="flex-1 flex flex-col gap-6" x-show="tab === 'moving'" style="display: none;">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-            <h4 class="text-lg font-bold text-navy mb-2">Pencatatan Moving Slip</h4>
-            <p class="text-sm text-slate-500 mb-6">Formulir untuk melacak mutasi barang (Masuk/Keluar) dari gudang secara real-time.</p>
+        
+        <!-- Notifikasi Auto Generate -->
+        <div class="bg-cyan/10 border border-cyan/20 p-4 rounded-xl flex items-center gap-3">
+            <div class="p-2 bg-cyan text-white rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div>
+            <div>
+                <p class="font-bold text-navy text-sm">Integrasi Sistem (Auto-Generate)</p>
+                <p class="text-xs text-slate-600 mt-0.5">Sistem akan secara otomatis me-generate Moving Slip (OUT) ketika status dokumen SPK diubah menjadi 'Released' atau material ditarik ke produksi.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full flex-1">
             
-            <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Jenis Pergerakan</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none">
-                        <option value="in">Barang Masuk (IN) - Restock</option>
-                        <option value="out">Barang Keluar (OUT) - Ke Produksi</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">No. Referensi (SPK/PO)</label>
-                    <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none" placeholder="Misal: SPK-2608-001">
-                </div>
-                <div class="md:col-span-2 border-t border-slate-100 pt-6">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Daftar Item Mutasi</label>
-                    <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 mb-4">
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <input type="text" placeholder="Kode / Nama Barang" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none">
-                            </div>
-                            <div class="w-32">
-                                <input type="number" placeholder="Qty" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none">
-                            </div>
-                            <button type="button" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-navy-light transition-colors">Tambah</button>
+            <!-- Manual Form -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                <h4 class="text-base font-bold text-navy mb-1">Manual Moving Slip</h4>
+                <p class="text-xs text-slate-500 mb-6">Pencatatan mutasi manual untuk retur atau stok tambahan.</p>
+                
+                <form class="space-y-4 flex-1">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Pergerakan</label>
+                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-cyan outline-none">
+                            <option value="in">Barang Masuk (IN) - Restock / Retur</option>
+                            <option value="out">Barang Keluar (OUT) - Scrap</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">No. Referensi / PO</label>
+                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-cyan outline-none" placeholder="Misal: PO-1234">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Barang & Kuantitas</label>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="Kode Barang" class="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                            <input type="number" placeholder="Qty" class="w-20 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
                         </div>
                     </div>
+                </form>
+                <div class="pt-4 border-t border-slate-100 mt-auto">
+                    <button type="button" class="w-full bg-navy text-white px-4 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-navy-light transition-colors">Catat Mutasi Manual</button>
                 </div>
-                <div class="md:col-span-2 flex justify-end">
-                    <button type="button" class="bg-cyan text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-cyan/30 hover:bg-cyan/90 transition-colors">Simpan Moving Slip</button>
-                </div>
-            </form>
-        </div>
-        
-        <!-- Riwayat Moving Slip -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1">
-            <div class="p-5 border-b border-slate-100 bg-slate-50/50">
-                <h4 class="font-bold text-navy">Riwayat Pergerakan (Hari Ini)</h4>
             </div>
-            <table class="w-full text-left text-sm">
-                <tr class="text-xs uppercase text-slate-500 font-bold border-b border-slate-200 bg-slate-50">
-                    <th class="p-3 pl-6">Waktu</th>
-                    <th class="p-3">Tipe</th>
-                    <th class="p-3">No. Referensi</th>
-                    <th class="p-3">Item (Qty)</th>
-                    <th class="p-3">User</th>
-                </tr>
-                <tr class="border-b border-slate-100 text-slate-700">
-                    <td class="p-3 pl-6">08:15 WIB</td>
-                    <td class="p-3"><span class="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded border border-red-100">OUT</span></td>
-                    <td class="p-3 font-semibold">SPK-2508-011</td>
-                    <td class="p-3">RM-PVC-001 (500 Kg)</td>
-                    <td class="p-3">Gudang 1</td>
-                </tr>
-            </table>
+            
+            <!-- Riwayat & Filter Tanggal -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col relative">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center z-10">
+                    <h4 class="font-bold text-navy">Riwayat Pergerakan (Moving Slip History)</h4>
+                    
+                    <!-- Date Range Filter -->
+                    <div class="flex items-center gap-2">
+                        <div class="bg-white border border-slate-200 rounded-lg flex items-center shadow-sm overflow-hidden text-sm">
+                            <span class="pl-3 pr-2 text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></span>
+                            <input type="date" class="py-1.5 px-2 outline-none text-slate-700 text-xs">
+                            <span class="text-slate-300">-</span>
+                            <input type="date" class="py-1.5 px-2 outline-none text-slate-700 text-xs">
+                        </div>
+                        <button class="px-3 py-1.5 bg-cyan text-white text-xs font-bold rounded-lg shadow-sm hover:bg-cyan/90">Filter</button>
+                    </div>
+                </div>
+                
+                <div class="overflow-y-auto flex-1">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 sticky top-0 shadow-sm">
+                            <tr class="text-[10px] uppercase text-slate-500 font-bold border-b border-slate-200">
+                                <th class="p-3 pl-6">Tgl & Waktu</th>
+                                <th class="p-3">Tipe</th>
+                                <th class="p-3">No. Referensi (System Note)</th>
+                                <th class="p-3">Item Ditarik</th>
+                                <th class="p-3 text-right">Kuantitas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            <!-- Data Auto Generate -->
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">27 Aug, 14:30</td>
+                                <td class="p-3"><span class="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded text-[10px] border border-red-100">OUT (Auto)</span></td>
+                                <td class="p-3 font-semibold text-navy">SPK-2608-001 <span class="block text-[9px] text-slate-400 font-normal">Generated when SPK Released</span></td>
+                                <td class="p-3 text-xs">RM-PVC-001 (Resin PVC)</td>
+                                <td class="p-3 text-right font-bold text-slate-900">-1,250 Kg</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">27 Aug, 14:30</td>
+                                <td class="p-3"><span class="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded text-[10px] border border-red-100">OUT (Auto)</span></td>
+                                <td class="p-3 font-semibold text-navy">SPK-2608-001 <span class="block text-[9px] text-slate-400 font-normal">Generated when SPK Released</span></td>
+                                <td class="p-3 text-xs">ADD-012 (Stabilizer)</td>
+                                <td class="p-3 text-right font-bold text-slate-900">-50 Kg</td>
+                            </tr>
+                            
+                            <!-- Manual Data -->
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">20 Jul, 09:15</td>
+                                <td class="p-3"><span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded text-[10px] border border-emerald-100">IN (Manual)</span></td>
+                                <td class="p-3 font-semibold text-navy">PO-MJU-992 <span class="block text-[9px] text-slate-400 font-normal">Penerimaan Supplier</span></td>
+                                <td class="p-3 text-xs">ADD-012 (Stabilizer)</td>
+                                <td class="p-3 text-right font-bold text-emerald-600">+45 Kg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

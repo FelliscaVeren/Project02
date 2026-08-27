@@ -38,74 +38,95 @@
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Quantity (Total Batch)</label>
                 <div class="relative">
-                    <input type="number" x-model="qty" @input="checkStock" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 50">
+                    <input type="number" x-model.number="qty" @input="calculateStock" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 50">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 text-sm font-medium">Batch</div>
                 </div>
             </div>
             
-            <!-- Draft Formula (Dipindah ke Tahap 1) -->
+            <!-- Draft Formula & Rincian Transparan -->
             <div class="md:col-span-2 border-t border-slate-100 pt-6" x-show="product !== ''">
                 <label class="block text-sm font-bold text-slate-700 mb-2">Draft Formula / Resep (Integrasi Tahap 1)</label>
-                <div class="flex gap-4">
-                    <select x-model="formula" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
-                        <option value="">-- Tarik Formula dari Master Data --</option>
-                        <option value="form-a1">Formula-PVC-A-Rev01 (Standard)</option>
-                        <option value="form-a2">Formula-PVC-A-Rev02 (High Impact)</option>
-                    </select>
-                </div>
-                
-                <!-- Rincian Material Transparan -->
-                <div class="mt-4 p-4 rounded-xl border border-slate-200 bg-slate-50" x-show="formula !== ''">
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Rincian Material (BOM) per 1 Batch</p>
-                    <table class="w-full text-left text-sm text-slate-700">
-                        <tr class="border-b border-slate-200"><th class="pb-2">Material</th><th class="pb-2 text-right">Kebutuhan/Batch</th></tr>
-                        <tr class="border-b border-slate-100"><td class="py-2">Resin PVC S-65</td><td class="py-2 text-right font-medium">25 Kg</td></tr>
-                        <tr class="border-b border-slate-100"><td class="py-2">Stabilizer Ca-Zn</td><td class="py-2 text-right font-medium">1 Kg</td></tr>
-                        <tr><td class="py-2">Pigment White TiO2</td><td class="py-2 text-right font-medium">0.5 Kg</td></tr>
-                    </table>
-                </div>
+                <select x-model="formula" @change="calculateStock" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                    <option value="">-- Tarik Formula dari Master Data --</option>
+                    <option value="form-a1">Formula-PVC-A-Rev01 (Standard)</option>
+                </select>
             </div>
         </div>
 
-        <!-- Widget Stok Realtime -->
-        <div class="p-6 bg-slate-50 border-t border-slate-200" x-show="formula !== '' && qty > 0">
-            <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                Pengecekan Stok Bahan Baku (Kritis)
-            </h4>
+        <!-- Widget Stok Realtime Semua Material -->
+        <div class="p-6 bg-slate-50 border-t border-slate-200" x-show="formula !== '' && qty > 0" style="display:none;" x-transition>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Stok PVC Terendah</p>
-                    <p class="text-2xl font-black text-navy" x-text="totalStock + ' Kg'"></p>
+            <div class="flex justify-between items-end mb-4">
+                <h4 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    Simulasi Ketersediaan Stok Material
+                </h4>
+                
+                <!-- Kalkulator Batch -->
+                <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">Estimasi Kapasitas Maksimal</p>
+                        <p class="text-sm font-bold">Bisa produksi <span class="text-indigo-600 underline" x-text="maxPossibleBatch"></span> Batch lagi</p>
+                    </div>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Kebutuhan (Semua Batch)</p>
-                    <p class="text-2xl font-black text-amber-600" x-text="(qty * 25) + ' Kg'"></p>
-                </div>
-                <div class="p-4 rounded-xl shadow-sm border transition-colors" :class="isEnough ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'">
-                    <p class="text-[10px] font-bold uppercase tracking-wider mb-1" :class="isEnough ? 'text-emerald-700' : 'text-red-700'">Sisa Stok Simulasi</p>
-                    <p class="text-2xl font-black" :class="isEnough ? 'text-emerald-800' : 'text-red-800'" x-text="(totalStock - (qty * 25)) + ' Kg'"></p>
-                </div>
+            </div>
+            
+            <!-- Tabel Simulasi Semua Material -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr class="text-xs uppercase text-slate-500 font-bold">
+                            <th class="p-3 pl-4">Material</th>
+                            <th class="p-3 text-right">Kebutuhan (Per Batch)</th>
+                            <th class="p-3 text-right">Target Kebutuhan</th>
+                            <th class="p-3 text-right">Stok Fisik Tersedia</th>
+                            <th class="p-3 text-center w-32">Status Validasi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <template x-for="item in materials" :key="item.id">
+                            <tr :class="item.isEnough ? '' : 'bg-red-50/50'">
+                                <td class="p-3 pl-4 font-bold text-navy" x-text="item.name"></td>
+                                <td class="p-3 text-right"><span x-text="item.qtyPerBatch"></span> <span class="text-xs text-slate-400">Kg</span></td>
+                                <td class="p-3 text-right font-bold text-slate-800"><span x-text="item.qtyPerBatch * qty"></span> <span class="text-xs text-slate-400">Kg</span></td>
+                                <td class="p-3 text-right font-bold text-navy"><span x-text="item.stock"></span> <span class="text-xs text-slate-400">Kg</span></td>
+                                <td class="p-3 text-center">
+                                    <template x-if="item.isEnough">
+                                        <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded text-xs font-bold flex items-center justify-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cukup
+                                        </span>
+                                    </template>
+                                    <template x-if="!item.isEnough">
+                                        <span class="bg-red-50 text-red-700 border border-red-200 px-2 py-1 rounded text-xs font-bold flex items-center justify-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Kurang
+                                        </span>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
             </div>
 
-            <div x-show="!isEnough" class="mt-4 p-4 rounded-xl bg-red-50 text-red-700 flex items-start gap-3 border border-red-200">
+            <!-- Banner Validasi Global -->
+            <div x-show="!isAllEnough" style="display:none;" x-transition class="p-4 rounded-xl bg-red-50 text-red-700 flex items-start gap-3 border border-red-200">
                 <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 <div class="text-sm">
-                    <p class="font-bold">Peringatan Stok Kurang!</p>
-                    <p class="mt-1 text-red-600">Bahan baku (Resin PVC S-65) tidak mencukupi untuk jumlah batch ini.</p>
+                    <p class="font-bold">Peringatan: Stok Material Tidak Mencukupi!</p>
+                    <p class="mt-1 text-red-600">Ada satu atau lebih bahan baku yang stok fisiknya kurang dari target kebutuhan batch Anda. Anda tidak dapat melanjutkan pembuatan SPK ini.</p>
                 </div>
             </div>
             
-            <div x-show="isEnough" class="mt-4 p-4 rounded-xl bg-emerald-50 text-emerald-800 flex items-center gap-3 border border-emerald-200">
+            <div x-show="isAllEnough" style="display:none;" x-transition class="p-4 rounded-xl bg-emerald-50 text-emerald-800 flex items-center gap-3 border border-emerald-200">
                 <svg class="w-5 h-5 flex-shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <p class="text-sm font-bold">Stok semua material mencukupi! Anda dapat melanjutkan ke pengaturan waktu.</p>
+                <p class="text-sm font-bold">Validasi Sukses: Semua material mencukupi untuk jumlah batch ini. Silakan lanjutkan ke pengaturan waktu.</p>
             </div>
         </div>
 
         <div class="p-6 bg-white border-t border-slate-200 flex justify-end gap-3">
             <a href="{{ route('ppic.calendar') }}" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">Batal</a>
-            <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isEnough && qty > 0 ? '' : 'pointer-events: none;'">
+            <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isAllEnough && qty > 0 ? '' : 'pointer-events: none;'">
                 Lanjut: Waktu & Manpower
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
@@ -119,16 +140,37 @@
             product: '',
             formula: '',
             qty: null,
-            totalStock: 1500, // Simulasi kg PVC
-            isEnough: true,
+            isAllEnough: true,
+            maxPossibleBatch: 0,
             
-            checkStock() {
-                if (this.qty === null || this.qty === '') {
-                    this.isEnough = true;
+            materials: [
+                { id: 1, name: 'Resin PVC S-65', qtyPerBatch: 25, stock: 1500, isEnough: true },
+                { id: 2, name: 'Stabilizer Ca-Zn', qtyPerBatch: 1, stock: 100, isEnough: true },
+                { id: 3, name: 'Pigment White', qtyPerBatch: 0.5, stock: 10, isEnough: true }
+            ],
+            
+            calculateStock() {
+                if (!this.qty || this.formula === '') {
+                    this.isAllEnough = true;
                     return;
                 }
-                let needed = this.qty * 25; // Asumsi 25kg PVC per batch
-                this.isEnough = (this.totalStock - needed) >= 0;
+                
+                let allEnough = true;
+                let maxBatches = [];
+                
+                this.materials.forEach(item => {
+                    let needed = item.qtyPerBatch * this.qty;
+                    item.isEnough = item.stock >= needed;
+                    if(!item.isEnough) allEnough = false;
+                    
+                    // Hitung maksimal batch per material
+                    maxBatches.push(Math.floor(item.stock / item.qtyPerBatch));
+                });
+                
+                this.isAllEnough = allEnough;
+                
+                // Kalkulator Max Batch adalah nilai terkecil (bottleneck) dari maxBatches
+                this.maxPossibleBatch = Math.min(...maxBatches);
             }
         }))
     })
