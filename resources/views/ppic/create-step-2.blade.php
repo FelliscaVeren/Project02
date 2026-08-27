@@ -3,12 +3,12 @@
 @section('title', 'Buat SPK - Langkah 2 (Waktu, Mesin & Manpower)')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full pb-10">
+<div class="max-w-5xl mx-auto h-full pb-10" x-data="spkStep2()" x-init="init()">
     
     <!-- Progress Indicator -->
     <div class="mb-8">
         <div class="flex items-center">
-            <div class="flex items-center text-slate-400 relative cursor-pointer hover:opacity-80 transition-opacity" onclick="window.location='{{ route('ppic.create.step1') }}'">
+            <div class="flex items-center text-slate-400 relative cursor-pointer hover:opacity-80 transition-opacity" @click="goBack()">
                 <div class="rounded-full transition duration-500 ease-in-out h-10 w-10 py-3 border-2 border-slate-200 bg-white flex items-center justify-center font-bold">1</div>
                 <div class="absolute top-0 -ml-10 text-center mt-12 w-32 text-xs font-bold uppercase text-slate-400">Parameter & Formula</div>
             </div>
@@ -26,7 +26,7 @@
                 <h3 class="text-lg font-bold text-navy">Manajemen Waktu & Alokasi</h3>
                 <p class="text-sm text-slate-500">Tentukan jadwal, alokasi jam kerja, mesin, dan estimasi kebutuhan manpower.</p>
             </div>
-            <span class="px-3 py-1.5 bg-cyan/10 text-cyan border border-cyan/20 text-xs font-bold rounded-lg shadow-sm">Draft: PVC Compound A (50 Batch)</span>
+            <span class="px-3 py-1.5 bg-cyan/10 text-cyan border border-cyan/20 text-xs font-bold rounded-lg shadow-sm" x-text="draftName + ' (' + draftQty + ' Batch)'"></span>
         </div>
         
         <div class="p-6 space-y-8">
@@ -40,11 +40,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai (Start)</label>
-                        <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
+                        <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Selesai (Finish)</label>
-                        <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
+                        <input type="date" x-model="endDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Target Jam Kerja (Pemerataan)</label>
@@ -65,23 +65,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Mixer</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
-                            <option>Mixer A-01</option>
-                            <option>Mixer A-02</option>
+                        <select x-model="mixer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
+                            <option value="Mixer A-01">Mixer A-01</option>
+                            <option value="Mixer B-02">Mixer B-02</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Mesin Extruder</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
-                            <option>Extruder Line 1</option>
-                            <option>Extruder Line 2</option>
+                        <select x-model="extruder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
+                            <option value="Ext-1">Extruder Line 1</option>
+                            <option value="Ext-2">Extruder Line 2</option>
+                            <option value="Ext-3">Extruder Line 3</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Feeder</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
-                            <option>Feeder 01</option>
-                            <option>Feeder 02</option>
+                        <select x-model="feeder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all">
+                            <option value="Feeder 01">Feeder 01</option>
+                            <option value="Feeder 02">Feeder 02</option>
                         </select>
                     </div>
                 </div>
@@ -115,16 +116,104 @@
         </div>
 
         <div class="p-6 bg-white border-t border-slate-200 flex justify-between items-center">
-            <a href="{{ route('ppic.create.step1') }}" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
+            <button @click="goBack()" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Kembali
-            </a>
+            </button>
             
-            <a href="{{ route('approval.index') }}" class="px-6 py-2.5 text-sm font-bold text-white bg-navy hover:bg-navy-light rounded-xl shadow-md transition-colors flex items-center gap-2">
+            <button @click="publishSPK()" class="px-6 py-2.5 text-sm font-bold text-white bg-navy hover:bg-navy-light rounded-xl shadow-md transition-colors flex items-center gap-2">
                 Publish ke Daftar Tunggu
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-            </a>
+            </button>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('spkStep2', () => ({
+            draftData: null,
+            draftName: 'PVC Compound',
+            draftQty: 0,
+            startDate: '',
+            endDate: '',
+            mixer: 'Mixer A-01',
+            extruder: 'Ext-1',
+            feeder: 'Feeder 01',
+
+            init() {
+                const sessionDraft = sessionStorage.getItem('current_spk_draft');
+                if (sessionDraft) {
+                    this.draftData = JSON.parse(sessionDraft);
+                    this.draftName = this.draftData.product;
+                    this.draftQty = this.draftData.qty;
+                } else {
+                    alert('Data draf tidak ditemukan, silakan mulai dari langkah 1.');
+                    window.location.href = "{{ route('ppic.create.step1') }}";
+                }
+                
+                // Set default dates
+                const today = new Date();
+                this.startDate = today.toISOString().split('T')[0];
+                const end = new Date(today.getTime() + 86400000 * 2);
+                this.endDate = end.toISOString().split('T')[0];
+            },
+
+            goBack() {
+                if (this.draftData && this.draftData.id) {
+                    window.location.href = `{{ route('ppic.create.step1') }}?id=${this.draftData.id}`;
+                } else {
+                    window.location.href = "{{ route('ppic.create.step1') }}";
+                }
+            },
+
+            publishSPK() {
+                if (!this.startDate || !this.endDate) {
+                    alert('Harap tentukan tanggal mulai dan tanggal selesai.');
+                    return;
+                }
+
+                const allSpks = window.getSPKs() || [];
+                let spkId = this.draftData.id;
+
+                if (!spkId) {
+                    // Generate new ID
+                    const yearMonth = '2608';
+                    const runNo = String(allSpks.length + 1).padStart(3, '0');
+                    spkId = `SPK-${yearMonth}-${runNo}`;
+                }
+
+                const newSPK = {
+                    id: spkId,
+                    product: this.draftData.product,
+                    productCode: this.draftData.productCode,
+                    formulaCode: this.draftData.formulaCode,
+                    qty: this.draftData.qty,
+                    startDate: this.startDate,
+                    endDate: this.endDate,
+                    machine: `${this.mixer}, ${this.extruder}`,
+                    shift: 'Shift 1 & 2',
+                    status: 'Draft',
+                    subStatus: 'Menunggu Approval Gudang',
+                    revisionNote: '',
+                    approvals: { gudang: 'Pending', rnd: 'Pending', pe: 'Pending', qc: 'Pending' },
+                    materials: this.draftData.materials
+                };
+
+                const existingIndex = allSpks.findIndex(s => s.id === spkId);
+                if (existingIndex !== -1) {
+                    allSpks[existingIndex] = newSPK; // Update if editing revised
+                } else {
+                    allSpks.push(newSPK); // Add new
+                }
+
+                window.saveSPKs(allSpks);
+                sessionStorage.removeItem('current_spk_draft');
+                
+                // Redirect to waitlist index
+                window.location.href = "{{ route('approval.index') }}";
+            }
+        }));
+    });
+</script>
 @endsection
