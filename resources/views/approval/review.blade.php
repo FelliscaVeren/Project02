@@ -343,7 +343,73 @@
                 this.showRevisionModal = false;
                 alert('Catatan revisi berhasil dikirim! Seluruh modul yang terkait akan terupdate.');
             }
-        }))
+        }));
+
+        Alpine.data('peForm', () => ({
+            fields: [
+                {
+                    id: 'mixer',
+                    label: 'Mesin Mixer',
+                    currentValue: 'Mixer A-01 (Jumlah: 2)',
+                    correctedValue: 'Mixer B-02 (Jumlah: 3)',
+                    type: 'text',
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Mixer A-01 kapasitas 2 kurang, harusnya pakai Mixer B-02 jumlah 3 unit',
+                    flagged: true
+                },
+                {
+                    id: 'extruder',
+                    label: 'Mesin Extruder',
+                    currentValue: 'Ext Line 1',
+                    correctedValue: '',
+                    type: 'select',
+                    options: ['Ext Line 1', 'Ext Line 2', 'Ext Line 3'],
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Kapasitas Ext Line 1 tidak cukup untuk batch ini',
+                    flagged: false
+                },
+                {
+                    id: 'feeder',
+                    label: 'Feeder',
+                    currentValue: 'Feeder 01',
+                    correctedValue: '',
+                    type: 'select',
+                    options: ['Feeder 01', 'Feeder 02', 'Feeder 03'],
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Feeder 01 dialokasikan ke SPK lain di waktu bersamaan',
+                    flagged: false
+                },
+                {
+                    id: 'start_date',
+                    label: 'Tanggal & Jam Pelaksanaan',
+                    currentValue: '27 Agustus 2026, 06:00',
+                    correctedValue: '',
+                    type: 'text',
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Mesin baru tersedia mulai tgl 29 Agustus jam 08:00',
+                    flagged: false
+                },
+                {
+                    id: 'total_batch',
+                    label: 'Jumlah Batch / Running Hour',
+                    currentValue: '50 Batch',
+                    correctedValue: '',
+                    type: 'number',
+                    unit: 'Batch',
+                    reason: '',
+                    exampleReason: 'Kapasitas mesin max 40 batch per run',
+                    flagged: false
+                }
+            ],
+
+            get flaggedCount() {
+                return this.fields.filter(f => f.flagged).length;
+            }
+        }));
     });
 </script>
 @endsection

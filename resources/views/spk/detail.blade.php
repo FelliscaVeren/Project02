@@ -24,7 +24,7 @@
         <div class="border-b-4 border-navy p-8 flex justify-between items-center bg-slate-50/50 print:p-0 print:pb-6 print:bg-transparent">
             <div>
                 <h1 class="text-3xl font-black text-navy uppercase tracking-tight">Surat Perintah Kerja</h1>
-                <p class="text-slate-500 mt-1 font-medium">PT. Manufacturing Cemerlang</p>
+                <p class="text-slate-500 mt-1 font-medium">PT Dunia Kimia Jaya</p>
             </div>
             
             <div class="text-right">
@@ -106,6 +106,7 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
             
             <hr class="border-slate-100">
@@ -211,5 +212,5 @@
             
         </div>
     </div>
-</div>
+
 @endsection
