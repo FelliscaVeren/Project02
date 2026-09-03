@@ -102,19 +102,23 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2">Mesin Extruder</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
+                        <select x-model="selectedExtruder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
                             <option value="">-- Pilih Extruder --</option>
                             <option value="ext-1">Extruder Line 1</option>
+                            <option value="ext-2">Extruder Line 2</option>
                             <option value="ext-3">Extruder Line 3</option>
+                            <option value="ext-4-5">Extruder Line 4-5</option>
+                            <option value="ext-5-6">Extruder Line 5-6</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2">Feeder</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
+                        <select x-model="selectedFeeder" :disabled="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder)" :class="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder) ? 'opacity-50 cursor-not-allowed bg-slate-100' : 'bg-slate-50'" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
                             <option value="">-- Pilih Feeder --</option>
                             <option value="fd-01">Feeder 01</option>
                             <option value="fd-02">Feeder 02</option>
                         </select>
+                        <p x-show="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder)" class="text-[10px] text-amber-600 mt-1 mt-1">*Feeder hanya untuk mesin 4-5 / 5-6</p>
                     </div>
                 </div>
             </div>
@@ -190,6 +194,8 @@
             totalHours: 0,
             totalDays: 0,
             totalShifts: 0,
+            selectedExtruder: '',
+            selectedFeeder: '',
 
             get hours() {
                 let arr = [];

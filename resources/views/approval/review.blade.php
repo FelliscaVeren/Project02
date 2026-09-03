@@ -130,7 +130,17 @@
 
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-2">Instruksi / Metode Kerja Tambahan</label>
-                            <textarea rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all" placeholder="Misal: Suhu mixing 180C, waktu 15 menit..."></textarea>
+                            <textarea rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all mb-3" placeholder="Ketik instruksi berupa kalimat (Misal: Suhu mixing 180C, waktu 15 menit...)"></textarea>
+                            <div class="flex items-center justify-center w-full">
+                                <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-6 h-6 mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <p class="mb-1 text-xs text-slate-500"><span class="font-bold">Klik untuk upload lampiran dokumen</span> atau drag and drop</p>
+                                        <p class="text-[10px] text-slate-400">PDF, DOCX, XLSX (MAX. 5MB)</p>
+                                    </div>
+                                    <input id="dropzone-file" type="file" class="hidden" />
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -217,7 +227,64 @@
                                 </p>
                             </template>
                         </div>
-                    </div>
+
+                        <!-- Tabel Catatan Internal PE -->
+                        <div class="mt-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    Catatan Internal PE
+                                </h5>
+                                <button @click="showNoteInput = !showNoteInput" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-1 rounded-lg transition-colors flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    Tambah Catatan
+                                </button>
+                            </div>
+                            <div x-show="showNoteInput" x-transition class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 mb-2">
+                                <div class="grid grid-cols-3 gap-2 mb-2">
+                                    <input type="text" x-model="newNote.poin" placeholder="Poin / Topik..." class="col-span-1 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none">
+                                    <textarea x-model="newNote.detail" rows="1" placeholder="Detail catatan..." class="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="flex justify-end gap-2">
+                                    <button @click="showNoteInput = false" class="text-xs text-slate-500 px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50">Batal</button>
+                                    <button @click="saveNote()" class="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg transition-colors">Simpan</button>
+                                </div>
+                            </div>
+                            <div class="border border-slate-200 rounded-xl overflow-hidden">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-50 border-b border-slate-200">
+                                        <tr class="text-[10px] uppercase text-slate-400 font-bold">
+                                            <th class="px-3 py-2 w-6">#</th>
+                                            <th class="px-3 py-2">Poin</th>
+                                            <th class="px-3 py-2">Detail Catatan</th>
+                                            <th class="px-3 py-2">Oleh</th>
+                                            <th class="px-3 py-2">Waktu</th>
+                                            <th class="px-3 py-2 w-8"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <template x-for="(note, idx) in notes" :key="idx">
+                                            <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-3 py-2 text-slate-400" x-text="idx + 1"></td>
+                                                <td class="px-3 py-2 font-bold text-navy" x-text="note.poin"></td>
+                                                <td class="px-3 py-2 text-slate-600" x-text="note.detail"></td>
+                                                <td class="px-3 py-2 text-slate-500" x-text="note.by"></td>
+                                                <td class="px-3 py-2 text-slate-400" x-text="note.time"></td>
+                                                <td class="px-3 py-2">
+                                                    <button @click="notes.splice(idx,1)" class="text-red-400 hover:text-red-600">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr x-show="notes.length === 0">
+                                            <td colspan="6" class="px-3 py-4 text-center text-slate-400 italic">Belum ada catatan. Klik "+ Tambah Catatan".</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                     </div>
 
                     <!-- Form QC -->
                     <div x-show="currentRole === 'qc'">
@@ -381,33 +448,30 @@
                     reason: '',
                     exampleReason: 'Feeder 01 dialokasikan ke SPK lain di waktu bersamaan',
                     flagged: false
-                },
-                {
-                    id: 'start_date',
-                    label: 'Tanggal & Jam Pelaksanaan',
-                    currentValue: '27 Agustus 2026, 06:00',
-                    correctedValue: '',
-                    type: 'text',
-                    unit: '',
-                    reason: '',
-                    exampleReason: 'Mesin baru tersedia mulai tgl 29 Agustus jam 08:00',
-                    flagged: false
-                },
-                {
-                    id: 'total_batch',
-                    label: 'Jumlah Batch / Running Hour',
-                    currentValue: '50 Batch',
-                    correctedValue: '',
-                    type: 'number',
-                    unit: 'Batch',
-                    reason: '',
-                    exampleReason: 'Kapasitas mesin max 40 batch per run',
-                    flagged: false
                 }
             ],
 
             get flaggedCount() {
                 return this.fields.filter(f => f.flagged).length;
+            },
+
+            // === Notes / Catatan Internal ===
+            showNoteInput: false,
+            newNote: { poin: '', detail: '' },
+            notes: [
+                { poin: 'Kapasitas Mixer', detail: 'Mixer A-01 tidak cukup untuk batch ini, perlu ditinjau ulang', by: 'Ir. Budi (PE)', time: '27 Ags, 09:45' }
+            ],
+
+            saveNote() {
+                if (!this.newNote.poin.trim() || !this.newNote.detail.trim()) return;
+                this.notes.push({
+                    poin: this.newNote.poin,
+                    detail: this.newNote.detail,
+                    by: 'PE (Simulasi)',
+                    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })
+                });
+                this.newNote = { poin: '', detail: '' };
+                this.showNoteInput = false;
             }
         }));
     });

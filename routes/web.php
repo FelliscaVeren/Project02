@@ -29,3 +29,6 @@ Route::prefix('spk')->name('spk.')->group(function() {
     Route::get('/detail', function () { return view('spk.detail'); })->name('detail');
 });
 
+Route::get('/dokumen/material', function () { return view('dokumen.material'); })->name('dokumen.material');
+
+

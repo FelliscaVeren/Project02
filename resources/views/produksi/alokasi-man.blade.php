@@ -162,8 +162,8 @@
                     { team: 'RED',    teamColor: 'bg-red-600',     checkboxColor: 'text-red-600 focus:ring-red-500',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 1)', time: '06:00 – 14:00', date: '27 Aug 2026' },
                     { team: 'GREEN',  teamColor: 'bg-emerald-600', checkboxColor: 'text-emerald-600 focus:ring-emerald-500', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 1)', time: '14:00 – 22:00', date: '27 Aug 2026' },
                     { team: 'YELLOW', teamColor: 'bg-yellow-500',  checkboxColor: 'text-yellow-600 focus:ring-yellow-500', previewBg: 'bg-yellow-50 border-yellow-200', previewText: 'text-yellow-800', label: 'Shift 3 (Hari 1)', time: '22:00 – 06:00', date: '27-28 Aug' },
-                    { team: 'GREEN',  teamColor: 'bg-emerald-600', checkboxColor: 'text-emerald-600 focus:ring-emerald-500', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 1 (Hari 2)', time: '06:00 – 14:00', date: '28 Aug 2026' },
-                    { team: 'YELLOW', teamColor: 'bg-yellow-500',  checkboxColor: 'text-yellow-600 focus:ring-yellow-500', previewBg: 'bg-yellow-50 border-yellow-200', previewText: 'text-yellow-800', label: 'Shift 2 (Hari 2)', time: '14:00 – 22:00', date: '28 Aug 2026' }
+                    { team: 'RED',    teamColor: 'bg-red-600',     checkboxColor: 'text-red-600 focus:ring-red-500',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 2)', time: '06:00 – 14:00', date: '28 Aug 2026' },
+                    { team: 'GREEN',  teamColor: 'bg-emerald-600', checkboxColor: 'text-emerald-600 focus:ring-emerald-500', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 2)', time: '14:00 – 22:00', date: '28 Aug 2026' }
                 ];
                 return rotation.slice(0, this.totalShifts).map(s => ({
                     ...s,

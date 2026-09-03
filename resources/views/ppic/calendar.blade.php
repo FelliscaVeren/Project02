@@ -97,13 +97,20 @@
         
         <!-- Header Aksi & Filter -->
         <div class="flex justify-between items-center bg-white px-5 py-4 rounded-2xl border border-slate-200 shadow-sm flex-shrink-0 gap-4">
-            <div class="flex-1 min-w-0">
-                <div class="relative max-w-xs">
+            <div class="flex-1 min-w-0 flex items-center gap-3">
+                <div class="relative max-w-xs flex-1">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                     <input type="text" x-model="searchQuery" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-cyan focus:border-cyan block pl-10 p-2.5 transition-colors" placeholder="Cari No. SPK, Produk...">
                 </div>
+                <select x-model="statusFilter" x-show="viewMode === 'list'" class="bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-cyan focus:border-cyan p-2.5 transition-colors outline-none">
+                    <option value="all">Semua Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="released">Released</option>
+                    <option value="on_process">On Process</option>
+                    <option value="scheduled">Schedule</option>
+                </select>
             </div>
             
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -145,7 +152,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
                         <!-- Draft SPK row -->
-                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40">
+                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40" x-show="statusFilter === 'all' || statusFilter === 'draft'">
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
                                 <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
@@ -164,7 +171,7 @@
                             </td>
                         </tr>
                         <!-- Running SPK row -->
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'on_process' || statusFilter === 'released'">
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
                                 <p class="font-bold text-navy text-sm">SPK-2608-001</p>
@@ -181,13 +188,52 @@
                                     <span class="px-2 py-0.5 rounded bg-yellow-50 text-yellow-700 border border-yellow-200 font-semibold inline-block">Shift 3 · Team YELLOW</span>
                                 </div>
                             </td>
-                            <td class="p-3">
-                                <span class="px-2 py-1 rounded bg-blue-50 text-blue-700 border border-blue-100 text-xs font-bold block mb-1">On Process</span>
-                                <p class="text-xs font-medium text-slate-600">Sub-status: <span class="text-navy font-bold">Sedang Penimbangan (25%)</span></p>
+                            <td class="p-3 min-w-[220px]">
+                                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-bold inline-block mb-2">⚙ On Process — Sedang Mixing</span>
+                                <!-- Progress Steps -->
+                                <div class="flex items-center gap-1 mb-2">
+                                    <!-- Penimbangan: done -->
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
+                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <span class="text-[8px] text-emerald-700 font-bold text-center leading-tight">Timbang</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-emerald-300 mb-3"></div>
+                                    <!-- Mixing: active -->
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shadow-sm ring-2 ring-blue-200 animate-pulse">
+                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        </div>
+                                        <span class="text-[8px] text-blue-700 font-bold text-center leading-tight">Mixing</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-slate-200 mb-3"></div>
+                                    <!-- Extruder: pending -->
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+                                            <span class="text-[9px] font-bold text-slate-400">3</span>
+                                        </div>
+                                        <span class="text-[8px] text-slate-400 font-bold text-center leading-tight">Extruder</span>
+                                    </div>
+                                    <div class="flex-1 h-0.5 bg-slate-200 mb-3"></div>
+                                    <!-- Bagging: pending -->
+                                    <div class="flex flex-col items-center gap-0.5">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+                                            <span class="text-[9px] font-bold text-slate-400">4</span>
+                                        </div>
+                                        <span class="text-[8px] text-slate-400 font-bold text-center leading-tight">Bagging</span>
+                                    </div>
+                                </div>
+                                <!-- Progress bar -->
+                                <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                    <div class="bg-blue-500 h-1.5 rounded-full transition-all" style="width: 45%"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-right">45% selesai</p>
                             </td>
                         </tr>
+
                         <!-- Cleaning row -->
-                        <tr class="hover:bg-violet-50/40 transition-colors bg-violet-50/20">
+                        <tr class="hover:bg-violet-50/40 transition-colors bg-violet-50/20" x-show="statusFilter === 'all' || statusFilter === 'scheduled'">
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-violet-100 text-violet-700 text-[9px] font-bold uppercase tracking-wide">Cleaning</span>
                                 <p class="font-bold text-violet-700 text-sm">CLN-2608-001</p>
@@ -260,6 +306,7 @@
         Alpine.data('calendarApp', () => ({
             viewMode: 'calendar',
             searchQuery: '',
+            statusFilter: 'all',
             showEventModal: false,
             selectedEvent: { title: '', product: '', dateRange: '', machine: '', shifts: [], substatus: '', type: 'running' },
             
