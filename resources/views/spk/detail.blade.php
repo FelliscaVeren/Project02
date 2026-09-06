@@ -42,21 +42,31 @@
         <div class="p-8 space-y-8">
             
             <!-- Info Utama -->
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <table class="w-full text-sm">
-                        <tr><td class="py-1 text-slate-500 w-1/3">Produk Akhir</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.product || '-')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Jumlah Batch</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.qty || '-') + ' Batch'"></td></tr>
+                        <tr><td class="py-1 text-slate-500 w-2/5">Nama Customer</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.customer || 'PT Royal Synthetic Compound')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Produk Akhir</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.product || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Jumlah Batch</td><td class="py-1 font-bold text-navy"><span x-text="': ' + (spk?.qty || '50') + ' Batch'"></span> <span class="text-xs text-emerald-600 font-bold ml-1">(<span x-text="spk?.completedBatch || '28'"></span> / <span x-text="spk?.qty || '50'"></span> Batch Selesai)</span></td></tr>
                         <tr><td class="py-1 text-slate-500">Tanggal Mulai</td><td class="py-1 font-bold text-navy" x-text="': ' + formatDate(spk?.startDate)"></td></tr>
                         <tr><td class="py-1 text-slate-500">Tanggal Selesai</td><td class="py-1 font-bold text-navy" x-text="': ' + formatDate(spk?.endDate)"></td></tr>
                     </table>
                 </div>
                 <div>
                     <table class="w-full text-sm">
-                        <tr><td class="py-1 text-slate-500 w-1/3">Mesin Alokasi</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.machine || '-')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Target Waktu</td><td class="py-1 font-bold text-navy">: 24 Jam / Hari</td></tr>
+                        <tr><td class="py-1 text-slate-500 w-2/5">Tanggal Kirim (Tentatif)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.shipDate || '06 Sep 2026')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Target OP (Output/Hour)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.targetOp || '500 Kg / Jam')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Working Days</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingDays || '2.5 Days')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Working Minutes</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingMinutes || '1,200 Mins')"></td></tr>
+                    </table>
+                </div>
+                <div>
+                    <table class="w-full text-sm">
+                        <tr><td class="py-1 text-slate-500 w-2/5">Mesin Alokasi</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.machine || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Delay (Hour)</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.delayHour || '0.0 Hr')"></td></tr>
                         <tr><td class="py-1 text-slate-500">Status</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.status || '-')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Lokasi / Tahap</td><td class="py-1 font-bold text-cyan" x-text="': ' + (spk?.subStatus || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Keterangan</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.keterangan || 'Formula standar high-clarity PVC')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Remarks</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.remarks || 'Prioritas pengiriman via kontainer 20ft')"></td></tr>
                     </table>
                 </div>
             </div>
@@ -76,12 +86,12 @@
                         <p class="text-[9px] mt-0.5">Bahan Baku Dikeluarkan</p>
                     </div>
                     <div class="p-2 border rounded-xl" :class="['Proses Mixing', 'Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Penimbangan' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">2. Penimbangan (Weighing)</p>
+                        <p class="font-bold">2. TP = Timbang Produk</p>
                         <p class="text-[9px] mt-0.5">Verifikasi Qty & Timbangan</p>
                     </div>
                     <div class="p-2 border rounded-xl" :class="['Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Proses Mixing' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">3. Pencampuran (Mixing)</p>
-                        <p class="text-[9px] mt-0.5">Input Material ke Mixer</p>
+                        <p class="font-bold">3. MP / MD / ML Process</p>
+                        <p class="text-[9px] mt-0.5">Mixing Powder, DBM & Liquid</p>
                     </div>
                     <div class="p-2 border rounded-xl" :class="['Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Proses Extruder' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
                         <p class="font-bold">4. Extrusion Process</p>
@@ -173,16 +183,22 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-xs">
                             <tr>
-                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Penimbangan</td>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">TP = Timbang Produk</td>
                                 <td class="p-3"><span class="font-medium text-navy">Mia, Ayu</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Fitri</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Hana</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
                             </tr>
                             <tr>
-                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Mixing</td>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">MP = Mixing Powder</td>
                                 <td class="p-3"><span class="font-medium text-navy">Budi, Anggun</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Bagas, Rudi</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Citra, Edi</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">MD = Mix DBM & ML = Mixing Liquid</td>
+                                <td class="p-3"><span class="font-medium text-navy">Budi</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Rudi</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Edi</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
                             </tr>
                             <tr>
                                 <td class="p-3 font-bold text-slate-600 bg-slate-50">Extruder</td>
@@ -256,4 +272,49 @@
             
         </div>
     </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('spkDetails', () => ({
+            spkId: 'SPK-2608-001',
+            spk: null,
+            printTimestamp: new Date().toLocaleString('id-ID'),
+            init() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id') || 'SPK-2608-001';
+                this.spkId = id;
+                const spks = window.getSPKs ? window.getSPKs() : [];
+                const found = spks.find(s => s.id === id);
+                if (found) {
+                    this.spk = found;
+                } else {
+                    this.spk = {
+                        id: id,
+                        customer: 'PT Royal Synthetic Compound',
+                        product: 'PVC Compound A (Clear)',
+                        qty: 50,
+                        completedBatch: 28,
+                        deliveryReq: '2026-09-05',
+                        shipDate: '2026-09-06',
+                        targetOp: '500 Kg / Shift',
+                        workingDays: '2.5 Days',
+                        workingMinutes: '1,200 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Formula standar high-clarity PVC',
+                        remarks: 'Prioritas pengiriman via kontainer 20ft',
+                        startDate: '2026-08-27',
+                        endDate: '2026-08-29',
+                        machine: 'Mixer A-01, Ext-1',
+                        status: 'Running',
+                        subStatus: 'Dalam Penimbangan'
+                    };
+                }
+            },
+            formatDate(d) {
+                if (!d) return '-';
+                return d;
+            }
+        }));
+    });
+</script>
 @endsection

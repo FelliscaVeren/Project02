@@ -59,9 +59,40 @@
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 text-sm font-medium">Batch</div>
                 </div>
             </div>
+
+            <!-- Customer & Delivery Specs -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
+                <input type="text" x-model="customerName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Target OP (Output / Hour)</label>
+                <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
+                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
+                <input type="date" x-model="tentativeShipDate" :min="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Keterangan SPK</label>
+                <input type="text" x-model="keterangan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Sesuai spesifikasi standar pabrik">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Remarks / Catatan Khusus</label>
+                <input type="text" x-model="remarks" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Order Prioritas Tinggi">
+            </div>
             
             <!-- Draft Formula & Rincian Transparan -->
-            <div class="md:col-span-2 border-t border-slate-100 pt-6" x-show="product !== ''">
+            <div class="md:col-span-2 border-t border-slate-100 pt-6 mt-2" x-show="product !== ''">
                 <label class="block text-sm font-bold text-slate-700 mb-2">Draft Formula / Resep (Integrasi Tahap 1)</label>
                 <select x-model="formula" @change="calculateStock" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
                     <option value="">-- Tarik Formula dari Master Data --</option>

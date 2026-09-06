@@ -96,13 +96,13 @@
     <div class="flex-1 flex flex-col gap-4 h-full overflow-hidden min-w-0">
         
         <!-- Header Aksi & Filter -->
-        <div class="flex justify-between items-center bg-white px-5 py-4 rounded-2xl border border-slate-200 shadow-sm flex-shrink-0 gap-4">
-            <div class="flex-1 min-w-0 flex items-center gap-3">
+        <div class="flex justify-between items-center bg-white px-5 py-4 rounded-2xl border border-slate-200 shadow-sm flex-shrink-0 gap-4 flex-wrap">
+            <div class="flex-1 min-w-[240px] flex items-center gap-3">
                 <div class="relative max-w-xs flex-1">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <input type="text" x-model="searchQuery" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-cyan focus:border-cyan block pl-10 p-2.5 transition-colors" placeholder="Cari No. SPK, Produk...">
+                    <input type="text" x-model="searchQuery" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-cyan focus:border-cyan block pl-10 p-2.5 transition-colors" placeholder="Cari No. SPK, Customer, Produk...">
                 </div>
                 <select x-model="statusFilter" x-show="viewMode === 'list'" class="bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-cyan focus:border-cyan p-2.5 transition-colors outline-none">
                     <option value="all">Semua Status</option>
@@ -113,8 +113,20 @@
                 </select>
             </div>
             
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <a href="{{ route('ppic.create.step1') }}" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
+            <div class="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                <!-- R&D Trial Request Button -->
+                <button @click="showRndModal = true" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Request Trial R&D
+                </button>
+
+                <!-- Slot Mesin Extruder E01 - E05 Button -->
+                <button @click="showSlotModal = true" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Slot Mesin Extruder (E01-E05)
+                </button>
+
+                <a href="{{ route('ppic.create.step1') }}" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     Buat SPK
                 </a>
@@ -139,15 +151,17 @@
             <!-- Mode Kalender -->
             <div id="calendar" class="flex-1 w-full h-full min-h-0" x-show="viewMode === 'calendar'"></div>
             
-            <!-- Mode Tabel / List -->
+            <!-- Mode Tabel / List (Jadwal Bulanan Detailed) -->
             <div class="flex-1 w-full h-full overflow-auto" x-show="viewMode === 'list'" style="display: none;">
-                <table class="w-full text-left border-collapse text-sm">
+                <table class="w-full text-left border-collapse text-xs">
                     <thead class="sticky top-0 bg-slate-50 z-10">
-                        <tr class="text-xs uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
-                            <th class="p-3">Info SPK</th>
-                            <th class="p-3">Timeline & Mesin</th>
-                            <th class="p-3">Tim & Shift</th>
-                            <th class="p-3">Status Detail</th>
+                        <tr class="uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200 text-[10px]">
+                            <th class="p-3">No. SPK & Customer</th>
+                            <th class="p-3">Timeline & Pengiriman</th>
+                            <th class="p-3">Metrik Kerja (Days/Mins/Delay)</th>
+                            <th class="p-3">Proses (TP/MP/MD/ML) & Batch</th>
+                            <th class="p-3">Keterangan & Remarks</th>
+                            <th class="p-3 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
@@ -156,18 +170,29 @@
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
                                 <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
-                                <p class="text-xs text-slate-400 mt-0.5">PVC Compound C (Black)</p>
+                                <p class="text-xs text-navy font-semibold">PT Delta Polymer Indonesia</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-xs text-slate-400 mb-1">Belum ditentukan</p>
-                                <p class="text-xs text-slate-400">Mixer: —, Ext: —</p>
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
                             </td>
                             <td class="p-3">
-                                <span class="text-xs text-slate-400 italic">Belum Alokasi Tim</span>
+                                <p class="text-slate-600">Working Days: <span class="font-bold">2.0 Days</span></p>
+                                <p class="text-slate-600">Working Mins: <span class="font-bold">960 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr</p>
                             </td>
                             <td class="p-3">
-                                <span class="px-2 py-1 rounded bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold">Draft (Menunggu Release)</span>
-                                <button class="mt-2 block px-3 py-1 bg-cyan text-white text-xs font-bold rounded-lg hover:bg-cyan/90 transition">Release</button>
+                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Target OP: 400 Kg / Jam</span>
+                                <p class="text-slate-500 mt-1 font-semibold">Batch: 0 / 40 Batch Selesai</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Proses: TP &rarr; MP &rarr; Extruder</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Ket: <span class="text-slate-500">Sample formulasi hitam mate</span></p>
+                                <p class="text-slate-600">Remarks: <span class="text-slate-500">Menunggu QC approval</span></p>
+                            </td>
+                            <td class="p-3 text-right">
+                                <button @click="releaseSpk('DRF-SPK-2608-05')" class="px-3 py-1.5 bg-cyan text-white font-bold text-xs rounded-lg shadow-sm hover:bg-cyan/90 transition">Release SPK</button>
                             </td>
                         </tr>
                         <!-- Running SPK row -->
@@ -175,80 +200,55 @@
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
                                 <p class="font-bold text-navy text-sm">SPK-2608-001</p>
-                                <p class="text-xs text-slate-500 mt-0.5">PVC Compound A (Clear)</p>
+                                <p class="text-xs text-navy font-bold">PT Royal Synthetic Compound</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">PVC Compound A (Clear)</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-xs text-slate-500">27 Aug 06:00 — 29 Aug 22:00</p>
-                                <p class="font-semibold text-cyan text-xs mt-0.5">Mixer A-01 · Ext Line 1</p>
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">06 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-cyan font-bold mt-1">Mixer A-01 · Ext Line 1 (E-01)</p>
                             </td>
                             <td class="p-3">
-                                <div class="flex flex-col gap-1 text-xs">
-                                    <span class="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 font-semibold inline-block">Shift 1 · Team RED</span>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold inline-block">Shift 2 · Team GREEN</span>
-                                    <span class="px-2 py-0.5 rounded bg-yellow-50 text-yellow-700 border border-yellow-200 font-semibold inline-block">Shift 3 · Team YELLOW</span>
-                                </div>
+                                <p class="text-slate-700">Working Days: <span class="font-bold text-navy">2.5 Days</span></p>
+                                <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">1,200 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (On Time)</p>
                             </td>
-                            <td class="p-3 min-w-[220px]">
-                                <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-bold inline-block mb-2">⚙ On Process — Sedang Mixing</span>
-                                <!-- Progress Steps -->
-                                <div class="flex items-center gap-1 mb-2">
-                                    <!-- Penimbangan: done -->
-                                    <div class="flex flex-col items-center gap-0.5">
-                                        <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm">
-                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        </div>
-                                        <span class="text-[8px] text-emerald-700 font-bold text-center leading-tight">Timbang</span>
-                                    </div>
-                                    <div class="flex-1 h-0.5 bg-emerald-300 mb-3"></div>
-                                    <!-- Mixing: active -->
-                                    <div class="flex flex-col items-center gap-0.5">
-                                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shadow-sm ring-2 ring-blue-200 animate-pulse">
-                                            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                        </div>
-                                        <span class="text-[8px] text-blue-700 font-bold text-center leading-tight">Mixing</span>
-                                    </div>
-                                    <div class="flex-1 h-0.5 bg-slate-200 mb-3"></div>
-                                    <!-- Extruder: pending -->
-                                    <div class="flex flex-col items-center gap-0.5">
-                                        <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
-                                            <span class="text-[9px] font-bold text-slate-400">3</span>
-                                        </div>
-                                        <span class="text-[8px] text-slate-400 font-bold text-center leading-tight">Extruder</span>
-                                    </div>
-                                    <div class="flex-1 h-0.5 bg-slate-200 mb-3"></div>
-                                    <!-- Bagging: pending -->
-                                    <div class="flex flex-col items-center gap-0.5">
-                                        <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
-                                            <span class="text-[9px] font-bold text-slate-400">4</span>
-                                        </div>
-                                        <span class="text-[8px] text-slate-400 font-bold text-center leading-tight">Bagging</span>
-                                    </div>
+                            <td class="p-3 min-w-[200px]">
+                                <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2 mb-1">
+                                    <p class="font-bold text-emerald-800 text-xs">28 / 50 Batch Selesai (56%)</p>
                                 </div>
-                                <!-- Progress bar -->
-                                <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                    <div class="bg-blue-500 h-1.5 rounded-full transition-all" style="width: 45%"></div>
-                                </div>
-                                <p class="text-[10px] text-slate-400 mt-1 text-right">45% selesai</p>
+                                <p class="text-[10px] text-slate-600">Proses Aktif: <b class="text-cyan">TP (Timbang Produk) & MP (Mixing Powder)</b></p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Ket: <span class="text-slate-600 font-medium">Formula standar high-clarity PVC</span></p>
+                                <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Prioritas pengiriman via kontainer 20ft</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <a href="{{ route('spk.detail') }}?id=SPK-2608-001" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-block">Detail SPK</a>
                             </td>
                         </tr>
 
                         <!-- Cleaning row -->
                         <tr class="hover:bg-violet-50/40 transition-colors bg-violet-50/20" x-show="statusFilter === 'all' || statusFilter === 'scheduled'">
                             <td class="p-3">
-                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-violet-100 text-violet-700 text-[9px] font-bold uppercase tracking-wide">Cleaning</span>
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-violet-100 text-violet-700 text-[9px] font-bold uppercase tracking-wide">Cleaning Schedule</span>
                                 <p class="font-bold text-violet-700 text-sm">CLN-2608-001</p>
-                                <p class="text-xs text-violet-500 mt-0.5">Cleaning Pasca SPK-2608-001</p>
+                                <p class="text-xs text-violet-600">Cleaning Pasca SPK-2608-001</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-xs text-slate-500">29 Aug 22:00 — 30 Aug 02:00</p>
+                                <p class="text-xs text-slate-600">29 Aug 22:00 — 30 Aug 02:00</p>
                                 <p class="font-semibold text-violet-600 text-xs mt-0.5">Mixer A-01 · Feeder 01</p>
                             </td>
                             <td class="p-3">
-                                <span class="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 text-xs font-semibold inline-block">Shift 3 · Team RED</span>
-                                <p class="text-xs text-slate-400 mt-1">Budi, Anggun</p>
+                                <p class="text-slate-600">Working Mins: <span class="font-bold">240 Mins (4 Jam)</span></p>
                             </td>
                             <td class="p-3">
-                                <span class="px-2 py-1 rounded bg-violet-50 text-violet-700 border border-violet-200 text-xs font-bold">Scheduled (Auto)</span>
+                                <span class="px-2 py-0.5 rounded bg-violet-100 text-violet-800 font-bold text-[10px]">Wajib Cleaning Sebelum SPK Baru</span>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Ket: <span class="text-slate-500">Pembersihan residu pigmen clear</span></p>
+                            </td>
+                            <td class="p-3 text-right">
+                                <span class="px-2 py-1 bg-violet-50 text-violet-700 border border-violet-200 text-xs font-bold rounded-lg">Auto Scheduled</span>
                             </td>
                         </tr>
                     </tbody>
@@ -259,45 +259,201 @@
 
     <!-- Modal Detail Event Kalender -->
     <div x-show="showEventModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm" x-transition>
-        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden" @click.away="showEventModal = false">
-            <div class="p-4 text-white flex justify-between items-center" :class="selectedEvent.type === 'cleaning' ? 'bg-violet-600' : (selectedEvent.type === 'draft' ? 'bg-slate-500' : 'bg-navy')">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden" @click.away="showEventModal = false">
+            <div class="p-4 text-white flex justify-between items-center" :class="selectedEvent.type === 'cleaning' ? 'bg-violet-600' : (selectedEvent.type === 'draft' ? 'bg-slate-600' : 'bg-navy')">
                 <div>
-                    <p class="text-xs font-bold opacity-70 uppercase tracking-wide" x-text="selectedEvent.type === 'cleaning' ? '🧹 Cleaning Schedule' : (selectedEvent.type === 'draft' ? '📋 Draft SPK' : '⚙️ Running SPK')"></p>
-                    <h4 class="font-bold text-base mt-0.5" x-text="selectedEvent.title"></h4>
+                    <p class="text-xs font-bold opacity-70 uppercase tracking-wide" x-text="selectedEvent.type === 'cleaning' ? '🧹 Cleaning Schedule' : (selectedEvent.type === 'draft' ? '📋 Draft SPK' : '⚙️ Detail SPK & Jadwal')"></p>
+                    <h4 class="font-bold text-lg mt-0.5" x-text="selectedEvent.title"></h4>
                 </div>
                 <button @click="showEventModal = false" class="text-white/70 hover:text-white transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="p-6 space-y-4 text-sm">
-                <div><span class="block text-xs text-slate-500 font-bold mb-1">Produk / Kegiatan</span><p class="font-bold text-navy text-base" x-text="selectedEvent.product"></p></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><span class="block text-xs text-slate-500 font-bold mb-1">Waktu</span><p class="font-semibold text-slate-800 text-xs" x-text="selectedEvent.dateRange"></p></div>
-                    <div><span class="block text-xs text-slate-500 font-bold mb-1">Mesin</span><p class="font-semibold text-cyan text-xs" x-text="selectedEvent.machine"></p></div>
+            <div class="p-6 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 grid grid-cols-2 gap-3">
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase block">Nama Customer</span>
+                        <p class="font-bold text-navy text-sm" x-text="selectedEvent.customer || 'PT Royal Synthetic Compound'"></p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase block">Produk / Sediaan</span>
+                        <p class="font-bold text-slate-800 text-sm" x-text="selectedEvent.product"></p>
+                    </div>
                 </div>
-                <template x-if="selectedEvent.type !== 'draft'">
-                    <div class="border-t border-slate-100 pt-3">
-                        <span class="block text-xs text-slate-500 font-bold mb-2">Alokasi Shift & Tim</span>
-                        <div class="space-y-1">
-                            <template x-for="shift in selectedEvent.shifts" :key="shift">
-                                <p class="text-xs font-semibold text-slate-700" x-text="shift"></p>
-                            </template>
+
+                <div class="grid grid-cols-3 gap-3 bg-white border border-slate-100 rounded-xl p-3">
+                    <div>
+                        <span class="text-slate-400 font-bold block">Tanggal Kirim (Tentatif)</span>
+                        <p class="font-bold text-navy text-xs" x-text="selectedEvent.shipDate || '06 Sep 2026'"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-bold block">Target OP (Output/Hour)</span>
+                        <p class="font-bold text-cyan text-xs" x-text="selectedEvent.targetOp || '500 Kg / Jam'"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-bold block">Batch Selesai</span>
+                        <p class="font-bold text-emerald-600 text-xs"><span x-text="selectedEvent.completedBatch || '28'"></span> / <span x-text="selectedEvent.totalBatch || '50'"></span> Batch</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+                    <div>
+                        <span class="text-slate-400 font-bold block">Working Days</span>
+                        <p class="font-bold text-slate-800" x-text="selectedEvent.workingDays || '2.5 Days'"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-bold block">Working Mins</span>
+                        <p class="font-bold text-slate-800" x-text="selectedEvent.workingMinutes || '1,200 Mins'"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-bold block">Delay (Hour)</span>
+                        <p class="font-bold text-emerald-600" x-text="selectedEvent.delayHour || '0.0 Hr'"></p>
+                    </div>
+                </div>
+
+                <div class="space-y-2 border-t border-slate-100 pt-3">
+                    <div>
+                        <span class="text-slate-400 font-bold block">Keterangan</span>
+                        <p class="text-slate-700 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100" x-text="selectedEvent.keterangan || 'Formula standar high-clarity PVC'"></p>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-bold block">Remarks</span>
+                        <p class="text-slate-700 font-medium bg-slate-50 p-2 rounded-lg border border-slate-100" x-text="selectedEvent.remarks || 'Prioritas pengiriman via kontainer 20ft'"></p>
+                    </div>
+                </div>
+
+                <div class="bg-cyan/10 border border-cyan/20 rounded-xl p-3">
+                    <span class="text-[10px] font-bold text-cyan uppercase tracking-wider block mb-1">Singkatan Penamaan Proses:</span>
+                    <p class="text-[11px] text-slate-700 font-medium">
+                        <b>TP</b> = Timbang Produk | <b>MP</b> = Mixing Powder | <b>MD</b> = Mix DBM | <b>ML</b> = Mixing Liquid
+                    </p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <a :href="'{{ route('spk.detail') }}?id=' + selectedEvent.title" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-sm transition">
+                    Buka Dokumen SPK Full &rarr;
+                </a>
+                <button @click="showEventModal = false" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50 transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REQUEST TRIAL R&D (DENGAN CONFLICT ALERT 1 MESIN = 1 SPK) -->
+    <div x-show="showRndModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden" @click.away="showRndModal = false">
+            <div class="p-5 bg-purple-700 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    <div>
+                        <h4 class="font-bold text-lg">Pengajuan Request Trial Mesin R&D</h4>
+                        <p class="text-xs text-purple-200">Permintaan uji coba sample mendadak dari R&D ke PPIC</p>
+                    </div>
+                </div>
+                <button @click="showRndModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Sample / Formula Trial</label>
+                    <input type="text" x-model="rndForm.sampleName" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium focus:ring-purple-500 focus:border-purple-500" placeholder="misal: Trial Formulation New Ca-Zn Grade B">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Pilih Mesin Extruder Target</label>
+                        <select x-model="rndForm.machine" @change="checkRndConflict()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium focus:ring-purple-500 focus:border-purple-500">
+                            <option value="Extruder E-01">Extruder E-01 (Occupied by SPK-001)</option>
+                            <option value="Extruder E-02">Extruder E-02</option>
+                            <option value="Extruder E-03">Extruder E-03</option>
+                            <option value="Extruder E-04">Extruder E-04</option>
+                            <option value="Extruder E-05">Extruder E-05</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Durasi Uji Coba (Jam)</label>
+                        <input type="number" x-model="rndForm.durationHour" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium" placeholder="4">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catatan / Spesifikasi Trial R&D</label>
+                    <textarea x-model="rndForm.notes" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800" placeholder="Keterangan parameter suhu extruder atau komposisi..."></textarea>
+                </div>
+
+                <!-- CONFLICT ALERT BOX (1 MESIN = 1 SPK / TRIAL ONLY) -->
+                <template x-if="rndConflict">
+                    <div class="p-4 bg-red-50 border-2 border-red-300 rounded-2xl space-y-3">
+                        <div class="flex items-start gap-2.5">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            <div>
+                                <h5 class="font-bold text-red-800 text-xs uppercase tracking-wider">🚨 Peringatan Konflik Mesin (Rules: 1 Mesin = 1 SPK/Trial)</h5>
+                                <p class="text-red-700 mt-1">Mesin <b x-text="rndForm.machine"></b> saat ini sedang digunakan oleh <b class="underline">SPK-2608-001 (PVC Compound A)</b>. 1 mesin tidak boleh menjalankan lebih dari 1 SPK/Trial bersamaan!</p>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-red-200 flex gap-2">
+                            <button @click="shortenExistingSpk()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[11px] transition">
+                                ✂️ Pendekkan Durasi SPK Eksisting
+                            </button>
+                            <button @click="rescheduleRndTrial()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white font-bold rounded-lg text-[11px] transition">
+                                🗓️ Geser Trial ke Slot Kosong
+                            </button>
                         </div>
                     </div>
                 </template>
-                <template x-if="selectedEvent.type === 'draft'">
-                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
-                        <b>Status Draft</b>: SPK ini belum di-release. Alokasi mesin & tim belum dikonfirmasi.
-                    </div>
-                </template>
-                <template x-if="selectedEvent.substatus">
-                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-center gap-2">
-                        <span class="flex w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        <p class="text-xs font-bold text-blue-800" x-text="'Sub-status: ' + selectedEvent.substatus"></p>
+            </div>
+
+            <div class="p-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                <button @click="showRndModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50">Batal</button>
+                <button @click="submitRndTrial()" class="px-5 py-2 text-xs font-bold text-white bg-purple-700 hover:bg-purple-800 rounded-xl shadow-md transition">Kirim Request Trial R&D</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIST SLOT MESIN EXTRUDER E01 - E05 -->
+    <div x-show="showSlotModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden" @click.away="showSlotModal = false">
+            <div class="p-5 bg-navy text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Daftar Slot Mesin Extruder (E01 – E05)
+                    </h4>
+                    <p class="text-xs text-slate-300 mt-0.5">Daftar alokasi tanggal & No. SPK pada setiap lini mesin Extruder</p>
+                </div>
+                <button @click="showSlotModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-3 max-h-[70vh] overflow-y-auto text-xs">
+                <template x-for="(slot, idx) in slots" :key="idx">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-4 hover:border-cyan/50 transition-all">
+                        <div>
+                            <span class="px-2 py-0.5 rounded bg-cyan/10 text-cyan font-bold text-[10px] uppercase border border-cyan/20" x-text="slot.machine"></span>
+                            <h5 class="font-bold text-navy text-sm mt-1" x-text="slot.spkNo + ' · ' + slot.product"></h5>
+                            <p class="text-slate-500 mt-0.5">Tanggal: <b x-text="slot.date"></b> | Jam: <b x-text="slot.time"></b></p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button @click="adjustSlotTime(idx)" class="px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl shadow-sm transition">
+                                Ubah Waktu
+                            </button>
+                            <button @click="deleteSlot(idx)" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold rounded-xl transition">
+                                Hapus Slot
+                            </button>
+                        </div>
                     </div>
                 </template>
             </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button @click="showSlotModal = false" class="px-5 py-2 bg-navy text-white text-xs font-bold rounded-xl shadow-md hover:bg-navy-light transition">Tutup</button>
+            </div>
         </div>
+    </div>
 
         <!-- Mode Tree View SPK -->
         <div class="flex-1 w-full h-full overflow-auto space-y-6" x-show="viewMode === 'tree'" style="display: none;">
@@ -553,10 +709,87 @@
             searchQuery: '',
             statusFilter: 'all',
             showEventModal: false,
-            selectedEvent: { title: '', product: '', dateRange: '', machine: '', shifts: [], substatus: '', type: 'running' },
+            showRndModal: false,
+            showSlotModal: false,
             
+            selectedEvent: {
+                title: '',
+                product: '',
+                customer: '',
+                deliveryReq: '',
+                shipDate: '',
+                targetOp: '',
+                workingDays: '',
+                workingMinutes: '',
+                delayHour: '',
+                keterangan: '',
+                remarks: '',
+                completedBatch: 28,
+                totalBatch: 50,
+                dateRange: '',
+                machine: '',
+                shifts: [],
+                substatus: '',
+                type: 'running'
+            },
+            
+            // R&D Trial Form
+            rndForm: {
+                sampleName: '',
+                machine: 'Extruder E-01',
+                durationHour: 4,
+                notes: ''
+            },
+            rndConflict: true,
+
+            // Slot Mesin Extruder E01 - E05
+            slots: [
+                { machine: 'Extruder E-01', spkNo: 'SPK-2608-001', product: 'PVC Compound A (Clear)', date: '27 Aug - 29 Aug 2026', time: '06:00 - 22:00' },
+                { machine: 'Extruder E-02', spkNo: 'SPK-2608-005', product: 'PVC Compound C (Black)', date: '30 Aug - 31 Aug 2026', time: '08:00 - 16:00' },
+                { machine: 'Extruder E-03', spkNo: 'SPK-2608-002', product: 'PVC Compound B (Color)', date: '30 Aug - 01 Sep 2026', time: '08:00 - 16:00' },
+                { machine: 'Extruder E-04', spkNo: 'CLN-2608-002', product: 'Cleaning Line E-04',    date: '01 Sep 2026',           time: '08:00 - 12:00' },
+                { machine: 'Extruder E-05', spkNo: 'SPK-2608-007', product: 'PVC Compound E (Special)', date: '02 Sep - 04 Sep 2026', time: '08:00 - 18:00' }
+            ],
+
             releaseSpk(draftNo) {
                 alert(`SPK ${draftNo} berhasil di-Release ke antrean Running!`);
+            },
+
+            deleteSlot(idx) {
+                if (confirm('Apakah Anda yakin ingin menghapus slot mesin ini?')) {
+                    this.slots.splice(idx, 1);
+                    alert('Slot mesin berhasil dihapus.');
+                }
+            },
+            adjustSlotTime(idx) {
+                const newTime = prompt('Masukkan penyesuaian jam/waktu baru (contoh: 08:00 - 14:00):', this.slots[idx].time);
+                if (newTime) {
+                    this.slots[idx].time = newTime;
+                    alert('Waktu slot mesin berhasil diperbarui!');
+                }
+            },
+            checkRndConflict() {
+                if (this.rndForm.machine === 'Extruder E-01') {
+                    this.rndConflict = true;
+                } else {
+                    this.rndConflict = false;
+                }
+            },
+            submitRndTrial() {
+                if (this.rndConflict) {
+                    alert('PERHATIAN: Ada konflik jadwal mesin! Harap atur pemendekan SPK atau geser jadwal terlebih dahulu.');
+                    return;
+                }
+                alert(`Request Trial Sample R&D (${this.rndForm.sampleName}) berhasil diajukan ke PPIC & dijadwalkan!`);
+                this.showRndModal = false;
+            },
+            shortenExistingSpk() {
+                alert('SPK eksisting SPK-2608-001 dipendekkan durasinya! Slot mesin Extruder E-01 kini tersedia untuk Trial R&D.');
+                this.rndConflict = false;
+            },
+            rescheduleRndTrial() {
+                alert('Jadwal Trial R&D digeser otomatis ke slot kosong berikutnya (29 Aug 2026 22:30)!');
+                this.rndConflict = false;
             }
         }))
     });
@@ -564,7 +797,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
 
-        // Compute dates relative to today
         var today = new Date();
         var fmt = (d) => d.toISOString().split('T')[0];
         var addDays = (d, n) => { var r = new Date(d); r.setDate(r.getDate()+n); return r; };
@@ -591,6 +823,17 @@
                 alpineState.selectedEvent = {
                     title: info.event.title,
                     product: ext.product || info.event.title,
+                    customer: ext.customer || 'PT Royal Synthetic Compound',
+                    deliveryReq: ext.deliveryReq || '05 Sep 2026',
+                    shipDate: ext.shipDate || '06 Sep 2026',
+                    targetOp: ext.targetOp || '500 Kg / Shift',
+                    workingDays: ext.workingDays || '2.5 Days',
+                    workingMinutes: ext.workingMinutes || '1,200 Mins',
+                    delayHour: ext.delayHour || '0.0 Hr',
+                    keterangan: ext.keterangan || 'Formula standar high-clarity PVC',
+                    remarks: ext.remarks || 'Prioritas pengiriman via kontainer 20ft',
+                    completedBatch: ext.completedBatch || 28,
+                    totalBatch: ext.totalBatch || 50,
                     dateRange: info.event.startStr + (info.event.endStr ? ' → ' + info.event.endStr : ''),
                     machine: ext.machine || '—',
                     shifts: ext.shifts || [],
@@ -617,12 +860,23 @@
                 {
                     title: 'SPK-2608-001',
                     extendedProps: { 
+                        customer: 'PT Royal Synthetic Compound',
                         product: 'PVC Compound A (Clear)', 
-                        machine: 'Mixer A-01 · Ext Line 1', 
+                        machine: 'Mixer A-01 · Ext Line 1 (E-01)', 
+                        deliveryReq: '05 Sep 2026',
+                        shipDate: '06 Sep 2026 (Tentatif)',
+                        targetOp: '500 Kg / Shift',
+                        workingDays: '2.5 Days',
+                        workingMinutes: '1,200 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Formula standar high-clarity PVC',
+                        remarks: 'Prioritas pengiriman via kontainer 20ft',
+                        completedBatch: 28,
+                        totalBatch: 50,
                         type: 'running',
                         team: 'S1:RED | S2:GREEN | S3:YELLOW',
                         shifts: ['Shift 1 — Team RED: Budi, Mia, Ayu', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Citra, Edi, Fikri'],
-                        substatus: 'Sedang Penimbangan Material (25%)'
+                        substatus: 'Sedang Penimbangan (TP) & Mixing (MP) (56%)'
                     },
                     start: fmt(today) + 'T06:00:00',
                     end: fmt(addDays(today, 2)) + 'T22:00:00',
@@ -633,8 +887,19 @@
                 {
                     title: 'SPK-2608-002',
                     extendedProps: { 
+                        customer: 'PT Nusantara Plastik',
                         product: 'PVC Compound B (Color)', 
-                        machine: 'Mixer B-02 · Ext Line 3', 
+                        machine: 'Mixer B-02 · Ext Line 3 (E-03)', 
+                        deliveryReq: '07 Sep 2026',
+                        shipDate: '08 Sep 2026 (Tentatif)',
+                        targetOp: '450 Kg / Shift',
+                        workingDays: '1.5 Days',
+                        workingMinutes: '720 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Warna biru kustom pabrik',
+                        remarks: 'QC check intensif warna',
+                        completedBatch: 0,
+                        totalBatch: 30,
                         type: 'running',
                         team: 'S1:RED | S2:YELLOW',
                         shifts: ['Shift 1 — Team RED: Anggun, Deva', 'Shift 2 — Team YELLOW: Hana, Irfan'],
@@ -649,8 +914,19 @@
                 {
                     title: 'DRF-2608-05',
                     extendedProps: {
+                        customer: 'PT Delta Polymer Indonesia',
                         product: 'PVC Compound C (Black)',
                         machine: 'Belum Ditentukan',
+                        deliveryReq: '08 Sep 2026',
+                        shipDate: '09 Sep 2026 (Tentatif)',
+                        targetOp: '400 Kg / Shift',
+                        workingDays: '2.0 Days',
+                        workingMinutes: '960 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Sample formulasi hitam mate',
+                        remarks: 'Menunggu QC approval',
+                        completedBatch: 0,
+                        totalBatch: 40,
                         type: 'draft',
                         shifts: []
                     },
@@ -660,21 +936,6 @@
                     borderColor: '#94a3b8',
                     borderWidth: 2,
                     display: 'block',
-                    classNames: ['draft-event']
-                },
-                // Draft SPK 2
-                {
-                    title: 'DRF-2608-06',
-                    extendedProps: {
-                        product: 'PVC Compound D (Red)',
-                        machine: 'Belum Ditentukan',
-                        type: 'draft',
-                        shifts: []
-                    },
-                    start: fmt(addDays(today, 9)),
-                    end: fmt(addDays(today, 10)),
-                    backgroundColor: '#94a3b8',
-                    borderColor: '#94a3b8',
                     classNames: ['draft-event']
                 },
                 // Cleaning event (pasca SPK-001)
