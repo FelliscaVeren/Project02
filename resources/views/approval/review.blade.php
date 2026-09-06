@@ -3,7 +3,7 @@
 @section('title', 'Review Draft SPK')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full flex flex-col gap-6" x-data="{ currentRole: 'gudang', showRevisionModal: false }">
+<div class="max-w-6xl mx-auto h-full flex flex-col gap-6" x-data="approvalFlow()">
     
     <!-- Simulasi Ganti Form Berdasarkan Departemen -->
     <div class="bg-cyan/10 border border-cyan/20 rounded-xl p-4 flex items-center justify-between">
@@ -16,9 +16,9 @@
         </select>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Info Draft & Transparansi Resep -->
-        <div class="lg:col-span-1 space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+        <!-- Kolom Kiri: Info Draft & Transparansi Resep (Lebar 4) -->
+        <div class="lg:col-span-4 space-y-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
                 <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4 border-b border-slate-100 pb-2">Informasi Draft SPK</h4>
                 
@@ -89,15 +89,15 @@
             </div>
         </div>
 
-        <!-- Form Review -->
-        <div class="lg:col-span-2">
+        <!-- Kolom Tengah: Form Review & Aksi (Lebar 5) -->
+        <div class="lg:col-span-5">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col relative">
                 <div class="p-6 border-b border-slate-100 bg-slate-50/50">
                     <h3 class="text-lg font-bold text-navy">Form Keputusan Departemen</h3>
                     <p class="text-sm text-slate-500">Mohon verifikasi secara teliti sebelum memberikan keputusan (Setuju / Revisi / Tolak).</p>
                 </div>
                 
-                <div class="p-6 flex-1 space-y-6">
+                <div class="p-6 flex-1 space-y-6 overflow-y-auto">
                     
                     <!-- Form Gudang -->
                     <div x-show="currentRole === 'gudang'">
@@ -130,31 +130,161 @@
 
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-2">Instruksi / Metode Kerja Tambahan</label>
-                            <textarea rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all" placeholder="Misal: Suhu mixing 180C, waktu 15 menit..."></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Form PE -->
-                    <div x-show="currentRole === 'pe'">
-                        <h4 class="font-bold text-navy mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Otoritas Mesin (Process Engineering)
-                        </h4>
-                        
-                        <div class="mb-4 bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-3 gap-4">
-                            <div><p class="text-[10px] font-bold text-slate-400 mb-1 uppercase">Mixer</p><p class="text-sm font-bold text-navy">Mixer A-01</p></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 mb-1 uppercase">Extruder</p><p class="text-sm font-bold text-navy">Ext Line 1</p></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 mb-1 uppercase">Feeder</p><p class="text-sm font-bold text-navy">Feeder 01</p></div>
-                        </div>
-
-                        <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
-                            <input type="checkbox" class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
-                            <div>
-                                <span class="block text-sm font-bold text-slate-800">Kesiapan Mesin Valid</span>
-                                <span class="block text-xs text-slate-500 mt-1">Tidak ada bentrok jadwal pemeliharaan mesin pada tanggal pelaksanaan SPK ini.</span>
+                            <textarea rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all mb-3" placeholder="Ketik instruksi berupa kalimat (Misal: Suhu mixing 180C, waktu 15 menit...)"></textarea>
+                            <div class="flex items-center justify-center w-full">
+                                <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-6 h-6 mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <p class="mb-1 text-xs text-slate-500"><span class="font-bold">Klik untuk upload lampiran dokumen</span> atau drag and drop</p>
+                                        <p class="text-[10px] text-slate-400">PDF, DOCX, XLSX (MAX. 5MB)</p>
+                                    </div>
+                                    <input id="dropzone-file" type="file" class="hidden" />
+                                </label>
                             </div>
-                        </label>
+                        </div>
                     </div>
+
+                    <!-- Form PE (Process Engineering) -->
+                    <div x-show="currentRole === 'pe'" x-data="peForm()">
+                        <h4 class="font-bold text-navy mb-1 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Review Mesin (Process Engineering)
+                        </h4>
+                        <p class="text-xs text-slate-500 mb-4">Centang field yang perlu dikoreksi, isi nilai yang benar, lalu tambahkan catatan.</p>
+
+                        <!-- Field-level Revision Checklist -->
+                        <div class="space-y-3 mb-5">
+                            <template x-for="field in fields" :key="field.id">
+                                <div class="rounded-xl border transition-all" :class="field.flagged ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-white'">
+                                    <!-- Row header: checkbox + label + current value -->
+                                    <div class="flex items-center gap-3 p-3">
+                                        <input type="checkbox" x-model="field.flagged" class="w-4 h-4 text-amber-500 border-slate-300 rounded focus:ring-amber-400 flex-shrink-0">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex justify-between items-center flex-wrap gap-2">
+                                                <div>
+                                                    <p class="text-sm font-bold text-slate-800" x-text="field.label"></p>
+                                                    <p class="text-xs text-slate-500 mt-0.5">
+                                                        Nilai saat ini: 
+                                                        <span class="font-bold" :class="field.flagged ? 'text-red-600 line-through' : 'text-navy'" x-text="field.currentValue"></span>
+                                                    </p>
+                                                </div>
+                                                <span x-show="field.flagged" class="text-[9px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded uppercase tracking-wide">Perlu Koreksi</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Expanded correction form (when flagged) -->
+                                    <div x-show="field.flagged" x-transition class="px-3 pb-3 pt-0 border-t border-amber-200">
+                                        <div class="bg-white rounded-lg p-3 border border-amber-100 mt-2 space-y-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Nilai yang Benar / Seharusnya</label>
+                                                <div class="flex gap-2 items-center">
+                                                    <!-- Dynamic input type based on field -->
+                                                    <template x-if="field.type === 'select'">
+                                                        <select x-model="field.correctedValue" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
+                                                            <template x-for="opt in field.options" :key="opt">
+                                                                <option :value="opt" x-text="opt"></option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template x-if="field.type === 'number'">
+                                                        <input type="number" x-model="field.correctedValue" class="w-28 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
+                                                    </template>
+                                                    <template x-if="field.type === 'text'">
+                                                        <input type="text" x-model="field.correctedValue" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
+                                                    </template>
+                                                    <span x-show="field.unit" class="text-xs text-slate-500 font-medium flex-shrink-0" x-text="field.unit"></span>
+                                                </div>
+                                                <!-- Show diff -->
+                                                <p x-show="field.correctedValue" class="text-[10px] mt-1.5 text-slate-500">
+                                                    <span class="text-red-500 line-through font-medium" x-text="field.currentValue"></span>
+                                                    <svg class="w-3 h-3 inline text-slate-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                                    <span class="text-emerald-600 font-bold" x-text="field.correctedValue + (field.unit ? ' ' + field.unit : '')"></span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Alasan Koreksi <span class="text-red-500">*</span></label>
+                                                <input type="text" x-model="field.reason" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 outline-none" :placeholder="'Contoh: ' + field.exampleReason">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Summary of flagged items -->
+                        <div x-show="flaggedCount > 0" x-transition class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                            <p class="text-xs font-bold text-amber-800 flex items-center gap-2 mb-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                <span x-text="flaggedCount + ' item memerlukan koreksi dari PPIC'"></span>
+                            </p>
+                            <template x-for="field in fields.filter(f => f.flagged && f.correctedValue)" :key="field.id">
+                                <p class="text-[11px] text-amber-700 ml-6 mb-1">
+                                    • <span class="font-bold" x-text="field.label"></span>: 
+                                    <span class="line-through opacity-60" x-text="field.currentValue"></span> → 
+                                    <span class="font-bold text-amber-900" x-text="field.correctedValue + (field.unit ? ' ' + field.unit : '')"></span>
+                                    <span x-show="field.reason" class="text-amber-600 italic" x-text="' (' + field.reason + ')'"></span>
+                                </p>
+                            </template>
+                        </div>
+
+                        <!-- Tabel Catatan Internal PE -->
+                        <div class="mt-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    Catatan Internal PE
+                                </h5>
+                                <button @click="showNoteInput = !showNoteInput" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-1 rounded-lg transition-colors flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    Tambah Catatan
+                                </button>
+                            </div>
+                            <div x-show="showNoteInput" x-transition class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 mb-2">
+                                <div class="grid grid-cols-3 gap-2 mb-2">
+                                    <input type="text" x-model="newNote.poin" placeholder="Poin / Topik..." class="col-span-1 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none">
+                                    <textarea x-model="newNote.detail" rows="1" placeholder="Detail catatan..." class="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none resize-none"></textarea>
+                                </div>
+                                <div class="flex justify-end gap-2">
+                                    <button @click="showNoteInput = false" class="text-xs text-slate-500 px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50">Batal</button>
+                                    <button @click="saveNote()" class="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg transition-colors">Simpan</button>
+                                </div>
+                            </div>
+                            <div class="border border-slate-200 rounded-xl overflow-hidden">
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-50 border-b border-slate-200">
+                                        <tr class="text-[10px] uppercase text-slate-400 font-bold">
+                                            <th class="px-3 py-2 w-6">#</th>
+                                            <th class="px-3 py-2">Poin</th>
+                                            <th class="px-3 py-2">Detail Catatan</th>
+                                            <th class="px-3 py-2">Oleh</th>
+                                            <th class="px-3 py-2">Waktu</th>
+                                            <th class="px-3 py-2 w-8"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <template x-for="(note, idx) in notes" :key="idx">
+                                            <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-3 py-2 text-slate-400" x-text="idx + 1"></td>
+                                                <td class="px-3 py-2 font-bold text-navy" x-text="note.poin"></td>
+                                                <td class="px-3 py-2 text-slate-600" x-text="note.detail"></td>
+                                                <td class="px-3 py-2 text-slate-500" x-text="note.by"></td>
+                                                <td class="px-3 py-2 text-slate-400" x-text="note.time"></td>
+                                                <td class="px-3 py-2">
+                                                    <button @click="notes.splice(idx,1)" class="text-red-400 hover:text-red-600">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <tr x-show="notes.length === 0">
+                                            <td colspan="6" class="px-3 py-4 text-center text-slate-400 italic">Belum ada catatan. Klik "+ Tambah Catatan".</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                     </div>
 
                     <!-- Form QC -->
                     <div x-show="currentRole === 'qc'">
@@ -171,28 +301,179 @@
                 </div>
 
                 <!-- 3 Tombol Aksi -->
-                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-end gap-3 items-center">
+                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-end gap-3 items-center mt-auto">
                     <button class="px-5 py-2 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors">Tolak SPK</button>
-                    <button @click="showRevisionModal = true" class="px-5 py-2 text-sm font-bold text-amber-600 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-colors">Minta Revisi</button>
-                    <a href="{{ route('approval.index') }}" class="px-8 py-2.5 text-sm font-bold text-white bg-cyan hover:bg-cyan/90 rounded-lg shadow-md shadow-cyan/20 transition-colors">
+                    <button @click="openRevisionModal" class="px-5 py-2 text-sm font-bold text-amber-600 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-colors">Minta Revisi</button>
+                    <a href="{{ route('produksi.alokasi') }}" class="px-8 py-2.5 text-sm font-bold text-white bg-cyan hover:bg-cyan/90 rounded-lg shadow-md shadow-cyan/20 transition-colors">
                         Setujui (ACC)
                     </a>
                 </div>
 
-                <!-- Modal Revisi (Alpine) -->
-                <div x-show="showRevisionModal" class="absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex items-center justify-center p-6" style="display:none;">
-                    <div class="bg-white border border-slate-200 shadow-xl rounded-2xl w-full max-w-md p-6">
-                        <h4 class="font-bold text-navy mb-2">Catatan Revisi</h4>
-                        <p class="text-xs text-slate-500 mb-4">Berikan catatan mengapa draf ini dikembalikan ke PPIC untuk direvisi.</p>
-                        <textarea class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none mb-4" rows="4" placeholder="Tulis catatan revisi..."></textarea>
+                <!-- Modal Revisi Wajib (Alpine) -->
+                <div x-show="showRevisionModal" class="absolute inset-0 bg-white/95 backdrop-blur-sm z-20 flex items-center justify-center p-6" style="display:none;" x-transition>
+                    <form @submit.prevent="submitRevision" class="bg-white border border-slate-200 shadow-xl rounded-2xl w-full max-w-md p-6 relative">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-navy">Form Permintaan Revisi</h4>
+                            <button type="button" @click="showRevisionModal = false" class="text-slate-400 hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-4">Mohon berikan catatan rinci mengapa draf ini dikembalikan. Catatan ini bersifat wajib.</p>
+                        
+                        <div class="mb-4 relative">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Revisi <span class="text-red-500">*</span></label>
+                            <textarea x-model="revisionNote" required class="w-full border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" rows="4" placeholder="Cth: Alokasi mesin Mixer bentrok dengan jadwal pemeliharaan..."></textarea>
+                            <div x-show="revisionError" style="display:none;" class="text-red-500 text-xs mt-1 font-bold">Catatan revisi wajib diisi!</div>
+                        </div>
+                        
                         <div class="flex justify-end gap-2">
-                            <button @click="showRevisionModal = false" class="px-4 py-2 text-sm font-bold text-slate-600">Batal</button>
-                            <button class="px-4 py-2 text-sm font-bold text-white bg-amber-500 rounded-lg">Kirim Revisi</button>
+                            <button type="button" @click="showRevisionModal = false" class="px-4 py-2 text-sm font-bold text-slate-600">Batal</button>
+                            <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-lg transition-colors">Kirim Revisi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Log History Revisi Real-time (Lebar 3) -->
+        <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
+            <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                <h4 class="text-sm font-bold text-navy flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Log & Riwayat Dokumen
+                </h4>
+            </div>
+            <div class="flex-1 p-5 overflow-y-auto space-y-6 relative">
+                <!-- Garis timeline -->
+                <div class="absolute left-7 top-6 bottom-6 w-0.5 bg-slate-100"></div>
+                
+                <!-- Daftar Log -->
+                <template x-for="(log, index) in revisionLogs" :key="index">
+                    <div class="relative flex gap-4">
+                        <div class="w-5 h-5 rounded-full flex-shrink-0 mt-0.5 border-2 border-white shadow-sm flex items-center justify-center z-10" :class="log.type === 'revision' ? 'bg-amber-500' : (log.type === 'create' ? 'bg-cyan' : 'bg-emerald-500')">
+                            <template x-if="log.type === 'revision'"><svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg></template>
+                            <template x-if="log.type === 'create'"><svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></template>
+                        </div>
+                        <div class="flex-1 pb-1">
+                            <p class="text-xs font-bold text-navy" x-text="log.action"></p>
+                            <p class="text-[10px] text-slate-400 mt-0.5 flex justify-between">
+                                <span x-text="log.user"></span>
+                                <span x-text="log.time"></span>
+                            </p>
+                            <template x-if="log.note">
+                                <div class="mt-2 p-2 bg-amber-50 border border-amber-100 rounded-lg text-[11px] text-amber-800">
+                                    <span class="font-bold">Catatan:</span> <span x-text="log.note"></span>
+                                </div>
+                            </template>
                         </div>
                     </div>
-                </div>
+                </template>
+                
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('approvalFlow', () => ({
+            currentRole: 'gudang',
+            showRevisionModal: false,
+            revisionNote: '',
+            revisionError: false,
+            
+            revisionLogs: [
+                { type: 'revision', action: 'Draft Dikembalikan (Revisi)', user: 'Ir. Budi (PE)', time: '27 Aug, 10:15', note: 'Mohon sesuaikan jadwal, Mixer A-01 sedang maintenance rutin pada tgl 12-13.' },
+                { type: 'create', action: 'Draft Dibuat & Diajukan', user: 'Jane Doe (PPIC)', time: '27 Aug, 09:00', note: null }
+            ],
+            
+            openRevisionModal() {
+                this.revisionNote = '';
+                this.revisionError = false;
+                this.showRevisionModal = true;
+            },
+            
+            submitRevision() {
+                if (this.revisionNote.trim() === '') {
+                    this.revisionError = true;
+                    return;
+                }
+                
+                // Tambahkan log baru ke array (Real-time update)
+                let userDept = this.currentRole.toUpperCase();
+                this.revisionLogs.unshift({
+                    type: 'revision',
+                    action: 'Draft Dikembalikan (Revisi)',
+                    user: `Simulasi (${userDept})`,
+                    time: 'Baru saja',
+                    note: this.revisionNote
+                });
+                
+                this.showRevisionModal = false;
+                alert('Catatan revisi berhasil dikirim! Seluruh modul yang terkait akan terupdate.');
+            }
+        }));
+
+        Alpine.data('peForm', () => ({
+            fields: [
+                {
+                    id: 'mixer',
+                    label: 'Mesin Mixer',
+                    currentValue: 'Mixer A-01 (Jumlah: 2)',
+                    correctedValue: 'Mixer B-02 (Jumlah: 3)',
+                    type: 'text',
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Mixer A-01 kapasitas 2 kurang, harusnya pakai Mixer B-02 jumlah 3 unit',
+                    flagged: true
+                },
+                {
+                    id: 'extruder',
+                    label: 'Mesin Extruder',
+                    currentValue: 'Ext Line 1',
+                    correctedValue: '',
+                    type: 'select',
+                    options: ['Ext Line 1', 'Ext Line 2', 'Ext Line 3'],
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Kapasitas Ext Line 1 tidak cukup untuk batch ini',
+                    flagged: false
+                },
+                {
+                    id: 'feeder',
+                    label: 'Feeder',
+                    currentValue: 'Feeder 01',
+                    correctedValue: '',
+                    type: 'select',
+                    options: ['Feeder 01', 'Feeder 02', 'Feeder 03'],
+                    unit: '',
+                    reason: '',
+                    exampleReason: 'Feeder 01 dialokasikan ke SPK lain di waktu bersamaan',
+                    flagged: false
+                }
+            ],
+
+            get flaggedCount() {
+                return this.fields.filter(f => f.flagged).length;
+            },
+
+            // === Notes / Catatan Internal ===
+            showNoteInput: false,
+            newNote: { poin: '', detail: '' },
+            notes: [
+                { poin: 'Kapasitas Mixer', detail: 'Mixer A-01 tidak cukup untuk batch ini, perlu ditinjau ulang', by: 'Ir. Budi (PE)', time: '27 Ags, 09:45' }
+            ],
+
+            saveNote() {
+                if (!this.newNote.poin.trim() || !this.newNote.detail.trim()) return;
+                this.notes.push({
+                    poin: this.newNote.poin,
+                    detail: this.newNote.detail,
+                    by: 'PE (Simulasi)',
+                    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })
+                });
+                this.newNote = { poin: '', detail: '' };
+                this.showNoteInput = false;
+            }
+        }));
+    });
+</script>
 @endsection

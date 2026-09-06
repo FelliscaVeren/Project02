@@ -29,7 +29,7 @@
         <div class="border-b-4 border-navy p-8 flex justify-between items-center bg-slate-50/50 print:p-0 print:pb-6 print:bg-transparent">
             <div>
                 <h1 class="text-3xl font-black text-navy uppercase tracking-tight">Surat Perintah Kerja</h1>
-                <p class="text-slate-500 mt-1 font-medium">PT. Manufacturing Cemerlang</p>
+                <p class="text-slate-500 mt-1 font-medium">PT Dunia Kimia Jaya</p>
             </div>
             
             <div class="text-right">
@@ -65,9 +65,9 @@
 
             <!-- Alur Visual Penanganan Material -->
             <div>
-                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-4 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                    Alur Proses Penanganan Material
+                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Resep & Kebutuhan Material (Simulasi Akhir BOM)
                 </h4>
                 
                 <div class="grid grid-cols-5 gap-2 text-center text-[10px]">
@@ -111,60 +111,93 @@
                 <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr class="text-xs uppercase text-slate-500 font-bold">
-                                <th class="p-3 pl-4">Nama Material</th>
-                                <th class="p-3 text-right">Kebutuhan / Batch</th>
-                                <th class="p-3 text-right">Total Kebutuhan SPK</th>
-                                <th class="p-3 text-right">Ambil Dari Gudang</th>
-                                <th class="p-3 text-right">Ditambahkan Ke Mixer</th>
-                                <th class="p-3 text-center pr-4">Kesesuaian</th>
+                            <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                                <th class="p-3">Nama Material</th>
+                                <th class="p-3 text-right text-slate-400 font-medium">BOM/Batch</th>
+                                <th class="p-3 text-right">Target Kebutuhan<br><span class="text-[9px] font-normal">(50 Batch)</span></th>
+                                <th class="p-3 text-right text-cyan">Aktual Ditarik<br><span class="text-[9px] font-normal">(Dari Gudang)</span></th>
+                                <th class="p-3 text-right">Sisa / Selisih</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <template x-for="m in spk?.materials" :key="m.name">
-                                <tr>
-                                    <td class="p-3 pl-4 font-semibold text-navy" x-text="m.name"></td>
-                                    <td class="p-3 text-right font-medium" x-text="m.bom + ' Kg'"></td>
-                                    <td class="p-3 text-right font-semibold text-slate-600" x-text="(m.bom * spk.qty).toLocaleString('id-ID') + ' Kg'"></td>
-                                    <td class="p-3 text-right font-bold text-indigo-600" x-text="(m.picked || (m.bom * spk.qty)).toLocaleString('id-ID') + ' Kg'"></td>
-                                    <td class="p-3 text-right font-bold text-cyan" x-text="(m.added || (m.bom * spk.qty)).toLocaleString('id-ID') + ' Kg'"></td>
-                                    <td class="p-3 text-center pr-4">
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold" 
-                                              :class="spk.status === 'Running' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'"
-                                              x-text="spk.status === 'Running' ? '100% Sesuai' : 'Siap Sesuai'"></span>
-                                    </td>
-                                </tr>
-                            </template>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500" title="Sesuai"></span> Resin PVC S-65
+                                </td>
+                                <td class="p-3 text-right text-slate-500">25 Kg</td>
+                                <td class="p-3 text-right font-bold text-navy">1,250 Kg</td>
+                                <td class="p-3 text-right font-bold text-cyan">1,250 Kg</td>
+                                <td class="p-3 text-right text-emerald-600 font-semibold">0 Kg</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500" title="Sesuai"></span> Stabilizer Ca-Zn
+                                </td>
+                                <td class="p-3 text-right text-slate-500">1 Kg</td>
+                                <td class="p-3 text-right font-bold text-navy">50 Kg</td>
+                                <td class="p-3 text-right font-bold text-cyan">50 Kg</td>
+                                <td class="p-3 text-right text-emerald-600 font-semibold">0 Kg</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500" title="Kekurangan"></span> Pigment White
+                                </td>
+                                <td class="p-3 text-right text-slate-500">0.5 Kg</td>
+                                <td class="p-3 text-right font-bold text-navy">25 Kg</td>
+                                <td class="p-3 text-right font-bold text-cyan">20 Kg</td>
+                                <td class="p-3 text-right text-amber-600 font-bold">-5 Kg</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+
             </div>
             
             <hr class="border-slate-100">
 
-            <!-- Manpower Allocation -->
+            <!-- Manpower Allocation by Shift & Team -->
             <div>
                 <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    Alokasi Operator (Shift 1)
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Alokasi Operator (Berbasis Tim Rotasi Shift)
                 </h4>
-                <div class="grid grid-cols-4 gap-4 text-sm text-center">
-                    <div class="border border-slate-200 p-2 rounded-lg bg-slate-50">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Penimbangan</p>
-                        <p class="font-bold text-navy">Op. Andi</p>
-                    </div>
-                    <div class="border border-slate-200 p-2 rounded-lg bg-slate-50">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Mixing</p>
-                        <p class="font-bold text-navy">Op. Dedi</p>
-                    </div>
-                    <div class="border border-slate-200 p-2 rounded-lg bg-slate-50">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Extruder</p>
-                        <p class="font-bold text-navy">Op. Fajar, Hadi</p>
-                    </div>
-                    <div class="border border-slate-200 p-2 rounded-lg bg-slate-50">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Bagging</p>
-                        <p class="font-bold text-navy">Op. Indah</p>
-                    </div>
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                                <th class="p-3">Pos Kerja</th>
+                                <th class="p-3">Shift 1 (Hari 1) · <span class="text-red-600">Team RED</span></th>
+                                <th class="p-3">Shift 2 (Hari 1) · <span class="text-emerald-600">Team GREEN</span></th>
+                                <th class="p-3">Shift 3 (Hari 1) · <span class="text-yellow-600">Team YELLOW</span></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs">
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Penimbangan</td>
+                                <td class="p-3"><span class="font-medium text-navy">Mia, Ayu</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Fitri</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Hana</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Mixing</td>
+                                <td class="p-3"><span class="font-medium text-navy">Budi, Anggun</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Bagas, Rudi</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Citra, Edi</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Extruder</td>
+                                <td class="p-3"><span class="font-medium text-navy">Mira</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Putu, Putri</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Fikri, Irfan</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Bagging</td>
+                                <td class="p-3"><span class="font-medium text-navy">—</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Putu</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">—</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -223,43 +256,4 @@
             
         </div>
     </div>
-</div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('spkDetails', () => ({
-            spkId: 'SPK-2608-001',
-            spk: null,
-            printTimestamp: '',
-
-            init() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const queryId = urlParams.get('id');
-                if (queryId) {
-                    this.spkId = queryId;
-                }
-                
-                const allSpks = window.getSPKs() || [];
-                this.spk = allSpks.find(s => s.id === this.spkId);
-                
-                // If not found, use default seeded PVC compound A details
-                if (!this.spk && this.spkId === 'SPK-2608-001') {
-                    this.spk = allSpks[0];
-                }
-                
-                const now = new Date();
-                this.printTimestamp = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + 
-                                      String(now.getHours()).padStart(2, '0') + ':' + 
-                                      String(now.getMinutes()).padStart(2, '0') + ':' + 
-                                      String(now.getSeconds()).padStart(2, '0');
-            },
-
-            formatDate(dStr) {
-                if (!dStr) return '-';
-                const options = { day: 'numeric', month: 'long', year: 'numeric' };
-                return new Date(dStr).toLocaleDateString('id-ID', options);
-            }
-        }));
-    });
-</script>
 @endsection
