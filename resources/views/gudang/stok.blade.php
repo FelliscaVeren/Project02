@@ -3,15 +3,15 @@
 @section('title', 'Manajemen Stok & Moving Slip')
 
 @section('content')
-<div class="h-full flex flex-col gap-6" x-data="{ tab: 'monitoring' }">
+<div class="h-full flex flex-col gap-6" x-data="inventoryDashboard()" x-init="init()">
     
     <div class="flex justify-between items-end">
         <div>
-            <h3 class="text-xl font-bold text-navy">Manajemen Inventaris</h3>
-            <p class="text-sm text-slate-500 mt-1">Pemantauan stok bahan baku (Raw Material) dan pencatatan pergerakan mutasi barang.</p>
+            <h3 class="text-xl font-bold text-navy">Manajemen Inventaris & Stok</h3>
+            <p class="text-sm text-slate-500 mt-1">Pemantauan stok bahan baku (Raw Material) khusus untuk pemantauan (monitoring) stok dan pelacakan pergerakan mutasi.</p>
         </div>
         
-        <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm">
+        <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm print:hidden">
             <button @click="tab = 'monitoring'" :class="{'bg-white shadow-sm text-cyan font-bold': tab === 'monitoring', 'text-slate-500 font-medium': tab !== 'monitoring'}" class="px-6 py-2 text-sm rounded-lg transition-all">
                 Monitoring Stok Real-time
             </button>
@@ -29,15 +29,15 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-cyan">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Raw Material</p>
-                <p class="text-2xl font-black text-navy">12,450 <span class="text-sm font-medium text-slate-500">Kg</span></p>
+                <p class="text-2xl font-black text-navy">8,725 <span class="text-sm font-medium text-slate-500">Kg</span></p>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Produk Jadi</p>
-                <p class="text-2xl font-black text-navy">3,200 <span class="text-sm font-medium text-slate-500">Batch</span></p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total Kategori Item</p>
+                <p class="text-2xl font-black text-navy">4 <span class="text-sm font-medium text-slate-500">Item</span></p>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Stok Menipis (< 10%)</p>
-                <p class="text-2xl font-black text-amber-600">3 <span class="text-sm font-medium text-slate-500">Item</span></p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Stok Menipis (< 100Kg)</p>
+                <p class="text-2xl font-black text-amber-600">1 <span class="text-sm font-medium text-slate-500">Item</span></p>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm border-l-4 border-l-emerald-500">
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Status Gudang</p>
@@ -48,13 +48,13 @@
         <!-- Tabel Monitoring & Lot -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
             <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h4 class="font-bold text-navy">Daftar Item Inventaris</h4>
+                <h4 class="font-bold text-navy">Daftar Item Inventaris (Monitoring Khusus)</h4>
                 <div class="flex gap-2">
-                    <input type="text" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-cyan focus:border-cyan px-3 py-2" placeholder="Cari Item/Kode...">
-                    <select class="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
-                        <option>Semua Kategori</option>
-                        <option>Raw Material</option>
-                        <option>Finished Goods</option>
+                    <input type="text" x-model="searchQuery" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-cyan focus:border-cyan px-3 py-2" placeholder="Cari Item/Kode...">
+                    <select x-model="categoryFilter" class="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
+                        <option value="">Semua Kategori</option>
+                        <option value="Raw Material">Raw Material</option>
+                        <option value="Additive">Additive</option>
                     </select>
                 </div>
             </div>
@@ -267,4 +267,173 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('inventoryDashboard', () => ({
+            tab: 'monitoring',
+            searchQuery: '',
+            categoryFilter: '',
+            startDateFilter: '',
+            endDateFilter: '',
+            showLotModal: false,
+            selectedMaterial: null,
+            slips: [],
+
+            // Data Inventaris Monitored
+            stocks: [
+                {
+                    code: 'RM-PVC-001',
+                    name: 'Resin PVC S-65',
+                    category: 'Raw Material',
+                    qty: 8500,
+                    unit: 'Kg',
+                    status: 'Aman',
+                    lots: [
+                        { no: 'Lot 1 (S-65)', qty: 3500, arrival: '12 Aug 2026', supplier: 'IndoResin Corp', qcStatus: 'APPROVED' },
+                        { no: 'Lot 2 (S-65)', qty: 3000, arrival: '18 Aug 2026', supplier: 'IndoResin Corp', qcStatus: 'APPROVED' },
+                        { no: 'Lot 3 (S-65)', qty: 2000, arrival: '25 Aug 2026', supplier: 'Nippon Chemical', qcStatus: 'APPROVED' }
+                    ]
+                },
+                {
+                    code: 'ADD-012',
+                    name: 'Stabilizer Ca-Zn',
+                    category: 'Additive',
+                    qty: 45,
+                    unit: 'Kg',
+                    status: 'Menipis',
+                    lots: [
+                        { no: 'Lot 1 (Ca-Zn)', qty: 25, arrival: '05 Aug 2026', supplier: 'Additives Indonesia', qcStatus: 'APPROVED' },
+                        { no: 'Lot 2 (Ca-Zn)', qty: 20, arrival: '15 Aug 2026', supplier: 'Additives Indonesia', qcStatus: 'APPROVED' }
+                    ]
+                },
+                {
+                    code: 'ADD-018',
+                    name: 'Pigment White TiO2',
+                    category: 'Additive',
+                    qty: 100,
+                    unit: 'Kg',
+                    status: 'Aman',
+                    lots: [
+                        { no: 'Lot 1 (TiO2)', qty: 50, arrival: '10 Aug 2026', supplier: 'Global Pigment', qcStatus: 'APPROVED' },
+                        { no: 'Lot 2 (TiO2)', qty: 50, arrival: '20 Aug 2026', supplier: 'Global Pigment', qcStatus: 'APPROVED' }
+                    ]
+                },
+                {
+                    code: 'ADD-025',
+                    name: 'Pigment Color Blue',
+                    category: 'Additive',
+                    qty: 80,
+                    unit: 'Kg',
+                    status: 'Aman',
+                    lots: [
+                        { no: 'Lot 1 (Blue)', qty: 40, arrival: '11 Aug 2026', supplier: 'Global Pigment', qcStatus: 'APPROVED' },
+                        { no: 'Lot 2 (Blue)', qty: 40, arrival: '22 Aug 2026', supplier: 'Global Pigment', qcStatus: 'APPROVED' }
+                    ]
+                }
+            ],
+
+            // Form inputs
+            formMoveType: 'IN',
+            formRef: '',
+            formItemName: '',
+            formItemQty: '',
+            formItems: [],
+
+            init() {
+                this.loadSlips();
+                window.addEventListener('storage-updated', () => {
+                    this.loadSlips();
+                });
+            },
+
+            loadSlips() {
+                this.slips = window.getSlips() || [];
+            },
+
+            filteredStocks() {
+                const query = this.searchQuery.toLowerCase().trim();
+                return this.stocks.filter(s => {
+                    if (this.categoryFilter && s.category !== this.categoryFilter) return false;
+                    if (query) {
+                        return s.code.toLowerCase().includes(query) || s.name.toLowerCase().includes(query);
+                    }
+                    return true;
+                });
+            },
+
+            viewLotDetails(material) {
+                this.selectedMaterial = material;
+                this.showLotModal = true;
+            },
+
+            addItemToForm() {
+                if (!this.formItemName || !this.formItemQty || this.formItemQty <= 0) {
+                    alert('Harap pilih item dan tentukan Qty valid.');
+                    return;
+                }
+                this.formItems.push({
+                    name: this.formItemName,
+                    qty: parseFloat(this.formItemQty),
+                    unit: 'Kg'
+                });
+                this.formItemName = '';
+                this.formItemQty = '';
+            },
+
+            removeItemFromForm(idx) {
+                this.formItems.splice(idx, 1);
+            },
+
+            createManualSlip() {
+                if (this.formItems.length === 0) {
+                    alert('Daftar item mutasi tidak boleh kosong.');
+                    return;
+                }
+                
+                const slips = window.getSlips() || [];
+                const newSlip = {
+                    id: 'MS-' + Math.floor(Math.random() * 9000 + 1000),
+                    type: this.formMoveType,
+                    date: new Date().toISOString(),
+                    ref: this.formRef,
+                    items: this.formItems,
+                    user: 'Jane Doe' // User Simulasi
+                };
+                
+                slips.unshift(newSlip);
+                window.saveSlips(slips);
+                
+                // Reset form
+                this.formRef = '';
+                this.formItems = [];
+                this.tab = 'moving'; // Keep on tab moving to see result
+                
+                alert(`Moving Slip ${newSlip.id} berhasil disimpan!`);
+            },
+
+            filteredSlips() {
+                return this.slips.filter(s => {
+                    const slipDate = s.date.split('T')[0];
+                    if (this.startDateFilter && slipDate < this.startDateFilter) return false;
+                    if (this.endDateFilter && slipDate > this.endDateFilter) return false;
+                    return true;
+                });
+            },
+
+            clearDateFilter() {
+                this.startDateFilter = '';
+                this.endDateFilter = '';
+            },
+
+            formatDateTime(dateStr) {
+                if (!dateStr) return '';
+                const date = new Date(dateStr);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const time = String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+                return date.toLocaleDateString('id-ID', options) + ' ' + time + ' WIB';
+            }
+        }));
+    });
+</script>
 @endsection

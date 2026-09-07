@@ -72,30 +72,30 @@
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">No. SPK</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">No. SPK</span>
                             <span class="text-sm font-bold text-navy flex-1">SPK-2608-001</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Produk</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Produk</span>
                             <span class="text-sm font-bold text-navy flex-1">PVC Compound A (Clear)</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Tanggal</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Tanggal</span>
                             <span class="text-sm font-bold text-navy flex-1">27 Agustus 2026</span>
                         </div>
                     </div>
                     <div class="space-y-3">
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Dari (Gudang)</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Shop Name (Dept Dituju)</span>
+                            <span class="text-sm font-bold text-cyan flex-1">Dept. Mixing Powder & Extrusion</span>
+                        </div>
+                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Dari (Gudang)</span>
                             <span class="text-sm font-bold text-navy flex-1">Gudang Bahan Baku — Rak B2</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Ke (Produksi)</span>
-                            <span class="text-sm font-bold text-navy flex-1">Lantai Produksi — Mixer A-01</span>
-                        </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Alasan</span>
-                            <span class="text-sm text-navy flex-1">Kekurangan material saat proses mixing berlangsung</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Alasan</span>
+                            <span class="text-sm text-navy flex-1">Penambahan material proses produksi</span>
                         </div>
                     </div>
                 </div>
@@ -112,30 +112,40 @@
                     <div class="border border-slate-200 rounded-xl overflow-hidden">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr class="text-xs uppercase text-slate-500 font-bold">
-                                    <th class="px-3 py-3">No.</th>
-                                    <th class="px-3 py-3">Nama Material</th>
-                                    <th class="px-3 py-3">Kode Item</th>
-                                    <th class="px-3 py-3 text-right">Jml Diminta (Kg)</th>
-                                    <th class="px-3 py-3">Keterangan</th>
+                                <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                                    <th class="px-3 py-3 w-10">No</th>
+                                    <th class="px-3 py-3">Code</th>
+                                    <th class="px-3 py-3">Description</th>
+                                    <th class="px-3 py-3">Unit</th>
+                                    <th class="px-3 py-3">Lot. Number</th>
+                                    <th class="px-3 py-3 text-right">Quantity</th>
+                                    <th class="px-3 py-3">Remarks</th>
                                     <th class="px-3 py-3 no-print"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 <template x-for="(row, i) in rows" :key="i">
                                     <tr class="hover:bg-slate-50">
-                                        <td class="px-3 py-2.5 text-slate-400 text-sm" x-text="i + 1"></td>
+                                        <td class="px-3 py-2.5 text-slate-400 text-sm font-semibold" x-text="i + 1"></td>
                                         <td class="px-3 py-2.5">
-                                            <input x-model="row.nama" type="text" placeholder="Nama material..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-sm font-semibold text-navy py-0.5">
+                                            <input x-model="row.kode" type="text" placeholder="Code..." class="w-24 bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-xs font-mono font-bold text-slate-700 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <input x-model="row.kode" type="text" placeholder="Kode..." class="w-24 bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-xs font-mono text-slate-600 py-0.5">
+                                            <input x-model="row.nama" type="text" placeholder="Description..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-sm font-semibold text-navy py-0.5">
+                                        </td>
+                                        <td class="px-3 py-2.5">
+                                            <select x-model="row.unit" class="bg-transparent border-b border-dashed border-slate-300 text-xs text-slate-600 outline-none py-0.5">
+                                                <option value="Kg">Kg</option><option value="Liter">Liter</option><option value="Bag">Bag</option><option value="Pcs">Pcs</option>
+                                            </select>
+                                        </td>
+                                        <td class="px-3 py-2.5">
+                                            <input x-model="row.lot" type="text" placeholder="Lot. No..." class="w-28 bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-xs font-mono text-slate-600 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5 text-right">
                                             <input x-model="row.qty" type="number" step="0.1" min="0" placeholder="0.0" class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-sm font-bold text-navy text-right py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <input x-model="row.ket" type="text" placeholder="Keterangan..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-xs text-slate-500 py-0.5">
+                                            <input x-model="row.remarks" type="text" placeholder="Remarks..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-amber-400 outline-none text-xs text-slate-500 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5 no-print">
                                             <button @click="rows.splice(i,1)" class="text-red-400 hover:text-red-600">
@@ -144,9 +154,9 @@
                                         </td>
                                     </tr>
                                 </template>
-                                <tr class="bg-slate-50/60">
-                                    <td colspan="3" class="px-3 py-3 text-right text-xs font-bold text-slate-500 uppercase">Total</td>
-                                    <td class="px-3 py-3 text-right font-black text-navy" x-text="totalQty.toFixed(1) + ' Kg'"></td>
+                                <tr class="bg-slate-50/60 font-bold">
+                                    <td colspan="5" class="px-3 py-3 text-right text-xs uppercase text-slate-500">Total Quantity</td>
+                                    <td class="px-3 py-3 text-right font-black text-navy" x-text="totalQty.toFixed(1)"></td>
                                     <td colspan="2"></td>
                                 </tr>
                             </tbody>
@@ -201,29 +211,29 @@
                 <div class="grid grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">No. SPK</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">No. SPK</span>
                             <span class="text-sm font-bold text-navy flex-1">SPK-2608-001</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Tanggal Transfer</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Tanggal Transfer</span>
                             <span class="text-sm font-bold text-navy flex-1">27 Agustus 2026, 05:30</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Jenis Permintaan</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Jenis Permintaan</span>
                             <span class="text-sm font-bold text-cyan flex-1">Reguler (Sesuai BOM SPK)</span>
                         </div>
                     </div>
                     <div class="space-y-3">
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Asal Gudang</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Shop Name (Dept Dituju)</span>
+                            <span class="text-sm font-bold text-cyan flex-1">Dept. Timbang Produk & Mixing</span>
+                        </div>
+                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Asal Gudang</span>
                             <span class="text-sm font-bold text-navy flex-1">Gudang Bahan Baku Utama (GBB-01)</span>
                         </div>
                         <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">Tujuan Produksi</span>
-                            <span class="text-sm font-bold text-navy flex-1">Area Produksi — Mixer A-01</span>
-                        </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-32 flex-shrink-0 pt-0.5">No. PO / Ref</span>
+                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">No. PO / Ref</span>
                             <span class="text-sm font-bold text-navy flex-1">PO-2608-0071</span>
                         </div>
                     </div>
@@ -241,40 +251,40 @@
                     <div class="border border-slate-200 rounded-xl overflow-hidden">
                         <table class="w-full text-left text-sm">
                             <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr class="text-xs uppercase text-slate-500 font-bold">
-                                    <th class="px-3 py-3">No.</th>
-                                    <th class="px-3 py-3">Nama Material</th>
-                                    <th class="px-3 py-3">Kode Item</th>
-                                    <th class="px-3 py-3">Satuan</th>
-                                    <th class="px-3 py-3 text-right">Jml Sesuai BOM</th>
-                                    <th class="px-3 py-3 text-right">Jml Aktual Transfer</th>
-                                    <th class="px-3 py-3">Selisih</th>
+                                <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                                    <th class="px-3 py-3 w-10">No</th>
+                                    <th class="px-3 py-3">Code</th>
+                                    <th class="px-3 py-3">Description</th>
+                                    <th class="px-3 py-3">Unit</th>
+                                    <th class="px-3 py-3">Lot. Number</th>
+                                    <th class="px-3 py-3 text-right">Quantity</th>
+                                    <th class="px-3 py-3">Remarks</th>
                                     <th class="px-3 py-3 no-print"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 <template x-for="(row, i) in rows" :key="i">
                                     <tr class="hover:bg-slate-50">
-                                        <td class="px-3 py-2.5 text-slate-400 text-sm" x-text="i + 1"></td>
+                                        <td class="px-3 py-2.5 text-slate-400 text-sm font-semibold" x-text="i + 1"></td>
                                         <td class="px-3 py-2.5">
-                                            <input x-model="row.nama" type="text" placeholder="Nama material..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-semibold text-navy py-0.5">
+                                            <input x-model="row.kode" type="text" placeholder="Code..." class="w-24 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs font-mono font-bold text-slate-700 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <input x-model="row.kode" type="text" placeholder="Kode..." class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs font-mono text-slate-600 py-0.5">
+                                            <input x-model="row.nama" type="text" placeholder="Description..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-semibold text-navy py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <select x-model="row.satuan" class="bg-transparent border-b border-dashed border-slate-300 text-xs text-slate-600 outline-none py-0.5">
-                                                <option>Kg</option><option>Liter</option><option>Pcs</option>
+                                            <select x-model="row.unit" class="bg-transparent border-b border-dashed border-slate-300 text-xs text-slate-600 outline-none py-0.5">
+                                                <option value="Kg">Kg</option><option value="Liter">Liter</option><option value="Bag">Bag</option><option value="Pcs">Pcs</option>
                                             </select>
                                         </td>
-                                        <td class="px-3 py-2.5 text-right">
-                                            <input x-model="row.bom" type="number" step="0.1" min="0" placeholder="0.0" class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-bold text-navy text-right py-0.5">
+                                        <td class="px-3 py-2.5">
+                                            <input x-model="row.lot" type="text" placeholder="Lot. No..." class="w-28 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs font-mono text-slate-600 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5 text-right">
-                                            <input x-model="row.aktual" type="number" step="0.1" min="0" placeholder="0.0" class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-bold text-right py-0.5" :class="selisih(row) < 0 ? 'text-amber-600' : 'text-emerald-700'">
+                                            <input x-model="row.qty" type="number" step="0.1" min="0" placeholder="0.0" class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-bold text-navy text-right py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <span x-show="row.bom && row.aktual" class="text-xs font-bold px-2 py-0.5 rounded" :class="selisih(row) === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'" x-text="selisih(row) === 0 ? 'OK' : selisih(row).toFixed(1)"></span>
+                                            <input x-model="row.remarks" type="text" placeholder="Remarks..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs text-slate-500 py-0.5">
                                         </td>
                                         <td class="px-3 py-2.5 no-print">
                                             <button @click="rows.splice(i,1)" class="text-red-400 hover:text-red-600">
@@ -283,9 +293,15 @@
                                         </td>
                                     </tr>
                                 </template>
+                                <tr class="bg-slate-50/60 font-bold">
+                                    <td colspan="5" class="px-3 py-3 text-right text-xs uppercase text-slate-500">Total Quantity</td>
+                                    <td class="px-3 py-3 text-right font-black text-navy" x-text="totalQty.toFixed(1)"></td>
+                                    <td colspan="2"></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
+                </div>
                     <p class="text-xs text-slate-400 mt-2 italic">*Selisih akan otomatis terhitung. Warna kuning = ada selisih, harus dilaporkan ke gudang.</p>
                 </div>
 
@@ -460,11 +476,11 @@
 
         Alpine.data('movingSlipApp', () => ({
             rows: [
-                { nama: 'Resin PVC S-65', kode: 'RM-001', qty: 50, ket: 'Tumpah saat proses' },
-                { nama: 'Stabilizer Ca-Zn', kode: 'RM-003', qty: 2, ket: '' }
+                { kode: 'RM-001', nama: 'Resin PVC S-65', unit: 'Kg', lot: 'LOT-260801', qty: 50, remarks: 'Penambahan stok darurat' },
+                { kode: 'RM-003', nama: 'Stabilizer Ca-Zn', unit: 'Kg', lot: 'LOT-260805', qty: 2, remarks: 'Penyesuaian resep' }
             ],
             addRow() {
-                this.rows.push({ nama: '', kode: '', qty: '', ket: '' });
+                this.rows.push({ kode: '', nama: '', unit: 'Kg', lot: '', qty: '', remarks: '' });
             },
             get totalQty() {
                 return this.rows.reduce((sum, r) => sum + (parseFloat(r.qty) || 0), 0);
@@ -473,17 +489,15 @@
 
         Alpine.data('transferSlipApp', () => ({
             rows: [
-                { nama: 'Resin PVC S-65', kode: 'RM-001', satuan: 'Kg', bom: 500, aktual: 500 },
-                { nama: 'Stabilizer Ca-Zn', kode: 'RM-003', satuan: 'Kg', bom: 20, aktual: 20 },
-                { nama: 'Pigment White', kode: 'RM-007', satuan: 'Kg', bom: 10, aktual: 9.5 }
+                { kode: 'RM-001', nama: 'Resin PVC S-65', unit: 'Kg', lot: 'LOT-260801', qty: 500, remarks: 'Transfer Reguler SPK' },
+                { kode: 'RM-003', nama: 'Stabilizer Ca-Zn', unit: 'Kg', lot: 'LOT-260805', qty: 20, remarks: 'Transfer Reguler SPK' },
+                { kode: 'RM-007', nama: 'Pigment White TiO2', unit: 'Kg', lot: 'LOT-260803', qty: 10, remarks: 'Transfer Parsial' }
             ],
             addRow() {
-                this.rows.push({ nama: '', kode: '', satuan: 'Kg', bom: '', aktual: '' });
+                this.rows.push({ kode: '', nama: '', unit: 'Kg', lot: '', qty: '', remarks: '' });
             },
-            selisih(row) {
-                const b = parseFloat(row.aktual) || 0;
-                const a = parseFloat(row.bom) || 0;
-                return parseFloat((b - a).toFixed(2));
+            get totalQty() {
+                return this.rows.reduce((sum, r) => sum + (parseFloat(r.qty) || 0), 0);
             }
         }));
     });

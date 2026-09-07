@@ -3,18 +3,23 @@
 @section('title', 'Dokumen SPK Final & Audit Trail')
 
 @section('content')
-<div class="max-w-4xl mx-auto h-full pb-10 print:max-w-full print:pb-0">
+<div class="max-w-4xl mx-auto h-full pb-10 print:max-w-full print:pb-0" x-data="spkDetails()" x-init="init()">
     
     <!-- Action Bar -->
     <div class="flex justify-between items-center mb-6 print:hidden">
         <div>
-            <h3 class="text-xl font-bold text-navy">SPK-2608-001 <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-2 py-1 rounded ml-2 align-middle">FIXED / RELEASED</span></h3>
+            <h3 class="text-xl font-bold text-navy" x-text="spkId + ' '"> <span class="text-xs font-black px-2 py-1 rounded ml-2 align-middle" :class="spk?.status === 'Running' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'" x-text="spk?.status === 'Running' ? 'FIXED / RUNNING' : 'DRAFT'"></span></h3>
             <p class="text-sm text-slate-500 mt-1">Surat Perintah Kerja resmi yang siap dieksekusi oleh Produksi.</p>
         </div>
-        <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-2" onclick="window.print()">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-            Print SPK / Export PDF
-        </button>
+        <div class="flex gap-2">
+            <a href="{{ route('ppic.calendar') }}" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                &larr; Kembali ke Jadwal
+            </a>
+            <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-2" onclick="window.print()">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Print SPK / Export PDF
+            </button>
+        </div>
     </div>
 
     <!-- Kertas SPK -->
@@ -29,42 +34,91 @@
             
             <div class="text-right">
                 <p class="text-sm text-slate-500 font-bold uppercase tracking-wide mb-1">No. Dokumen</p>
-                <p class="text-xl font-bold text-slate-800">SPK-2608-001</p>
-                <p class="text-xs text-slate-400 mt-1">Dicetak pada: {{ \Carbon\Carbon::now()->format('d M Y H:i:s') }}</p>
+                <p class="text-xl font-bold text-slate-800" x-text="spkId"></p>
+                <p class="text-xs text-slate-400 mt-1">Dicetak pada: <span x-text="printTimestamp"></span></p>
             </div>
         </div>
         
         <div class="p-8 space-y-8">
             
             <!-- Info Utama -->
-            <div class="grid grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <table class="w-full text-sm">
-                        <tr><td class="py-1 text-slate-500 w-1/3">Produk Akhir</td><td class="py-1 font-bold text-navy">: PVC Compound A (Clear)</td></tr>
-                        <tr><td class="py-1 text-slate-500">Jumlah Batch</td><td class="py-1 font-bold text-navy">: 50 Batch</td></tr>
-                        <tr><td class="py-1 text-slate-500">Tanggal Mulai</td><td class="py-1 font-bold text-navy">: 12 Agustus 2026</td></tr>
-                        <tr><td class="py-1 text-slate-500">Tanggal Selesai</td><td class="py-1 font-bold text-navy">: 14 Agustus 2026</td></tr>
+                        <tr><td class="py-1 text-slate-500 w-2/5">Nama Customer</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.customer || 'PT Royal Synthetic Compound')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Produk Akhir</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.product || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Jumlah Batch</td><td class="py-1 font-bold text-navy"><span x-text="': ' + (spk?.qty || '50') + ' Batch'"></span> <span class="text-xs text-emerald-600 font-bold ml-1">(<span x-text="spk?.completedBatch || '28'"></span> / <span x-text="spk?.qty || '50'"></span> Batch Selesai)</span></td></tr>
+                        <tr><td class="py-1 text-slate-500">Tanggal Mulai</td><td class="py-1 font-bold text-navy" x-text="': ' + formatDate(spk?.startDate)"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Tanggal Selesai</td><td class="py-1 font-bold text-navy" x-text="': ' + formatDate(spk?.endDate)"></td></tr>
                     </table>
                 </div>
                 <div>
                     <table class="w-full text-sm">
-                        <tr><td class="py-1 text-slate-500 w-1/3">Mesin Mixer</td><td class="py-1 font-bold text-navy">: Mixer A-01</td></tr>
-                        <tr><td class="py-1 text-slate-500">Mesin Extruder</td><td class="py-1 font-bold text-navy">: Extruder Line 1</td></tr>
-                        <tr><td class="py-1 text-slate-500">Target Waktu</td><td class="py-1 font-bold text-navy">: 24 Jam / Hari</td></tr>
-                        <tr><td class="py-1 text-slate-500">Status</td><td class="py-1 font-bold text-emerald-600">: Released for Production</td></tr>
+                        <tr><td class="py-1 text-slate-500 w-2/5">Tanggal Kirim (Tentatif)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.shipDate || '06 Sep 2026')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Target OP (Output/Hour)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.targetOp || '500 Kg / Jam')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Working Days</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingDays || '2.5 Days')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Working Minutes</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingMinutes || '1,200 Mins')"></td></tr>
+                    </table>
+                </div>
+                <div>
+                    <table class="w-full text-sm">
+                        <tr><td class="py-1 text-slate-500 w-2/5">Mesin Alokasi</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.machine || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Delay (Hour)</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.delayHour || '0.0 Hr')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Status</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.status || '-')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Keterangan</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.keterangan || 'Formula standar high-clarity PVC')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Remarks</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.remarks || 'Prioritas pengiriman via kontainer 20ft')"></td></tr>
                     </table>
                 </div>
             </div>
             
             <hr class="border-slate-100">
 
-            <!-- Formula & Material -->
+            <!-- Alur Visual Penanganan Material -->
             <div>
                 <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
                     <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                     Resep & Kebutuhan Material (Simulasi Akhir BOM)
                 </h4>
-                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                
+                <div class="grid grid-cols-5 gap-2 text-center text-[10px]">
+                    <div class="p-2 border rounded-xl" :class="['Dalam Penimbangan', 'Proses Mixing', 'Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : 'bg-slate-50 border-slate-200 text-slate-400'">
+                        <p class="font-bold">1. Warehouse Release</p>
+                        <p class="text-[9px] mt-0.5">Bahan Baku Dikeluarkan</p>
+                    </div>
+                    <div class="p-2 border rounded-xl" :class="['Proses Mixing', 'Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Penimbangan' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
+                        <p class="font-bold">2. TP = Timbang Produk</p>
+                        <p class="text-[9px] mt-0.5">Verifikasi Qty & Timbangan</p>
+                    </div>
+                    <div class="p-2 border rounded-xl" :class="['Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Proses Mixing' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
+                        <p class="font-bold">3. MP / MD / ML Process</p>
+                        <p class="text-[9px] mt-0.5">Mixing Powder, DBM & Liquid</p>
+                    </div>
+                    <div class="p-2 border rounded-xl" :class="['Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Proses Extruder' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
+                        <p class="font-bold">4. Extrusion Process</p>
+                        <p class="text-[9px] mt-0.5">Peleburan & Granulasi</p>
+                    </div>
+                    <div class="p-2 border rounded-xl" :class="spk?.subStatus === 'Completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Bagging' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
+                        <p class="font-bold">5. Bagging & QC Goods</p>
+                        <p class="text-[9px] mt-0.5">Pengepakan Sak & Label</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-slate-100">
+
+            <!-- Detail Tabel Rincian Material -->
+            <div>
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="text-sm font-bold text-navy uppercase tracking-wide flex items-center gap-2">
+                        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        Tabel Rincian & Kesesuaian Material (BOM vs Aktual)
+                    </h4>
+                    <span class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        QC Status: Valid & Sesuai R&D
+                    </span>
+                </div>
+                <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] uppercase text-slate-500 font-bold">
@@ -129,16 +183,22 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-xs">
                             <tr>
-                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Penimbangan</td>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">TP = Timbang Produk</td>
                                 <td class="p-3"><span class="font-medium text-navy">Mia, Ayu</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Fitri</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Hana</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
                             </tr>
                             <tr>
-                                <td class="p-3 font-bold text-slate-600 bg-slate-50">Mixing</td>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">MP = Mixing Powder</td>
                                 <td class="p-3"><span class="font-medium text-navy">Budi, Anggun</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Bagas, Rudi</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
                                 <td class="p-3"><span class="font-medium text-navy">Citra, Edi</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-600 bg-slate-50">MD = Mix DBM & ML = Mixing Liquid</td>
+                                <td class="p-3"><span class="font-medium text-navy">Budi</span><br><span class="text-[10px] text-red-500 font-bold">Team Red · 06:00-14:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Rudi</span><br><span class="text-[10px] text-emerald-600 font-bold">Team Green · 14:00-22:00</span></td>
+                                <td class="p-3"><span class="font-medium text-navy">Edi</span><br><span class="text-[10px] text-yellow-600 font-bold">Team Yellow · 22:00-06:00</span></td>
                             </tr>
                             <tr>
                                 <td class="p-3 font-bold text-slate-600 bg-slate-50">Extruder</td>
@@ -169,7 +229,7 @@
                         </div>
                         <p class="text-[10px] font-bold text-slate-500 uppercase">Dibuat Oleh (PPIC)</p>
                         <p class="font-bold text-navy text-sm mt-3">Jane Doe</p>
-                        <p class="text-[10px] text-slate-400 mt-1">10 Aug, 08:00</p>
+                        <p class="text-[10px] text-slate-400 mt-1">27 Aug, 08:00</p>
                     </div>
 
                     <!-- Approved By: Gudang -->
@@ -177,7 +237,7 @@
                         <div class="text-emerald-500 flex justify-center mb-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <p class="text-[10px] font-bold text-emerald-800 uppercase">Gudang</p>
                         <p class="font-bold text-navy text-sm mt-1">Suryanto</p>
-                        <p class="text-[10px] text-slate-500 mt-1">10 Aug, 09:15</p>
+                        <p class="text-[10px] text-slate-500 mt-1">27 Aug, 09:15</p>
                     </div>
 
                     <!-- Approved By: RnD -->
@@ -185,7 +245,7 @@
                         <div class="text-emerald-500 flex justify-center mb-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <p class="text-[10px] font-bold text-emerald-800 uppercase">R&D</p>
                         <p class="font-bold text-navy text-sm mt-1">Dr. Hendra</p>
-                        <p class="text-[10px] text-slate-500 mt-1">10 Aug, 10:30</p>
+                        <p class="text-[10px] text-slate-500 mt-1">27 Aug, 10:30</p>
                     </div>
 
                     <!-- Approved By: PE -->
@@ -193,7 +253,7 @@
                         <div class="text-emerald-500 flex justify-center mb-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <p class="text-[10px] font-bold text-emerald-800 uppercase">Process Eng</p>
                         <p class="font-bold text-navy text-sm mt-1">Ir. Budi</p>
-                        <p class="text-[10px] text-slate-500 mt-1">10 Aug, 11:45</p>
+                        <p class="text-[10px] text-slate-500 mt-1">27 Aug, 11:45</p>
                     </div>
 
                     <!-- Approved By: QC -->
@@ -201,7 +261,7 @@
                         <div class="text-emerald-500 flex justify-center mb-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         <p class="text-[10px] font-bold text-emerald-800 uppercase">Quality C.</p>
                         <p class="font-bold text-navy text-sm mt-1">Siska Q.</p>
-                        <p class="text-[10px] text-slate-500 mt-1">10 Aug, 13:00</p>
+                        <p class="text-[10px] text-slate-500 mt-1">27 Aug, 13:00</p>
                     </div>
                 </div>
                 
@@ -213,4 +273,48 @@
         </div>
     </div>
 
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('spkDetails', () => ({
+            spkId: 'SPK-2608-001',
+            spk: null,
+            printTimestamp: new Date().toLocaleString('id-ID'),
+            init() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id') || 'SPK-2608-001';
+                this.spkId = id;
+                const spks = window.getSPKs ? window.getSPKs() : [];
+                const found = spks.find(s => s.id === id);
+                if (found) {
+                    this.spk = found;
+                } else {
+                    this.spk = {
+                        id: id,
+                        customer: 'PT Royal Synthetic Compound',
+                        product: 'PVC Compound A (Clear)',
+                        qty: 50,
+                        completedBatch: 28,
+                        deliveryReq: '2026-09-05',
+                        shipDate: '2026-09-06',
+                        targetOp: '500 Kg / Shift',
+                        workingDays: '2.5 Days',
+                        workingMinutes: '1,200 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Formula standar high-clarity PVC',
+                        remarks: 'Prioritas pengiriman via kontainer 20ft',
+                        startDate: '2026-08-27',
+                        endDate: '2026-08-29',
+                        machine: 'Mixer A-01, Ext-1',
+                        status: 'Running',
+                        subStatus: 'Dalam Penimbangan'
+                    };
+                }
+            },
+            formatDate(d) {
+                if (!d) return '-';
+                return d;
+            }
+        }));
+    });
+</script>
 @endsection

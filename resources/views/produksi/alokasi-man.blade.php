@@ -59,7 +59,7 @@
                             <p class="text-xs opacity-80 mt-0.5" x-text="shift.time"></p>
                             <p class="text-[10px] opacity-70 mt-1.5" x-text="'Tgl: ' + shift.date"></p>
                         </div>
-
+                        
                         <!-- Station Rows in this Shift -->
                         <template x-for="station in stations" :key="station.id">
                             <div class="mb-4">
@@ -69,8 +69,8 @@
                                 </p>
                                 <div class="space-y-1.5">
                                     <template x-for="member in shift.members" :key="shift.team + '_' + member.name">
-                                        <label class="flex items-center gap-2.5 p-2 rounded-lg border border-transparent hover:border-slate-200 hover:bg-slate-50 cursor-pointer transition-all">
-                                            <input type="checkbox" class="w-4 h-4 rounded border-slate-300 focus:ring-2" :class="shift.checkboxColor" :id="'s' + si + '_' + station.id + '_' + member.name">
+                                        <label class="flex items-center gap-2.5 p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all">
+                                            <input type="checkbox" :data-station-shift="si + '_' + station.id" @change="handleCheck(si, station.id, station.need, $event)" class="w-4 h-4 rounded border-slate-300 text-slate-700 bg-white focus:ring-2 focus:ring-slate-400" :id="'s' + si + '_' + station.id + '_' + member.name">
                                             <div>
                                                 <span class="text-sm font-semibold text-slate-800 block" x-text="member.name"></span>
                                                 <span class="text-[10px] text-slate-400" x-text="member.role"></span>
@@ -125,8 +125,6 @@
         Alpine.data('alokasiApp', () => ({
             totalShifts: 5,
 
-            // Jadwal rotasi tim berdasarkan minggu ini (bisa berubah setiap minggu)
-            // Minggu ini: Shift1=RED, Shift2=GREEN, Shift3=YELLOW
             teamRoster: {
                 RED:    [
                     { name: 'Budi', role: 'Lead Operator' },
@@ -151,19 +149,13 @@
                 ]
             },
 
-            // Sequence shift rotation per hari:
-            // Hari 1: S1=RED, S2=GREEN, S3=YELLOW
-            // Hari 2: S1=GREEN, S2=YELLOW, S3=RED
-            // dst...
-
             get shifts() {
-                // Simulate 5 shifts needed (40 jam / 8 jam per shift)
                 const rotation = [
-                    { team: 'RED',    teamColor: 'bg-red-600',     checkboxColor: 'text-red-600 focus:ring-red-500',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 1)', time: '06:00 – 14:00', date: '27 Aug 2026' },
-                    { team: 'GREEN',  teamColor: 'bg-emerald-600', checkboxColor: 'text-emerald-600 focus:ring-emerald-500', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 1)', time: '14:00 – 22:00', date: '27 Aug 2026' },
-                    { team: 'YELLOW', teamColor: 'bg-yellow-500',  checkboxColor: 'text-yellow-600 focus:ring-yellow-500', previewBg: 'bg-yellow-50 border-yellow-200', previewText: 'text-yellow-800', label: 'Shift 3 (Hari 1)', time: '22:00 – 06:00', date: '27-28 Aug' },
-                    { team: 'RED',    teamColor: 'bg-red-600',     checkboxColor: 'text-red-600 focus:ring-red-500',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 2)', time: '06:00 – 14:00', date: '28 Aug 2026' },
-                    { team: 'GREEN',  teamColor: 'bg-emerald-600', checkboxColor: 'text-emerald-600 focus:ring-emerald-500', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 2)', time: '14:00 – 22:00', date: '28 Aug 2026' }
+                    { team: 'RED',    teamColor: 'bg-red-600',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 1)', time: '06:00 – 14:00', date: '27 Aug 2026' },
+                    { team: 'GREEN',  teamColor: 'bg-emerald-600', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 1)', time: '14:00 – 22:00', date: '27 Aug 2026' },
+                    { team: 'YELLOW', teamColor: 'bg-yellow-500',  previewBg: 'bg-yellow-50 border-yellow-200', previewText: 'text-yellow-800', label: 'Shift 3 (Hari 1)', time: '22:00 – 06:00', date: '27-28 Aug' },
+                    { team: 'RED',    teamColor: 'bg-red-600',     previewBg: 'bg-red-50 border-red-200',     previewText: 'text-red-800',    label: 'Shift 1 (Hari 2)', time: '06:00 – 14:00', date: '28 Aug 2026' },
+                    { team: 'GREEN',  teamColor: 'bg-emerald-600', previewBg: 'bg-emerald-50 border-emerald-200', previewText: 'text-emerald-800', label: 'Shift 2 (Hari 2)', time: '14:00 – 22:00', date: '28 Aug 2026' }
                 ];
                 return rotation.slice(0, this.totalShifts).map(s => ({
                     ...s,
@@ -172,11 +164,43 @@
             },
 
             stations: [
-                { id: 'timbang', label: 'Penimbangan', need: 1 },
-                { id: 'mixing',  label: 'Mixing',       need: 2 },
-                { id: 'extruder',label: 'Extruder',     need: 2 },
-                { id: 'bagging', label: 'Bagging',      need: 1 }
-            ]
+                { id: 'tp', label: 'TP = Timbang Produk', need: 1 },
+                { id: 'mp', label: 'MP = Mixing Powder',  need: 2 },
+                { id: 'md', label: 'MD = Mix DBM',        need: 1 },
+                { id: 'ml', label: 'ML = Mixing Liquid',   need: 1 },
+                { id: 'extruder', label: 'Extruder',       need: 2 },
+                { id: 'bagging',  label: 'Bagging',        need: 1 }
+            ],
+
+            handleCheck(si, stationId, need, event) {
+                const selector = `input[data-station-shift="${si}_${stationId}"]`;
+                const checkboxes = document.querySelectorAll(selector);
+                const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+                checkboxes.forEach(cb => {
+                    const label = cb.closest('label');
+                    if (!cb.checked) {
+                        if (checkedCount >= need) {
+                            cb.disabled = true;
+                            if (label) {
+                                label.classList.add('opacity-40', 'cursor-not-allowed', 'bg-slate-100');
+                                label.classList.remove('cursor-pointer', 'bg-white', 'hover:bg-slate-50');
+                            }
+                        } else {
+                            cb.disabled = false;
+                            if (label) {
+                                label.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-slate-100');
+                                label.classList.add('cursor-pointer', 'bg-white', 'hover:bg-slate-50');
+                            }
+                        }
+                    } else {
+                        if (label) {
+                            label.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-slate-100');
+                            label.classList.add('cursor-pointer', 'bg-white');
+                        }
+                    }
+                });
+            }
         }))
     });
 </script>

@@ -3,7 +3,24 @@
 @section('title', 'Buat SPK - Langkah 1 (Parameter, Draft Formula & Stok)')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full pb-10" x-data="spkForm()">
+<div class="max-w-5xl mx-auto h-full pb-10" x-data="spkForm()" x-init="init()">
+    
+    <!-- Revision Alert Card -->
+    <template x-if="isEditMode && editSpk">
+        <div class="mb-6 p-5 bg-amber-50 border-l-4 border-l-amber-500 rounded-xl shadow-sm text-sm text-amber-800">
+            <div class="flex items-start gap-3">
+                <svg class="w-6 h-6 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <div>
+                    <h4 class="font-bold text-base text-navy">Modifikasi SPK Terrevisi: <span x-text="editSpk.id"></span></h4>
+                    <p class="mt-1 font-medium">Draft ini dikembalikan oleh departemen R&D / Penguji karena memerlukan perbaikan.</p>
+                    <div class="mt-3 p-3 bg-white/80 rounded-lg border border-amber-200">
+                        <p class="font-bold text-xs text-navy uppercase tracking-wider mb-1">Catatan Revisi Otorisator:</p>
+                        <p class="italic text-slate-700" x-text="editSpk.revisionNote"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
     
     <!-- Progress Indicator -->
     <div class="mb-8">
@@ -42,9 +59,40 @@
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 text-sm font-medium">Batch</div>
                 </div>
             </div>
+
+            <!-- Customer & Delivery Specs -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
+                <input type="text" x-model="customerName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Target OP (Output / Hour)</label>
+                <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
+                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
+                <input type="date" x-model="tentativeShipDate" :min="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Keterangan SPK</label>
+                <input type="text" x-model="keterangan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Sesuai spesifikasi standar pabrik">
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Remarks / Catatan Khusus</label>
+                <input type="text" x-model="remarks" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Order Prioritas Tinggi">
+            </div>
             
             <!-- Draft Formula & Rincian Transparan -->
-            <div class="md:col-span-2 border-t border-slate-100 pt-6" x-show="product !== ''">
+            <div class="md:col-span-2 border-t border-slate-100 pt-6 mt-2" x-show="product !== ''">
                 <label class="block text-sm font-bold text-slate-700 mb-2">Draft Formula / Resep (Integrasi Tahap 1)</label>
                 <select x-model="formula" @change="calculateStock" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
                     <option value="">-- Tarik Formula dari Master Data --</option>
@@ -129,7 +177,7 @@
             <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isAllEnough && qty > 0 ? '' : 'pointer-events: none;'">
                 Lanjut: Waktu & Manpower
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -173,6 +221,6 @@
                 this.maxPossibleBatch = Math.min(...maxBatches);
             }
         }))
-    })
+    });
 </script>
 @endsection

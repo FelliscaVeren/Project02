@@ -8,6 +8,151 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script>
+        // Inisialisasi Database SPK di localStorage jika belum ada
+        if (!localStorage.getItem('spk_system_db')) {
+            const initialSPKs = [
+                {
+                    id: 'SPK-2608-001',
+                    product: 'PVC Compound A (Clear)',
+                    productCode: 'prod-a',
+                    formulaCode: 'form-a1',
+                    qty: 50,
+                    startDate: new Date().toISOString().split('T')[0],
+                    endDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+                    machine: 'Mixer A-01, Ext-1',
+                    shift: 'Shift 1 & 2',
+                    status: 'Running',
+                    subStatus: 'Dalam Penimbangan',
+                    revisionNote: '',
+                    approvals: { gudang: 'Acc', rnd: 'Acc', pe: 'Acc', qc: 'Acc' },
+                    materials: [
+                        { name: 'Resin PVC S-65', bom: 25, picked: 1250, added: 1250, status: 'Sesuai' },
+                        { name: 'Stabilizer Ca-Zn', bom: 1, picked: 50, added: 50, status: 'Sesuai' },
+                        { name: 'Pigment White TiO2', bom: 0.5, picked: 25, added: 25, status: 'Sesuai' }
+                    ]
+                },
+                {
+                    id: 'SPK-2608-002',
+                    product: 'PVC Compound B (Color)',
+                    productCode: 'prod-b',
+                    formulaCode: 'form-a2',
+                    qty: 30,
+                    startDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+                    endDate: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
+                    machine: 'Mixer B-02, Ext-3',
+                    shift: 'Shift 3',
+                    status: 'Draft',
+                    subStatus: 'Menunggu Approval PE',
+                    revisionNote: '',
+                    approvals: { gudang: 'Acc', rnd: 'Acc', pe: 'Pending', qc: 'Pending' },
+                    materials: [
+                        { name: 'Resin PVC S-65', bom: 25, picked: 750, added: 0, status: 'Belum Diambil' },
+                        { name: 'Stabilizer Ca-Zn', bom: 1, picked: 30, added: 0, status: 'Belum Diambil' },
+                        { name: 'Pigment Color Blue', bom: 0.8, picked: 24, added: 0, status: 'Belum Diambil' }
+                    ]
+                },
+                {
+                    id: 'SPK-2608-003',
+                    product: 'PVC Compound A (Clear)',
+                    productCode: 'prod-a',
+                    formulaCode: 'form-a1',
+                    qty: 40,
+                    startDate: new Date(Date.now() + 86400000 * 6).toISOString().split('T')[0],
+                    endDate: new Date(Date.now() + 86400000 * 8).toISOString().split('T')[0],
+                    machine: 'Mixer A-01, Ext-1',
+                    shift: 'Shift 1',
+                    status: 'Draft',
+                    subStatus: 'Menunggu Approval Gudang',
+                    revisionNote: '',
+                    approvals: { gudang: 'Pending', rnd: 'Pending', pe: 'Pending', qc: 'Pending' },
+                    materials: [
+                        { name: 'Resin PVC S-65', bom: 25, picked: 0, added: 0, status: 'Belum Diambil' },
+                        { name: 'Stabilizer Ca-Zn', bom: 1, picked: 0, added: 0, status: 'Belum Diambil' },
+                        { name: 'Pigment White TiO2', bom: 0.5, picked: 0, added: 0, status: 'Belum Diambil' }
+                    ]
+                },
+                {
+                    id: 'SPK-2608-004',
+                    product: 'PVC Compound B (Color)',
+                    productCode: 'prod-b',
+                    formulaCode: 'form-a2',
+                    qty: 15,
+                    startDate: new Date(Date.now() + 86400000 * 9).toISOString().split('T')[0],
+                    endDate: new Date(Date.now() + 86400000 * 10).toISOString().split('T')[0],
+                    machine: 'Mixer B-02, Ext-3',
+                    shift: 'Shift 2',
+                    status: 'Revised',
+                    subStatus: 'Perlu Revisi PPIC',
+                    revisionNote: 'Kandungan Stabilizer Ca-Zn perlu disesuaikan dengan suhu mixer baru karena ada risiko pemanasan berlebih pada Ext-3.',
+                    approvals: { gudang: 'Acc', rnd: 'Revised', pe: 'Pending', qc: 'Pending' },
+                    materials: [
+                        { name: 'Resin PVC S-65', bom: 25, picked: 0, added: 0, status: 'Belum Diambil' },
+                        { name: 'Stabilizer Ca-Zn', bom: 1, picked: 0, added: 0, status: 'Belum Diambil' },
+                        { name: 'Pigment Color Blue', bom: 0.8, picked: 0, added: 0, status: 'Belum Diambil' }
+                    ]
+                }
+            ];
+            localStorage.setItem('spk_system_db', JSON.stringify(initialSPKs));
+        }
+
+        // Inisialisasi Moving Slip jika belum ada
+        if (!localStorage.getItem('moving_slips_db')) {
+            const initialSlips = [
+                {
+                    id: 'MS-2608-001',
+                    type: 'OUT',
+                    date: '2026-08-27T08:15:00',
+                    ref: 'SPK-2608-001',
+                    items: [
+                        { name: 'Resin PVC S-65', qty: 1250, unit: 'Kg' },
+                        { name: 'Stabilizer Ca-Zn', qty: 50, unit: 'Kg' },
+                        { name: 'Pigment White TiO2', qty: 25, unit: 'Kg' }
+                    ],
+                    user: 'Jane Doe'
+                }
+            ];
+            localStorage.setItem('moving_slips_db', JSON.stringify(initialSlips));
+        }
+
+        // Helper functions
+        window.getSPKs = function() {
+            return JSON.parse(localStorage.getItem('spk_system_db'));
+        };
+        window.saveSPKs = function(spks) {
+            localStorage.setItem('spk_system_db', JSON.stringify(spks));
+            // Trigger storage event for same-window updates
+            window.dispatchEvent(new Event('storage-updated'));
+        };
+        window.getSlips = function() {
+            return JSON.parse(localStorage.getItem('moving_slips_db'));
+        };
+        window.saveSlips = function(slips) {
+            localStorage.setItem('moving_slips_db', JSON.stringify(slips));
+            window.dispatchEvent(new Event('storage-updated'));
+        };
+        window.addMovingSlip = function(refSpk) {
+            const spks = window.getSPKs();
+            const spk = spks.find(s => s.id === refSpk);
+            if (!spk) return;
+            
+            const slips = window.getSlips();
+            const newSlip = {
+                id: 'MS-' + Math.floor(Math.random() * 9000 + 1000),
+                type: 'OUT',
+                date: new Date().toISOString(),
+                ref: spk.id,
+                items: spk.materials.map(m => ({
+                    name: m.name,
+                    qty: m.bom * spk.qty,
+                    unit: 'Kg'
+                })),
+                user: 'System (Auto)'
+            };
+            slips.unshift(newSlip);
+            window.saveSlips(slips);
+        };
+    </script>
     <style type="text/tailwindcss">
         @theme {
             --font-sans: 'Plus Jakarta Sans', sans-serif;
