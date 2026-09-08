@@ -240,180 +240,329 @@
         </div>
     </div>
 
-    <!-- Modal Live Report & Detail SPK (Full Screen) -->
+    <!-- Modal Live Report & Detail SPK (Full Screen, Step Paging) -->
     <div x-show="showEventModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
         <div class="bg-slate-50 rounded-2xl shadow-2xl border border-slate-200 w-full max-w-[95vw] h-[95vh] flex flex-col overflow-hidden" @click.away="showEventModal = false">
             
             <!-- Header Modal -->
-            <div class="p-4 text-white flex justify-between items-center flex-shrink-0" :class="selectedEvent.type === 'cleaning' ? 'bg-violet-600' : (selectedEvent.type === 'draft' ? 'bg-slate-600' : 'bg-navy')">
-                <div>
-                    <div class="flex items-center gap-3">
-                        <span class="px-2 py-1 bg-white/20 rounded text-[10px] font-bold uppercase tracking-wider">LIVE REPORT</span>
-                        <h4 class="font-bold text-xl" x-text="selectedEvent.title || 'SPK-2608-001'"></h4>
-                    </div>
-                    <p class="text-sm font-medium opacity-80 mt-1" x-text="selectedEvent.product || 'PVC Compound A (Clear)'"></p>
-                </div>
+            <div class="px-5 py-3 text-white flex justify-between items-center flex-shrink-0 bg-navy">
                 <div class="flex items-center gap-4">
-                    <a :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')" class="px-4 py-2 bg-white text-navy hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        View / Download SPK Fix
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-white/20 rounded text-[9px] font-bold uppercase tracking-wider">LIVE REPORT</span>
+                            <h4 class="font-bold text-lg" x-text="selectedEvent.title || 'SPK-2608-001'"></h4>
+                        </div>
+                        <p class="text-xs font-medium opacity-70 mt-0.5" x-text="(selectedEvent.product || 'PVC Compound A (Clear)') + ' · ' + (selectedEvent.customer || 'PT Royal Synthetic Compound')"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <!-- View SPK Fix Button (top right) -->
+                    <a :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')"
+                       class="px-4 py-2 bg-white text-navy hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        View SPK Fix
                     </a>
                     <button @click="showEventModal = false" class="text-white/70 hover:text-white transition bg-black/20 p-2 rounded-full hover:bg-black/40">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
             </div>
-            
-            <!-- Body Modal -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    <!-- Kiri: Info & Progress -->
-                    <div class="lg:col-span-1 space-y-6">
-                        
-                        <!-- Info Dasar -->
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Informasi Produksi</h5>
-                            <div class="space-y-3 text-sm">
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-slate-500">Customer</span>
-                                    <span class="font-bold text-navy" x-text="selectedEvent.customer || 'PT Royal Synthetic Compound'"></span>
-                                </div>
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-slate-500">Target OP</span>
-                                    <span class="font-bold text-cyan" x-text="selectedEvent.targetOp || '500 Kg / Jam'"></span>
-                                </div>
-                                <div class="flex justify-between border-b border-slate-50 pb-2">
-                                    <span class="text-slate-500">Tgl Kirim</span>
-                                    <span class="font-bold text-slate-800" x-text="selectedEvent.shipDate || '06 Sep 2026'"></span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500">Mesin</span>
-                                    <span class="font-bold text-navy">Mixer A-01 · Ext Line 1</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Progress Batch -->
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <div class="flex justify-between items-end mb-2">
-                                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Progress Batch Extruder</h5>
-                                <span class="text-2xl font-black text-emerald-600">56%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-3 mb-2">
-                                <div class="bg-emerald-500 h-3 rounded-full transition-all" style="width: 56%"></div>
-                            </div>
-                            <p class="text-xs font-bold text-slate-500 text-right"><span x-text="selectedEvent.completedBatch || '28'"></span> / <span x-text="selectedEvent.totalBatch || '50'"></span> Batch Selesai</p>
-                        </div>
+            <!-- Step Tabs / Paging Bar -->
+            <div class="bg-white border-b border-slate-200 px-6 py-0 flex items-center gap-0 flex-shrink-0">
+                <button @click="activeStep = 'timbang'; setTimeout(() => initStepChart('timbang'), 80)"
+                    :class="activeStep === 'timbang' ? 'border-b-2 border-emerald-500 text-emerald-700 bg-emerald-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black"
+                          :class="activeStep === 'timbang' ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-600'">✓</span>
+                    Penimbangan
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-emerald-100 text-emerald-700">Selesai</span>
+                </button>
+                <button @click="activeStep = 'mixing'; setTimeout(() => initStepChart('mixing'), 80)"
+                    :class="activeStep === 'mixing' ? 'border-b-2 border-emerald-500 text-emerald-700 bg-emerald-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black"
+                          :class="activeStep === 'mixing' ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-600'">✓</span>
+                    Mixing
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-emerald-100 text-emerald-700">Selesai</span>
+                </button>
+                <button @click="activeStep = 'extruder'; setTimeout(() => initStepChart('extruder'), 80)"
+                    :class="activeStep === 'extruder' ? 'border-b-2 border-blue-500 text-blue-700 bg-blue-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black animate-pulse"
+                          :class="activeStep === 'extruder' ? 'bg-blue-500 text-white' : 'bg-blue-200 text-blue-700'">⟳</span>
+                    Extruder
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-blue-100 text-blue-700 animate-pulse">Berjalan</span>
+                </button>
+                <button @click="activeStep = 'bagging'; setTimeout(() => initStepChart('bagging'), 80)"
+                    :class="activeStep === 'bagging' ? 'border-b-2 border-slate-500 text-slate-700 bg-slate-50' : 'text-slate-400 hover:text-slate-600 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black bg-slate-200 text-slate-400">4</span>
+                    Bagging
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-slate-100 text-slate-400">Menunggu</span>
+                </button>
 
-                        <!-- Serah Terima Barang / Warehouse Transfer -->
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Warehouse Transfer</h5>
-                            <div class="flex items-center gap-4">
-                                <div class="relative w-16 h-16 flex-shrink-0">
-                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                                        <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                        <path class="text-cyan transition-all duration-1000" stroke-dasharray="45, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                    </svg>
-                                    <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-navy">45%</div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-700">6,750 Kg / 15,000 Kg</p>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">Telah diserahterimakan ke Gudang Barang Jadi.</p>
-                                </div>
-                            </div>
+                <!-- Overall Progress pill -->
+                <div class="ml-auto flex items-center gap-3 pr-1">
+                    <span class="text-[10px] text-slate-400 font-bold">Overall</span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-28 bg-slate-100 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 56%"></div>
                         </div>
-
+                        <span class="text-xs font-black text-emerald-600">56%</span>
                     </div>
+                    <span class="text-[10px] text-slate-500 font-bold">
+                        <span x-text="selectedEvent.completedBatch || '28'"></span>/<span x-text="selectedEvent.totalBatch || '50'"></span> Batch
+                    </span>
+                </div>
+            </div>
 
-                    <!-- Kanan: Step Process & Charts -->
-                    <div class="lg:col-span-2 space-y-6 flex flex-col">
-                        
-                        <!-- Step by step Process indicator -->
-                        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Tahapan Produksi Berjalan</h5>
-                            
-                            <div class="flex items-center justify-between relative">
-                                <!-- Background Line -->
-                                <div class="absolute left-0 right-0 top-1/2 h-1 bg-slate-100 -z-10 -translate-y-1/2 rounded-full"></div>
-                                <!-- Active Line (contoh sampe proses 3) -->
-                                <div class="absolute left-0 w-[50%] top-1/2 h-1 bg-emerald-400 -z-10 -translate-y-1/2 rounded-full"></div>
-                                
-                                <!-- Step 1: Penimbangan -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center shadow-md text-white">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-xs font-bold text-slate-800">Timbang</p>
-                                        <p class="text-[10px] text-emerald-600 font-semibold">Selesai</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Step 2: Mixing -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center shadow-md text-white">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-xs font-bold text-slate-800">Mixing</p>
-                                        <p class="text-[10px] text-emerald-600 font-semibold">Selesai</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Step 3: Extruder -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center shadow-md text-white ring-4 ring-blue-100 animate-pulse">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-xs font-bold text-navy">Extruder</p>
-                                        <p class="text-[10px] text-blue-600 font-semibold">Berjalan (56%)</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Step 4: Bagging -->
-                                <div class="flex flex-col items-center gap-2 opacity-50">
-                                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold border-2 border-white shadow-sm">4</div>
-                                    <div class="text-center">
-                                        <p class="text-xs font-bold text-slate-500">Bagging</p>
-                                        <p class="text-[10px] text-slate-400 font-semibold">Menunggu</p>
-                                    </div>
-                                </div>
-                            </div>
+            <!-- Step Pages Body -->
+            <div class="flex-1 overflow-y-auto p-6 min-h-0">
+
+                <!-- ============ PAGE: PENIMBANGAN ============ -->
+                <div x-show="activeStep === 'timbang'" class="space-y-5">
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Batch Selesai</p>
+                            <p class="text-2xl font-black text-emerald-600">50 <span class="text-sm font-bold text-slate-400">/ 50</span></p>
+                            <p class="text-[10px] text-emerald-500 font-semibold mt-1">100% Selesai</p>
                         </div>
-
-                        <!-- Charts / Grafiks -->
-                        <div class="grid grid-cols-2 gap-6 flex-1">
-                            <!-- Suhu Mesin Chart -->
-                            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
-                                <h5 class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">Parameter Mesin</h5>
-                                <p class="text-sm font-bold text-navy mb-4">Grafik Suhu Extruder (°C)</p>
-                                <div class="flex-1 relative min-h-[180px]">
-                                    <canvas id="tempChart"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Waktu Penimbangan Chart -->
-                            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
-                                <h5 class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">Ketepatan Waktu</h5>
-                                <p class="text-sm font-bold text-navy mb-4">Durasi Penimbangan (Menit) / Batch</p>
-                                <div class="flex-1 relative min-h-[180px]">
-                                    <canvas id="timeChart"></canvas>
-                                </div>
-                            </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mesin Timbang</p>
+                            <p class="text-base font-black text-navy mt-2">Timbangan A-01</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Kapasitas 500 Kg</p>
                         </div>
-
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Rata-rata Durasi</p>
+                            <p class="text-2xl font-black text-navy">12 <span class="text-sm font-bold text-slate-400">menit</span></p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">per Batch</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
+                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Total Delay: 0 menit</p>
+                        </div>
+                    </div>
+                    <!-- Chart -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grafik Durasi Penimbangan</p>
+                                <p class="text-sm font-bold text-navy mt-0.5">Durasi per Batch (Menit) — Proses Timbang</p>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg">Target ≤ 15 menit</span>
+                        </div>
+                        <div class="relative h-56">
+                            <canvas id="timbangChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Detail Table -->
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                            <p class="text-xs font-bold text-slate-700">Rincian Batch Terakhir</p>
+                            <span class="text-[10px] text-slate-400">Menampilkan 5 batch terakhir</span>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">Batch</th>
+                                    <th class="p-3 text-left">Operator</th>
+                                    <th class="p-3 text-right">Mulai</th>
+                                    <th class="p-3 text-right">Selesai</th>
+                                    <th class="p-3 text-right">Durasi</th>
+                                    <th class="p-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                <tr><td class="p-3 font-bold text-navy">Batch #50</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-right text-slate-500">08:00</td><td class="p-3 text-right text-slate-500">08:13</td><td class="p-3 text-right font-bold text-navy">13 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #49</td><td class="p-3 text-slate-600">Ayu</td><td class="p-3 text-right text-slate-500">07:47</td><td class="p-3 text-right text-slate-500">07:59</td><td class="p-3 text-right font-bold text-navy">12 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #48</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-right text-slate-500">07:31</td><td class="p-3 text-right text-slate-500">07:45</td><td class="p-3 text-right font-bold text-amber-600">14 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-bold">Lambat</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #47</td><td class="p-3 text-slate-600">Fitri</td><td class="p-3 text-right text-slate-500">07:19</td><td class="p-3 text-right text-slate-500">07:30</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #46</td><td class="p-3 text-slate-600">Hana</td><td class="p-3 text-right text-slate-500">07:07</td><td class="p-3 text-right text-slate-500">07:18</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
+                <!-- ============ PAGE: MIXING ============ -->
+                <div x-show="activeStep === 'mixing'" class="space-y-5">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Batch Selesai</p>
+                            <p class="text-2xl font-black text-emerald-600">50 <span class="text-sm font-bold text-slate-400">/ 50</span></p>
+                            <p class="text-[10px] text-emerald-500 font-semibold mt-1">100% Selesai</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mesin Mixing</p>
+                            <p class="text-base font-black text-navy mt-2">Mixer A-01</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">High-Speed Mixer</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Rata-rata Durasi</p>
+                            <p class="text-2xl font-black text-navy">20 <span class="text-sm font-bold text-slate-400">menit</span></p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">per Batch (MP+ML)</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
+                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Total Delay: 5 menit</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Parameter Suhu Mixing</p>
+                            <p class="text-sm font-bold text-navy mb-3">Grafik Suhu Mixer (°C) per Batch</p>
+                            <div class="relative h-48">
+                                <canvas id="mixingTempChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Durasi Mixing</p>
+                            <p class="text-sm font-bold text-navy mb-3">Durasi Mixing per Batch (Menit)</p>
+                            <div class="relative h-48">
+                                <canvas id="mixingTimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-600 mb-3">Ringkasan Parameter Mixing</h5>
+                        <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">Suhu Hot Mixing (Avg)</p><p class="text-lg font-black text-navy mt-1">118 °C</p></div>
+                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">Suhu Cold Mixing (Avg)</p><p class="text-lg font-black text-navy mt-1">52 °C</p></div>
+                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">RPM Rata-rata</p><p class="text-lg font-black text-navy mt-1">1450 RPM</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PAGE: EXTRUDER ============ -->
+                <div x-show="activeStep === 'extruder'" class="space-y-5">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm ring-1 ring-blue-100">
+                            <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Batch Selesai</p>
+                            <p class="text-2xl font-black text-blue-600">28 <span class="text-sm font-bold text-slate-400">/ 50</span></p>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                                <div class="bg-blue-500 h-1.5 rounded-full" style="width: 56%"></div>
+                            </div>
+                            <p class="text-[10px] text-blue-500 font-semibold mt-1">56% · Sedang Berjalan</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mesin Extruder</p>
+                            <p class="text-base font-black text-navy mt-2">Extruder E-03</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Line 1 · Screw Ø 65mm</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Output Aktual</p>
+                            <p class="text-2xl font-black text-navy">495 <span class="text-sm font-bold text-slate-400">Kg/Jam</span></p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Target: 500 Kg/Jam</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
+                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1">Delay: 0.0 jam</p>
+                        </div>
+                    </div>
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Parameter Mesin</p>
+                                    <p class="text-sm font-bold text-navy mt-0.5">Grafik Suhu Extruder (°C)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-lg">Live</span>
+                            </div>
+                            <div class="relative h-48">
+                                <canvas id="tempChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ketepatan Waktu</p>
+                                    <p class="text-sm font-bold text-navy mt-0.5">Durasi Proses / Batch (Menit)</p>
+                                </div>
+                            </div>
+                            <div class="relative h-48">
+                                <canvas id="timeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Extruder Parameter Summary -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-600 mb-4">Parameter Extruder Aktual</h5>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Zone 1</p><p class="text-base font-black text-navy mt-1">160°C</p></div>
+                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Zone 2</p><p class="text-base font-black text-navy mt-1">175°C</p></div>
+                            <div class="bg-blue-50 rounded-xl p-3 ring-1 ring-blue-200"><p class="text-[10px] text-blue-400 font-bold uppercase">Zone 3 (Die)</p><p class="text-base font-black text-blue-700 mt-1">178°C</p></div>
+                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">RPM Screw</p><p class="text-base font-black text-navy mt-1">35 RPM</p></div>
+                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Ampere</p><p class="text-base font-black text-navy mt-1">42 A</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PAGE: BAGGING ============ -->
+                <div x-show="activeStep === 'bagging'" class="space-y-5">
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
+                        <svg class="w-8 h-8 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <p class="text-sm font-bold text-amber-800">Bagging & QC Goods — Menunggu</p>
+                            <p class="text-xs text-amber-600 mt-0.5">Proses Bagging akan dimulai setelah Extruder mencapai 100%. Saat ini Extruder berjalan di 56%.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm opacity-60">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Batch Selesai</p>
+                            <p class="text-2xl font-black text-slate-400">0 <span class="text-sm font-bold text-slate-300">/ 50</span></p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Belum dimulai</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm opacity-60">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mesin Bagging</p>
+                            <p class="text-base font-black text-slate-400 mt-2">Bagging Line 01</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Kapasitas 25 Kg/Sak</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm opacity-60">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Sak</p>
+                            <p class="text-2xl font-black text-slate-400">600 <span class="text-sm font-bold text-slate-300">sak</span></p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">@ 25 Kg/sak</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm opacity-60">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Transfer ke Gudang</p>
+                            <p class="text-2xl font-black text-slate-400">0%</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Menunggu hasil bagging</p>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-dashed border-slate-300 rounded-2xl p-8 text-center text-slate-400">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <p class="text-sm font-bold">Grafik & Laporan Bagging</p>
+                        <p class="text-xs mt-1">Akan tersedia saat proses Bagging dimulai.</p>
+                    </div>
+                </div>
+
             </div>
             
             <!-- Footer Modal -->
-            <div class="p-4 bg-white border-t border-slate-200 flex justify-between items-center flex-shrink-0">
-                <p class="text-xs text-slate-500 italic">*Data Live Report diperbarui secara otomatis dari sistem mesin dan input operator.</p>
-                <button @click="showEventModal = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition">
-                    Tutup Live Report
-                </button>
+            <div class="px-5 py-3 bg-white border-t border-slate-200 flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+                    <p class="text-[11px] text-slate-500">Data diperbarui otomatis dari sistem mesin & input operator.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.max(0, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)-1)]; setTimeout(() => initStepChart(activeStep), 80)"
+                            x-show="activeStep !== 'timbang'"
+                            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1">
+                        ← Sebelumnya
+                    </button>
+                    <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.min(3, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)+1)]; setTimeout(() => initStepChart(activeStep), 80)"
+                            x-show="activeStep !== 'bagging'"
+                            class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl transition flex items-center gap-1">
+                        Berikutnya →
+                    </button>
+                    <button @click="showEventModal = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                        Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -789,6 +938,7 @@
             dateStart: '',
             dateEnd: '',
             showEventModal: false,
+            activeStep: 'extruder', // default page when modal opens
             showRndModal: false,
             showSlotModal: false,
             
@@ -833,68 +983,125 @@
             
             tempChartInstance: null,
             timeChartInstance: null,
+            timbangChartInstance: null,
+            mixingTempChartInstance: null,
+            mixingTimeChartInstance: null,
 
             init() {
                 this.$watch('showEventModal', value => {
                     if (value) {
-                        setTimeout(() => {
-                            this.initLiveReportCharts();
-                        }, 100);
+                        // Default buka ke extruder (step yang sedang berjalan)
+                        this.activeStep = 'extruder';
+                        setTimeout(() => { this.initStepChart('extruder'); }, 150);
                     }
                 });
             },
 
-            initLiveReportCharts() {
-                // Hancurkan chart lama jika ada
-                if (this.tempChartInstance) this.tempChartInstance.destroy();
-                if (this.timeChartInstance) this.timeChartInstance.destroy();
+            initStepChart(step) {
+                // Hancurkan semua chart lama
+                [
+                    'tempChartInstance', 'timeChartInstance',
+                    'timbangChartInstance', 'mixingTempChartInstance', 'mixingTimeChartInstance'
+                ].forEach(k => { if (this[k]) { this[k].destroy(); this[k] = null; } });
 
-                const ctxTemp = document.getElementById('tempChart');
-                const ctxTime = document.getElementById('timeChart');
+                const defaultLineOpts = {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    elements: { line: { tension: 0.4 }, point: { radius: 3 } }
+                };
+                const defaultBarOpts = {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                };
 
-                if (ctxTemp) {
-                    this.tempChartInstance = new Chart(ctxTemp.getContext('2d'), {
-                        type: 'line',
-                        data: {
-                            labels: ['Batch 1', 'Batch 5', 'Batch 10', 'Batch 15', 'Batch 20', 'Batch 25', 'Batch 28'],
-                            datasets: [{
-                                label: 'Suhu Extruder (°C)',
-                                data: [175, 176, 178, 177, 180, 179, 178],
-                                borderColor: '#0ea5e9',
-                                backgroundColor: 'rgba(14, 165, 233, 0.1)',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { min: 160, max: 190 } }
-                        }
-                    });
+                if (step === 'timbang') {
+                    const ctx = document.getElementById('timbangChart');
+                    if (ctx) {
+                        this.timbangChartInstance = new Chart(ctx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['B46','B47','B48','B49','B50'],
+                                datasets: [{
+                                    label: 'Durasi (mnt)',
+                                    data: [11, 11, 14, 12, 13],
+                                    backgroundColor: (ctx) => ctx.raw > 12 ? '#f59e0b' : '#10b981',
+                                    borderRadius: 5
+                                }, {
+                                    label: 'Target',
+                                    data: [12, 12, 12, 12, 12],
+                                    type: 'line',
+                                    borderColor: '#e11d48',
+                                    borderDash: [4,4],
+                                    borderWidth: 1.5,
+                                    pointRadius: 0,
+                                    fill: false
+                                }]
+                            },
+                            options: { ...defaultBarOpts, scales: { y: { min: 0, max: 20 } } }
+                        });
+                    }
                 }
 
-                if (ctxTime) {
-                    this.timeChartInstance = new Chart(ctxTime.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: ['B 24', 'B 25', 'B 26', 'B 27', 'B 28'],
-                            datasets: [{
-                                label: 'Durasi (Menit)',
-                                data: [12, 11, 14, 12, 13],
-                                backgroundColor: '#10b981',
-                                borderRadius: 4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { min: 0, max: 20 } }
-                        }
-                    });
+                if (step === 'mixing') {
+                    const ctxT = document.getElementById('mixingTempChart');
+                    if (ctxT) {
+                        this.mixingTempChartInstance = new Chart(ctxT.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: ['B1','B10','B20','B30','B40','B50'],
+                                datasets: [{
+                                    label: 'Hot Mix (°C)',
+                                    data: [115, 117, 118, 119, 118, 117],
+                                    borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', fill: true
+                                }, {
+                                    label: 'Cold Mix (°C)',
+                                    data: [50, 51, 53, 52, 52, 51],
+                                    borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.08)', fill: true
+                                }]
+                            },
+                            options: { ...defaultLineOpts, plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }, scales: { y: { min: 40, max: 130 } } }
+                        });
+                    }
+                    const ctxMT = document.getElementById('mixingTimeChart');
+                    if (ctxMT) {
+                        this.mixingTimeChartInstance = new Chart(ctxMT.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['B46','B47','B48','B49','B50'],
+                                datasets: [{ label: 'Durasi (mnt)', data: [19, 20, 21, 20, 19], backgroundColor: '#8b5cf6', borderRadius: 5 }]
+                            },
+                            options: { ...defaultBarOpts, scales: { y: { min: 0, max: 30 } } }
+                        });
+                    }
+                }
+
+                if (step === 'extruder') {
+                    const ctxTemp = document.getElementById('tempChart');
+                    if (ctxTemp) {
+                        this.tempChartInstance = new Chart(ctxTemp.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: ['B1','B5','B10','B15','B20','B25','B28'],
+                                datasets: [{
+                                    label: 'Suhu Zone 3 (°C)',
+                                    data: [175, 176, 178, 177, 180, 179, 178],
+                                    borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.1)', borderWidth: 2, fill: true
+                                }]
+                            },
+                            options: { ...defaultLineOpts, scales: { y: { min: 160, max: 190 } } }
+                        });
+                    }
+                    const ctxTime = document.getElementById('timeChart');
+                    if (ctxTime) {
+                        this.timeChartInstance = new Chart(ctxTime.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['B24','B25','B26','B27','B28'],
+                                datasets: [{ label: 'Durasi (mnt)', data: [12, 11, 14, 12, 13], backgroundColor: '#10b981', borderRadius: 4 }]
+                            },
+                            options: { ...defaultBarOpts, scales: { y: { min: 0, max: 20 } } }
+                        });
+                    }
                 }
             },
 
