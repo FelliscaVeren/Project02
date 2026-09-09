@@ -73,94 +73,110 @@
             
             <hr class="border-slate-100">
 
-            <!-- Alur Visual Penanganan Material -->
+            <!-- Detail Formula & Kebutuhan Material -->
             <div>
                 <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
                     <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                    Resep & Kebutuhan Material (Simulasi Akhir BOM)
+                    Formula & Kebutuhan Material (BOM)
                 </h4>
                 
-                <div class="grid grid-cols-5 gap-2 text-center text-[10px]">
-                    <div class="p-2 border rounded-xl" :class="['Dalam Penimbangan', 'Proses Mixing', 'Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : 'bg-slate-50 border-slate-200 text-slate-400'">
-                        <p class="font-bold">1. Warehouse Release</p>
-                        <p class="text-[9px] mt-0.5">Bahan Baku Dikeluarkan</p>
-                    </div>
-                    <div class="p-2 border rounded-xl" :class="['Proses Mixing', 'Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Penimbangan' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">2. TP = Timbang Produk</p>
-                        <p class="text-[9px] mt-0.5">Verifikasi Qty & Timbangan</p>
-                    </div>
-                    <div class="p-2 border rounded-xl" :class="['Dalam Proses Extruder', 'Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Proses Mixing' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">3. MP / MD / ML Process</p>
-                        <p class="text-[9px] mt-0.5">Mixing Powder, DBM & Liquid</p>
-                    </div>
-                    <div class="p-2 border rounded-xl" :class="['Dalam Bagging', 'Completed'].includes(spk?.subStatus) ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Proses Extruder' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">4. Extrusion Process</p>
-                        <p class="text-[9px] mt-0.5">Peleburan & Granulasi</p>
-                    </div>
-                    <div class="p-2 border rounded-xl" :class="spk?.subStatus === 'Completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold' : (spk?.subStatus === 'Dalam Bagging' ? 'bg-cyan/10 border-cyan text-cyan font-bold animate-pulse' : 'bg-slate-50 border-slate-200 text-slate-400')">
-                        <p class="font-bold">5. Bagging & QC Goods</p>
-                        <p class="text-[9px] mt-0.5">Pengepakan Sak & Label</p>
-                    </div>
-                </div>
-            </div>
-            
-            <hr class="border-slate-100">
-
-            <!-- Detail Tabel Rincian Material -->
-            <div>
-                <div class="flex justify-between items-center mb-3">
-                    <h4 class="text-sm font-bold text-navy uppercase tracking-wide flex items-center gap-2">
-                        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                        Tabel Rincian & Kesesuaian Material (BOM vs Aktual)
-                    </h4>
-                    <span class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        QC Status: Valid & Sesuai R&D
-                    </span>
-                </div>
                 <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] uppercase text-slate-500 font-bold">
                                 <th class="p-3">Nama Material</th>
-                                <th class="p-3 text-right text-slate-400 font-medium">BOM/Batch</th>
-                                <th class="p-3 text-right">Target Kebutuhan<br><span class="text-[9px] font-normal">(50 Batch)</span></th>
-                                <th class="p-3 text-right text-cyan">Aktual Ditarik<br><span class="text-[9px] font-normal">(Dari Gudang)</span></th>
-                                <th class="p-3 text-right">Sisa / Selisih</th>
+                                <th class="p-3 text-center">Jumlah Batch</th>
+                                <th class="p-3 text-right">Berat / Batch</th>
+                                <th class="p-3 text-right text-navy">Total Qty (Target)</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             <tr>
-                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500" title="Sesuai"></span> Resin PVC S-65
+                                <td class="p-3 font-medium text-slate-800">
+                                    Resin PVC S-65
                                 </td>
-                                <td class="p-3 text-right text-slate-500">25 Kg</td>
-                                <td class="p-3 text-right font-bold text-navy">1,250 Kg</td>
-                                <td class="p-3 text-right font-bold text-cyan">1,250 Kg</td>
-                                <td class="p-3 text-right text-emerald-600 font-semibold">0 Kg</td>
+                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
+                                <td class="p-3 text-right text-slate-600">25 Kg</td>
+                                <td class="p-3 text-right font-black text-navy text-[13px]">1,250 Kg</td>
                             </tr>
                             <tr>
-                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500" title="Sesuai"></span> Stabilizer Ca-Zn
+                                <td class="p-3 font-medium text-slate-800">
+                                    Stabilizer Ca-Zn
                                 </td>
-                                <td class="p-3 text-right text-slate-500">1 Kg</td>
-                                <td class="p-3 text-right font-bold text-navy">50 Kg</td>
-                                <td class="p-3 text-right font-bold text-cyan">50 Kg</td>
-                                <td class="p-3 text-right text-emerald-600 font-semibold">0 Kg</td>
+                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
+                                <td class="p-3 text-right text-slate-600">1 Kg</td>
+                                <td class="p-3 text-right font-black text-navy text-[13px]">50 Kg</td>
                             </tr>
                             <tr>
-                                <td class="p-3 font-medium text-slate-800 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-amber-500" title="Kekurangan"></span> Pigment White
+                                <td class="p-3 font-medium text-slate-800">
+                                    Pigment White
                                 </td>
-                                <td class="p-3 text-right text-slate-500">0.5 Kg</td>
-                                <td class="p-3 text-right font-bold text-navy">25 Kg</td>
-                                <td class="p-3 text-right font-bold text-cyan">20 Kg</td>
-                                <td class="p-3 text-right text-amber-600 font-bold">-5 Kg</td>
+                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
+                                <td class="p-3 text-right text-slate-600">0.5 Kg</td>
+                                <td class="p-3 text-right font-black text-navy text-[13px]">25 Kg</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
 
+            <hr class="border-slate-100">
+
+            <!-- Live Report Final Summary / Parameter Actual -->
+            <div>
+                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Ringkasan Hasil Produksi & Parameter Aktual
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Mesin Parameter Summary -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white p-4">
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Rata-Rata Parameter Mesin</h5>
+                        <table class="w-full text-sm">
+                            <tbody class="divide-y divide-slate-50">
+                                <tr>
+                                    <td class="py-2 text-slate-600 font-medium">Suhu Extruder (Avg)</td>
+                                    <td class="py-2 text-right font-bold text-navy">177 °C</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-slate-600 font-medium">Durasi Timbang (Avg/Batch)</td>
+                                    <td class="py-2 text-right font-bold text-navy">12 Menit</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-slate-600 font-medium">Output Aktual</td>
+                                    <td class="py-2 text-right font-bold text-cyan">495 Kg / Jam</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-slate-600 font-medium">Total Delay</td>
+                                    <td class="py-2 text-right font-bold text-emerald-600">0.0 Jam (On Time)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Final Yield & Warehouse Transfer -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white p-4">
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Status Serah Terima Gudang</h5>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="relative w-16 h-16 flex-shrink-0">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-emerald-500" stroke-dasharray="100, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-navy">100%</div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-700">15,000 Kg / 15,000 Kg</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Telah diserahterimakan ke Gudang Barang Jadi.</p>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-50 text-emerald-800 text-[10px] p-2 rounded-lg font-bold border border-emerald-100 flex items-center gap-1">
+                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            SPK Selesai - Tidak Ada Selisih Material
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <hr class="border-slate-100">
