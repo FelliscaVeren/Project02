@@ -3,7 +3,7 @@
 @section('title', 'Buat SPK - Langkah 1 (Parameter, Draft Formula & Stok)')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full pb-10" x-data="spkForm()" x-init="init()">
+<div class="max-w-5xl mx-auto min-h-full pb-10" x-data="spkForm()" x-init="init()">
     
     <!-- Revision Alert Card -->
     <template x-if="isEditMode && editSpk">
@@ -63,7 +63,7 @@
             <!-- Customer & Delivery Specs -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
-                <input type="text" x-model="customerName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
+                <input type="text" x-model="customerName" @input="formatCustomerName()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
             </div>
 
             <div>
@@ -73,12 +73,12 @@
 
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
-                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <input type="date" x-model="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
-                <input type="date" x-model="tentativeShipDate" :min="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <input type="date" x-model="tentativeShipDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <div>
@@ -177,7 +177,7 @@
             <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isAllEnough && qty > 0 ? '' : 'pointer-events: none;'">
                 Lanjut: Waktu & Manpower
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
+            </a>
         </div>
     </div>
 </div>
@@ -188,8 +188,32 @@
             product: '',
             formula: '',
             qty: null,
+            customerName: '',
+            startDate: '',
+            tentativeShipDate: '',
             isAllEnough: true,
             maxPossibleBatch: 0,
+            
+            init() {
+                this.$watch('startDate', () => this.validateDates());
+            },
+
+            formatCustomerName() {
+                if (!this.customerName) return;
+                this.customerName = this.customerName.replace(/\b([a-zA-Z]+)/g, (word, p1) => {
+                    let lower = p1.toLowerCase();
+                    if (lower === 'pt') return 'PT';
+                    if (lower === 'cv') return 'CV';
+                    if (lower === 'ud') return 'UD';
+                    return p1.charAt(0).toUpperCase() + p1.slice(1);
+                });
+            },
+
+            validateDates() {
+                if (this.startDate && this.tentativeShipDate && this.tentativeShipDate < this.startDate) {
+                    this.tentativeShipDate = this.startDate;
+                }
+            },
             
             materials: [
                 { id: 1, name: 'Resin PVC S-65', qtyPerBatch: 25, stock: 1500, isEnough: true },

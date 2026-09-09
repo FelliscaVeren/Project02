@@ -3,7 +3,7 @@
 @section('title', 'Buat SPK - Langkah 2 (Waktu Proses & Manpower)')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full pb-10" x-data="step2App()">
+<div class="max-w-5xl mx-auto min-h-full pb-10" x-data="step2App()">
 
     <!-- Progress Indicator -->
     <div class="mb-8">
@@ -92,11 +92,23 @@
                         <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         🧹 Form Cleaning Mesin (Awal Produksi SPK)
                     </h4>
-                    <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-700 border border-slate-300 text-[10px] font-bold">Kategori Warna: White</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-700 border border-slate-300 text-[10px] font-bold" x-text="'Kategori Warna: ' + cleaningColor"></span>
                 </div>
                 <p class="text-xs text-slate-500">Aturan Pabrik: Mesin harus di-cleaning di <strong>AWAL / DEPAN</strong> sebelum proses produksi SPK dijalankan.</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Kategori Warna Cleaning</label>
+                        <select x-model="cleaningColor" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
+                            <option value="White">White</option>
+                            <option value="Natural">Natural</option>
+                            <option value="Pink">Pink</option>
+                            <option value="Black">Black</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Grey">Grey</option>
+                        </select>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Mesin yang di-Cleaning</label>
                         <select x-model="cleaningMachine" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
@@ -104,6 +116,8 @@
                             <option value="Mixer B-02">Mixer B-02</option>
                             <option value="Extruder Line 1">Extruder Line 1</option>
                             <option value="Extruder Line 2">Extruder Line 2</option>
+                            <option value="Extruder Line 5">Extruder Line 5</option>
+                            <option value="Extruder Line 6">Extruder Line 6</option>
                             <option value="Feeder 01">Feeder 01</option>
                         </select>
                     </div>
@@ -166,23 +180,25 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2">Mesin Extruder</label>
-                        <select x-model="selectedExtruder" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
+                        <select x-model="selectedExtruder" @change="if(!['ext-5', 'ext-6'].includes(selectedExtruder)) selectedFeeder = ''" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
                             <option value="">-- Pilih Extruder --</option>
                             <option value="ext-1">Extruder Line 1</option>
                             <option value="ext-2">Extruder Line 2</option>
                             <option value="ext-3">Extruder Line 3</option>
-                            <option value="ext-4-5">Extruder Line 4-5</option>
-                            <option value="ext-5-6">Extruder Line 5-6</option>
+                            <option value="ext-4">Extruder Line 4</option>
+                            <option value="ext-5">Extruder Line 5 (Mesin 5)</option>
+                            <option value="ext-6">Extruder Line 6 (Mesin 6)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 mb-2">Feeder</label>
-                        <select x-model="selectedFeeder" :disabled="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder)" :class="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder) ? 'opacity-50 cursor-not-allowed bg-slate-100' : 'bg-slate-50'" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
+                        <select x-model="selectedFeeder" :disabled="!['ext-5', 'ext-6'].includes(selectedExtruder)" :class="!['ext-5', 'ext-6'].includes(selectedExtruder) ? 'opacity-50 cursor-not-allowed bg-slate-100' : 'bg-slate-50'" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan outline-none">
                             <option value="">-- Pilih Feeder --</option>
                             <option value="fd-01">Feeder 01</option>
                             <option value="fd-02">Feeder 02</option>
                         </select>
-                        <p x-show="!['ext-4-5', 'ext-5-6'].includes(selectedExtruder)" class="text-[10px] text-amber-600 mt-1">*Feeder hanya untuk mesin 4-5 / 5-6</p>
+                        <p x-show="!['ext-5', 'ext-6'].includes(selectedExtruder)" class="text-[10px] text-amber-600 mt-1">*Feeder hanya berlaku untuk Mesin 5 dan 6</p>
+                        <p x-show="['ext-5', 'ext-6'].includes(selectedExtruder)" class="text-[10px] text-emerald-600 font-bold mt-1">✓ Feeder aktif untuk <span x-text="selectedExtruder === 'ext-5' ? 'Mesin 5' : 'Mesin 6'"></span></p>
                     </div>
                 </div>
             </div>
@@ -230,7 +246,7 @@
         </div>
 
         <div class="p-6 bg-white border-t border-slate-200 flex justify-between items-center">
-            <button @click="goBack()" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
+            <a href="{{ route('ppic.create.step1') }}" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Kembali
             </a>
@@ -255,6 +271,7 @@
             startHour: '06:00',
             finishDate: '',
             finishHour: '22:00',
+            cleaningColor: 'White',
             totalHours: 0,
             totalDays: 0,
             totalShifts: 0,
@@ -270,6 +287,9 @@
             },
 
             calculate() {
+                if (this.startDate && this.finishDate && this.finishDate < this.startDate) {
+                    this.finishDate = this.startDate;
+                }
                 if (!this.startDate || !this.finishDate) { this.totalHours = 0; return; }
 
                 let startDt = new Date(this.startDate + 'T' + this.startHour + ':00');

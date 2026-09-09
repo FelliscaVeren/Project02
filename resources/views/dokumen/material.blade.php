@@ -32,7 +32,7 @@
         Kembali
     </a>
     <div class="h-4 w-px bg-slate-600"></div>
-    <h1 class="text-sm font-bold flex-1">Dokumen Alur Material — <span class="text-cyan" x-text="activeDoc === 'moving' ? 'Moving Slip' : (activeDoc === 'transfer' ? 'Transfer Slip' : 'Form Serah Terima')"></span></h1>
+    <h1 class="text-sm font-bold flex-1"> <span class="text-cyan" x-text="activeDoc === 'moving' ? 'Moving Slip' : (activeDoc === 'transfer' ? 'Transfer Slip' : 'Form Serah Terima')"></span></h1>
     <div class="flex gap-2">
         <button @click="activeDoc = 'moving'" :class="activeDoc === 'moving' ? 'bg-cyan text-white' : 'bg-navy-light text-slate-300 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Moving Slip</button>
         <button @click="activeDoc = 'transfer'" :class="activeDoc === 'transfer' ? 'bg-cyan text-white' : 'bg-navy-light text-slate-300 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Transfer Slip</button>

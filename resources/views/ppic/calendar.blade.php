@@ -243,8 +243,7 @@
     <!-- Modal Live Report & Detail SPK (Full Screen, Step Paging) -->
     <div x-show="showEventModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
         <div class="bg-slate-50 rounded-2xl shadow-2xl border border-slate-200 w-full max-w-[95vw] h-[95vh] flex flex-col overflow-hidden" @click.away="showEventModal = false">
-            
-            <!-- Header Modal -->
+                      <!-- Header Modal -->
             <div class="px-5 py-3 text-white flex justify-between items-center flex-shrink-0 bg-navy">
                 <div class="flex items-center gap-4">
                     <div>
@@ -259,7 +258,7 @@
                     <!-- View SPK Fix Button (top right) -->
                     <a :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')"
                        class="px-4 py-2 bg-white text-navy hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         View SPK Fix
                     </a>
                     <button @click="showEventModal = false" class="text-white/70 hover:text-white transition bg-black/20 p-2 rounded-full hover:bg-black/40">
@@ -267,6 +266,22 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Integrated Cleaning Banner if linked -->
+            <template x-if="selectedEvent.parentSpk || selectedEvent.linkedCleaning">
+                <div class="bg-violet-600 text-white px-6 py-2.5 flex items-center justify-between text-xs font-bold border-b border-violet-700 flex-shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 bg-white/20 text-white rounded text-[10px] uppercase tracking-wider font-extrabold">🧹 STACKED TASK</span>
+                        <template x-if="selectedEvent.parentSpk">
+                            <span>Tugas Cleaning ini terhubung & di-stack secara otomatis dengan SPK Induk: <u class="text-amber-300 font-extrabold" x-text="selectedEvent.parentSpk"></u></span>
+                        </template>
+                        <template x-if="selectedEvent.linkedCleaning">
+                            <span>SPK ini memiliki jadwal cleaning pasca-produksi: <u class="text-amber-300 font-extrabold" x-text="selectedEvent.linkedCleaning"></u></span>
+                        </template>
+                    </div>
+                    <span class="text-[10px] opacity-80 font-normal">Pembersihan mesin & feeder terintegrasi</span>
+                </div>
+            </template>div>
 
             <!-- Step Tabs / Paging Bar -->
             <div class="bg-white border-b border-slate-200 px-6 py-0 flex items-center gap-0 flex-shrink-0">
@@ -656,24 +671,54 @@
                 </button>
             </div>
 
-            <div class="p-6 space-y-3 max-h-[70vh] overflow-y-auto text-xs">
-                <template x-for="(slot, idx) in slots" :key="idx">
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-4 hover:border-cyan/50 transition-all">
-                        <div>
-                            <span class="px-2 py-0.5 rounded bg-cyan/10 text-cyan font-bold text-[10px] uppercase border border-cyan/20" x-text="slot.machine"></span>
-                            <h5 class="font-bold text-navy text-sm mt-1" x-text="slot.spkNo + ' · ' + slot.product"></h5>
-                            <p class="text-slate-500 mt-0.5">Tanggal: <b x-text="slot.date"></b> | Jam: <b x-text="slot.time"></b></p>
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+                <!-- Toolbar Search & Filter Slot -->
+                <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            <button @click="adjustSlotTime(idx)" class="px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl shadow-sm transition">
-                                Ubah Waktu
-                            </button>
-                            <button @click="deleteSlot(idx)" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold rounded-xl transition">
-                                Hapus Slot
-                            </button>
-                        </div>
+                        <input type="text" x-model="slotSearchQuery" placeholder="Cari No. SPK, Produk, Tanggal..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-cyan focus:border-cyan outline-none transition-all">
                     </div>
-                </template>
+                    <div class="w-48 flex-shrink-0">
+                        <select x-model="slotMachineFilter" class="w-full py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                            <option value="all">Semua Mesin (E01–E05)</option>
+                            <option value="Extruder E-01">Extruder E-01</option>
+                            <option value="Extruder E-02">Extruder E-02</option>
+                            <option value="Extruder E-03">Extruder E-03</option>
+                            <option value="Extruder E-04">Extruder E-04</option>
+                            <option value="Extruder E-05">Extruder E-05</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Lista Slot Hasil Filter -->
+                <div class="space-y-3">
+                    <template x-for="(slot, idx) in filteredSlots()" :key="idx">
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-4 hover:border-cyan/50 transition-all">
+                            <div>
+                                <span class="px-2 py-0.5 rounded bg-cyan/10 text-cyan font-bold text-[10px] uppercase border border-cyan/20" x-text="slot.machine"></span>
+                                <h5 class="font-bold text-navy text-sm mt-1" x-text="slot.spkNo + ' · ' + slot.product"></h5>
+                                <p class="text-slate-500 mt-0.5">Tanggal: <b x-text="slot.date"></b> | Jam: <b x-text="slot.time"></b></p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button @click="adjustSlotTime(idx)" class="px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl shadow-sm transition">
+                                    Ubah Waktu
+                                </button>
+                                <button @click="deleteSlot(idx)" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold rounded-xl transition">
+                                    Hapus Slot
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    <template x-if="filteredSlots().length === 0">
+                        <div class="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
+                            <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="font-semibold text-xs text-slate-600">Tidak ada slot mesin extruder yang sesuai</p>
+                            <p class="text-[10px] mt-0.5">Coba ubah kata kunci pencarian atau pilihan filter mesin</p>
+                        </div>
+                    </template>
+                </div>
             </div>
 
             <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
@@ -941,6 +986,22 @@
             activeStep: 'extruder', // default page when modal opens
             showRndModal: false,
             showSlotModal: false,
+            slotSearchQuery: '',
+            slotMachineFilter: 'all',
+
+            filteredSlots() {
+                return this.slots.filter(s => {
+                    const matchMachine = this.slotMachineFilter === 'all' || s.machine.toLowerCase() === this.slotMachineFilter.toLowerCase();
+                    const q = this.slotSearchQuery.toLowerCase().trim();
+                    const matchQuery = !q || 
+                        s.spkNo.toLowerCase().includes(q) || 
+                        s.product.toLowerCase().includes(q) || 
+                        s.machine.toLowerCase().includes(q) || 
+                        s.date.toLowerCase().includes(q) || 
+                        s.time.toLowerCase().includes(q);
+                    return matchMachine && matchQuery;
+                });
+            },
             
             selectedEvent: {
                 title: '',
@@ -988,11 +1049,30 @@
             mixingTimeChartInstance: null,
 
             init() {
+                this.syncSlotsFromSPKs();
+                window.addEventListener('storage-updated', () => this.syncSlotsFromSPKs());
+
                 this.$watch('showEventModal', value => {
                     if (value) {
                         // Default buka ke extruder (step yang sedang berjalan)
                         this.activeStep = 'extruder';
                         setTimeout(() => { this.initStepChart('extruder'); }, 150);
+                    }
+                });
+            },
+
+            syncSlotsFromSPKs() {
+                const spks = (window.getSPKs && window.getSPKs()) || [];
+                const released = spks.filter(s => s.status === 'Released' || s.status === 'Scheduled');
+                released.forEach(spk => {
+                    if (!this.slots.some(sl => sl.spkNo === spk.id)) {
+                        this.slots.unshift({
+                            machine: spk.machine || 'Extruder E-01',
+                            spkNo: spk.id,
+                            product: spk.product || 'PVC Compound A',
+                            date: spk.startDate ? spk.startDate + ' - ' + spk.endDate : '09 Sep - 11 Sep 2026',
+                            time: '08:00 - 16:00'
+                        });
                     }
                 });
             },
@@ -1130,20 +1210,62 @@
                 }
             },
             submitRndTrial() {
+                if (!this.rndForm.sampleName) {
+                    alert('Harap masukkan Nama Sample / Formula Trial R&D!');
+                    return;
+                }
                 if (this.rndConflict) {
                     alert('PERHATIAN: Ada konflik jadwal mesin! Harap atur pemendekan SPK atau geser jadwal terlebih dahulu.');
                     return;
                 }
-                alert(`Request Trial Sample R&D (${this.rndForm.sampleName}) berhasil diajukan ke PPIC & dijadwalkan!`);
+                const trialId = 'TRL-RND-' + Math.floor(100 + Math.random() * 900);
+                const newTrial = {
+                    id: trialId,
+                    title: '🧪 Trial R&D: ' + this.rndForm.sampleName,
+                    start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+                    end: new Date().toISOString().split('T')[0] + 'T' + (10 + parseInt(this.rndForm.durationHour || 4)) + ':00:00',
+                    backgroundColor: '#8b5cf6',
+                    borderColor: '#7c3aed',
+                    extendedProps: {
+                        product: this.rndForm.sampleName,
+                        customer: 'Internal R&D Department',
+                        machine: this.rndForm.machine,
+                        keterangan: this.rndForm.notes || 'Pengajuan Trial R&D Uji Coba Sample Formula',
+                        type: 'rnd_trial',
+                        team: 'Tim R&D',
+                        completedBatch: 0,
+                        totalBatch: 1,
+                        shifts: ['Shift 2 — Tim R&D: Trial Lead'],
+                        substatus: 'Pengujian Sample R&D'
+                    }
+                };
+                if (window.calendarInstance) {
+                    window.calendarInstance.addEvent(newTrial);
+                }
+                this.slots.unshift({
+                    machine: this.rndForm.machine,
+                    spkNo: trialId,
+                    product: '🧪 ' + this.rndForm.sampleName,
+                    date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+                    time: '10:00 - ' + (10 + parseInt(this.rndForm.durationHour || 4)) + ':00'
+                });
+                alert(`Request Trial Sample R&D (${this.rndForm.sampleName}) berhasil diajukan ke PPIC & dijadwalkan secara real-time!`);
                 this.showRndModal = false;
             },
             shortenExistingSpk() {
-                alert('SPK eksisting SPK-2608-001 dipendekkan durasinya! Slot mesin Extruder E-01 kini tersedia untuk Trial R&D.');
+                alert('SPK eksisting SPK-2608-001 dipendekkan durasinya! Slot Extruder E-01 sekarang bebas untuk Trial R&D.');
                 this.rndConflict = false;
+                if (window.calendarInstance) {
+                    let ev = window.calendarInstance.getEventById('SPK-2608-001') || window.calendarInstance.getEvents().find(e => e.title === 'SPK-2608-001');
+                    if (ev) {
+                        ev.setEnd(new Date().toISOString().split('T')[0] + 'T09:30:00');
+                    }
+                }
             },
             rescheduleRndTrial() {
-                alert('Jadwal Trial R&D digeser otomatis ke slot kosong berikutnya (29 Aug 2026 22:30)!');
+                this.rndForm.machine = 'Extruder E-02';
                 this.rndConflict = false;
+                alert('Jadwal Trial R&D berhasil digeser otomatis ke slot kosong di Extruder E-02!');
             }
         }))
     });
@@ -1192,7 +1314,9 @@
                     machine: ext.machine || '—',
                     shifts: ext.shifts || [],
                     substatus: ext.substatus || '',
-                    type: ext.type || 'running'
+                    type: ext.type || 'running',
+                    parentSpk: ext.parentSpk || '',
+                    linkedCleaning: ext.linkedCleaning || ''
                 };
                 alpineState.showEventModal = true;
             },
@@ -1200,115 +1324,141 @@
                 let ext = arg.event.extendedProps;
                 let isDraft = ext.type === 'draft';
                 let isCleaning = ext.type === 'cleaning';
+                let isRnd = ext.type === 'rnd_trial';
                 let teamBadge = ext.team ? `<span style="font-size:8px;font-weight:700;opacity:0.9;">${ext.team}</span>` : '';
+                
+                if (isCleaning) {
+                    return {
+                        html: `<div class="p-1 overflow-hidden cursor-pointer shadow-sm" style="border-radius:4px; background-color: #7c3aed; color: #ffffff; border-left: 3px solid #f59e0b;">
+                            <div style="font-size:8.5px;font-weight:800;text-transform:uppercase;color:#fef08a;">🧹 STACK CLEANING · SPK: ${ext.parentSpk || 'SPK-2608-001'}</div>
+                            <div style="font-size:10.5px;font-weight:700;">${arg.event.title}</div>
+                            <div style="font-size:8px;opacity:0.9;">${ext.machine||''}</div>
+                        </div>`
+                    };
+                }
+
+                let stackBadge = ext.linkedCleaning ? `<div style="margin-top:2px;font-size:8px;font-weight:800;background:rgba(124,58,237,0.85);padding:1px 5px;border-radius:3px;display:inline-block;color:#fef08a;">🧹 +Cleaning Pasca-SPK</div>` : '';
+
                 return {
                     html: `<div class="p-1 overflow-hidden cursor-pointer" style="border-radius:4px;">
-                        <div style="font-size:9px;font-weight:700;text-transform:uppercase;opacity:${isDraft?'0.7':'0.9'}">${arg.event.title}${isDraft?' [DRAFT]':''}</div>
+                        <div style="font-size:9px;font-weight:700;text-transform:uppercase;opacity:${isDraft?'0.7':'0.9'}">${arg.event.title}${isDraft?' [DRAFT]':''}${isRnd?' [TRIAL R&D]':''}</div>
                         <div style="font-size:11px;font-weight:600;">${ext.product||''}</div>
                         ${teamBadge}
+                        ${stackBadge}
                     </div>`
                 };
             },
-            events: [
-                // Running SPK 1
-                {
-                    title: 'SPK-2608-001',
-                    extendedProps: { 
-                        customer: 'PT Royal Synthetic Compound',
-                        product: 'PVC Compound A (Clear)', 
-                        machine: 'Mixer A-01 · Ext Line 1 (E-01)', 
-                        deliveryReq: '05 Sep 2026',
-                        shipDate: '06 Sep 2026 (Tentatif)',
-                        targetOp: '500 Kg / Shift',
-                        workingDays: '2.5 Days',
-                        workingMinutes: '1,200 Mins',
-                        delayHour: '0.0 Hr',
-                        keterangan: 'Formula standar high-clarity PVC',
-                        remarks: 'Prioritas pengiriman via kontainer 20ft',
-                        completedBatch: 28,
-                        totalBatch: 50,
-                        type: 'running',
-                        team: 'S1:RED | S2:GREEN | S3:YELLOW',
-                        shifts: ['Shift 1 — Team RED: Budi, Mia, Ayu', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Citra, Edi, Fikri'],
-                        substatus: 'Sedang Penimbangan (TP) & Mixing (MP) (56%)'
+            events: (function() {
+                let defaultEvts = [
+                    // Running SPK 1
+                    {
+                        title: 'SPK-2608-001',
+                        extendedProps: { 
+                            customer: 'PT Royal Synthetic Compound',
+                            product: 'PVC Compound A (Clear)', 
+                            machine: 'Mixer A-01 · Ext Line 1 (E-01)', 
+                            deliveryReq: '05 Sep 2026',
+                            shipDate: '06 Sep 2026 (Tentatif)',
+                            targetOp: '500 Kg / Shift',
+                            workingDays: '2.5 Days',
+                            workingMinutes: '1,200 Mins',
+                            delayHour: '0.0 Hr',
+                            keterangan: 'Formula standar high-clarity PVC',
+                            remarks: 'Prioritas pengiriman via kontainer 20ft',
+                            completedBatch: 28,
+                            totalBatch: 50,
+                            type: 'running',
+                            team: 'S1:RED | S2:GREEN | S3:YELLOW',
+                            shifts: ['Shift 1 — Team RED: Budi, Mia, Ayu', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Citra, Edi, Fikri'],
+                            substatus: 'Sedang Penimbangan (TP) & Mixing (MP) (56%)',
+                            linkedCleaning: '🧹 Cleaning Mixer A-01 & Feeder 01 (Ter-stack Pasca SPK-2608-001)'
+                        },
+                        start: fmt(today) + 'T06:00:00',
+                        end: fmt(addDays(today, 2)) + 'T22:00:00',
+                        backgroundColor: '#112338',
+                        borderColor: '#112338'
                     },
-                    start: fmt(today) + 'T06:00:00',
-                    end: fmt(addDays(today, 2)) + 'T22:00:00',
-                    backgroundColor: '#112338',
-                    borderColor: '#112338'
-                },
-                // Running SPK 2
-                {
-                    title: 'SPK-2608-002',
-                    extendedProps: { 
-                        customer: 'PT Nusantara Plastik',
-                        product: 'PVC Compound B (Color)', 
-                        machine: 'Mixer B-02 · Ext Line 3 (E-03)', 
-                        deliveryReq: '07 Sep 2026',
-                        shipDate: '08 Sep 2026 (Tentatif)',
-                        targetOp: '450 Kg / Shift',
-                        workingDays: '1.5 Days',
-                        workingMinutes: '720 Mins',
-                        delayHour: '0.0 Hr',
-                        keterangan: 'Warna biru kustom pabrik',
-                        remarks: 'QC check intensif warna',
-                        completedBatch: 0,
-                        totalBatch: 30,
-                        type: 'running',
-                        team: 'S1:RED | S2:YELLOW',
-                        shifts: ['Shift 1 — Team RED: Anggun, Deva', 'Shift 2 — Team YELLOW: Hana, Irfan'],
-                        substatus: 'Dalam Antrean Mesin'
+                    // Running SPK 2
+                    {
+                        title: 'SPK-2608-002',
+                        extendedProps: { 
+                            customer: 'PT Nusantara Plastik',
+                            product: 'PVC Compound B (Color)', 
+                            machine: 'Mixer B-02 · Ext Line 3 (E-03)', 
+                            deliveryReq: '07 Sep 2026',
+                            shipDate: '08 Sep 2026 (Tentatif)',
+                            targetOp: '450 Kg / Shift',
+                            workingDays: '1.5 Days',
+                            workingMinutes: '720 Mins',
+                            delayHour: '0.0 Hr',
+                            keterangan: 'Warna biru kustom pabrik',
+                            remarks: 'QC check intensif warna',
+                            completedBatch: 0,
+                            totalBatch: 30,
+                            type: 'running',
+                            team: 'S1:RED | S2:YELLOW',
+                            shifts: ['Shift 1 — Team RED: Anggun, Deva', 'Shift 2 — Team YELLOW: Hana, Irfan'],
+                            substatus: 'Dalam Antrean Mesin'
+                        },
+                        start: fmt(addDays(today, 3)) + 'T08:00:00',
+                        end: fmt(addDays(today, 5)) + 'T16:00:00',
+                        backgroundColor: '#0ea5e9',
+                        borderColor: '#0ea5e9'
                     },
-                    start: fmt(addDays(today, 3)) + 'T08:00:00',
-                    end: fmt(addDays(today, 5)) + 'T16:00:00',
-                    backgroundColor: '#0ea5e9',
-                    borderColor: '#0ea5e9'
-                },
-                // Draft SPK 1
-                {
-                    title: 'DRF-2608-05',
-                    extendedProps: {
-                        customer: 'PT Delta Polymer Indonesia',
-                        product: 'PVC Compound C (Black)',
-                        machine: 'Belum Ditentukan',
-                        deliveryReq: '08 Sep 2026',
-                        shipDate: '09 Sep 2026 (Tentatif)',
-                        targetOp: '400 Kg / Shift',
-                        workingDays: '2.0 Days',
-                        workingMinutes: '960 Mins',
-                        delayHour: '0.0 Hr',
-                        keterangan: 'Sample formulasi hitam mate',
-                        remarks: 'Menunggu QC approval',
-                        completedBatch: 0,
-                        totalBatch: 40,
-                        type: 'draft',
-                        shifts: []
-                    },
-                    start: fmt(addDays(today, 6)),
-                    end: fmt(addDays(today, 8)),
-                    backgroundColor: '#94a3b8',
-                    borderColor: '#94a3b8',
-                    borderWidth: 2,
-                    display: 'block',
-                    classNames: ['draft-event']
-                },
-                // Cleaning event (pasca SPK-001)
-                {
-                    title: '🧹 Cleaning: Mixer A-01',
-                    extendedProps: {
-                        product: 'Cleaning Mixer A-01 & Feeder 01',
-                        machine: 'Mixer A-01 · Feeder 01',
-                        type: 'cleaning',
-                        team: 'Team RED · Shift 3',
-                        shifts: ['Shift 3 — Team RED: Budi, Anggun (4 jam)']
-                    },
-                    start: fmt(addDays(today, 2)) + 'T22:00:00',
-                    end: fmt(addDays(today, 3)) + 'T02:00:00',
-                    backgroundColor: '#7c3aed',
-                    borderColor: '#7c3aed'
-                }
-            ]
+                    // Cleaning event (pasca SPK-001)
+                    {
+                        title: '🧹 Cleaning: Mixer A-01',
+                        extendedProps: {
+                            product: 'Cleaning Mixer A-01 & Feeder 01',
+                            machine: 'Mixer A-01 · Feeder 01',
+                            type: 'cleaning',
+                            team: 'Team RED · Shift 3',
+                            parentSpk: 'SPK-2608-001',
+                            shifts: ['Shift 3 — Team RED: Budi, Anggun (4 jam)']
+                        },
+                        start: fmt(addDays(today, 2)) + 'T22:00:00',
+                        end: fmt(addDays(today, 3)) + 'T02:00:00',
+                        backgroundColor: '#7c3aed',
+                        borderColor: '#7c3aed'
+                    }
+                ];
+
+                // Dynamically fetch any approved/released SPKs from window.getSPKs()
+                const savedSPKs = (window.getSPKs && window.getSPKs()) || [];
+                savedSPKs.forEach(spk => {
+                    if ((spk.status === 'Released' || spk.status === 'Scheduled' || spk.status === 'Running') && !defaultEvts.some(e => e.title === spk.id)) {
+                        defaultEvts.push({
+                            title: spk.id,
+                            extendedProps: {
+                                customer: spk.customerName || 'PT Chemindo Utama',
+                                product: spk.product || 'PVC Compound A (Clear)',
+                                machine: spk.machine || 'Extruder Line 1',
+                                deliveryReq: spk.endDate || '2026-09-12',
+                                shipDate: spk.endDate || '2026-09-12',
+                                targetOp: '500 Kg / Shift',
+                                workingDays: '2.0 Days',
+                                workingMinutes: '960 Mins',
+                                delayHour: '0.0 Hr',
+                                keterangan: spk.keterangan || 'SPK Disetujui (ACC)',
+                                remarks: spk.remarks || 'Prioritas Produksi',
+                                completedBatch: 0,
+                                totalBatch: spk.qty || 50,
+                                type: 'running',
+                                team: 'Shift 1 & 2',
+                                shifts: ['Shift 1 — Team RED', 'Shift 2 — Team GREEN'],
+                                substatus: spk.subStatus || 'Siap Produksi'
+                            },
+                            start: (spk.startDate || fmt(today)) + 'T08:00:00',
+                            end: (spk.endDate || fmt(addDays(today, 2))) + 'T18:00:00',
+                            backgroundColor: '#0ea5e9',
+                            borderColor: '#0ea5e9'
+                        });
+                    }
+                });
+                return defaultEvts;
+            })()
         });
+        window.calendarInstance = calendar;
         calendar.render();
         
         document.querySelector('[x-data="calendarApp()"]').addEventListener('click', () => {
