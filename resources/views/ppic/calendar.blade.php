@@ -248,15 +248,19 @@
                 <div class="flex items-center gap-4">
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-white/20 rounded text-[9px] font-bold uppercase tracking-wider">LIVE REPORT</span>
+                            <span class="px-2 py-0.5 bg-white/20 rounded text-[9px] font-bold uppercase tracking-wider" x-text="selectedEvent.type === 'cleaning' ? 'DETAIL CLEANING' : (selectedEvent.type === 'rnd' ? 'TRIAL R&D' : 'LIVE REPORT')"></span>
                             <h4 class="font-bold text-lg" x-text="selectedEvent.title || 'SPK-2608-001'"></h4>
                         </div>
-                        <p class="text-xs font-medium opacity-70 mt-0.5" x-text="(selectedEvent.product || 'PVC Compound A (Clear)') + ' · ' + (selectedEvent.customer || 'PT Royal Synthetic Compound')"></p>
+                        <p class="text-xs font-medium opacity-70 mt-0.5">
+                            <span x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" x-text="(selectedEvent.product || 'PVC Compound A (Clear)') + ' · ' + (selectedEvent.customer || 'PT Royal Synthetic Compound')"></span>
+                            <span x-show="selectedEvent.type === 'cleaning'" x-text="'Pembersihan Mesin / Ganti Warna'"></span>
+                            <span x-show="selectedEvent.type === 'rnd'" x-text="'Uji Coba Sample Formula R&D'"></span>
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
                     <!-- View SPK Fix Button (top right) -->
-                    <a :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')"
+                    <a x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')"
                        class="px-4 py-2 bg-white text-navy hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         View SPK Fix
@@ -281,10 +285,10 @@
                     </div>
                     <span class="text-[10px] opacity-80 font-normal">Pembersihan mesin & feeder terintegrasi</span>
                 </div>
-            </template>div>
+            </template>
 
             <!-- Step Tabs / Paging Bar -->
-            <div class="bg-white border-b border-slate-200 px-6 py-0 flex items-center gap-0 flex-shrink-0">
+            <div x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" class="bg-white border-b border-slate-200 px-6 py-0 flex items-center gap-0 flex-shrink-0">
                 <button @click="activeStep = 'timbang'; setTimeout(() => initStepChart('timbang'), 80)"
                     :class="activeStep === 'timbang' ? 'border-b-2 border-emerald-500 text-emerald-700 bg-emerald-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
                     class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
@@ -332,8 +336,8 @@
                 </div>
             </div>
 
-            <!-- Step Pages Body -->
-            <div class="flex-1 overflow-y-auto p-6 min-h-0">
+            <!-- Step Pages Body (For Standard SPK) -->
+            <div x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" class="flex-1 overflow-y-auto p-6 min-h-0">
 
                 <!-- ============ PAGE: PENIMBANGAN ============ -->
                 <div x-show="activeStep === 'timbang'" class="space-y-5">
@@ -554,7 +558,222 @@
                         <p class="text-xs mt-1">Akan tersedia saat proses Bagging dimulai.</p>
                     </div>
                 </div>
+            </div>
 
+            <!-- ============ PAGE: CLEANING DETAIL (Berdasarkan Data Excel) ============ -->
+            <div x-show="selectedEvent.type === 'cleaning'" class="flex-1 overflow-y-auto p-6 min-h-0 bg-slate-50">
+                <div class="max-w-5xl mx-auto space-y-6">
+                    
+                    <!-- Header Info Card -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex justify-between items-center relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-32 h-32 bg-violet-50 rounded-bl-full -z-10"></div>
+                        <div class="flex items-center gap-5">
+                            <div class="w-16 h-16 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600 shadow-inner">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Pembersihan Mesin & Ganti Warna</h5>
+                                <h2 class="text-2xl font-black text-navy" x-text="selectedEvent.title"></h2>
+                                <p class="text-sm font-semibold text-slate-500 mt-1" x-text="'Target: ' + (selectedEvent.machine || 'Mixer A-01 / Ext Line 1')"></p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Pelaksana</p>
+                            <p class="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg" x-text="selectedEvent.team || 'Team RED · Shift 3'"></p>
+                            <p class="text-xs font-semibold text-slate-500 mt-2" x-text="'Tanggal: ' + (selectedEvent.dateRange || '08 Sep 2026')"></p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Tracker & Operator -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Progress Bar -->
+                        <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                            <div class="flex justify-between items-end mb-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Progress Pembersihan</h5>
+                                    <p class="text-sm font-bold text-navy">Tahap 2: Pembersihan Screw & Barrel</p>
+                                </div>
+                                <span class="text-2xl font-black text-violet-600">60%</span>
+                            </div>
+                            
+                            <!-- Custom Progress Steps -->
+                            <div class="relative pt-2 pb-6">
+                                <div class="absolute top-4 left-0 w-full h-1 bg-slate-100 rounded-full -z-10"></div>
+                                <div class="absolute top-4 left-0 w-[60%] h-1 bg-violet-500 rounded-full -z-10 transition-all duration-1000"></div>
+                                
+                                <div class="flex justify-between relative">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-violet-500 text-white flex items-center justify-center shadow-md">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-700 mt-1">Purging</p>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-violet-500 text-white flex items-center justify-center shadow-md ring-4 ring-violet-100 animate-pulse">
+                                            <span class="text-xs font-bold">2</span>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-violet-700 mt-1">Manual Clean</p>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center border-2 border-white">
+                                            <span class="text-xs font-bold">3</span>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-400 mt-1">Pasang Die</p>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center border-2 border-white">
+                                            <span class="text-xs font-bold">4</span>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-400 mt-1">Pemanasan</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daftar Operator -->
+                        <div class="lg:col-span-1 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col">
+                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Operator Bertugas</h5>
+                            <div class="flex-1 space-y-3" x-html="(selectedEvent.shifts && selectedEvent.shifts.length > 0) ? selectedEvent.shifts.map(s => `
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>OP</div>
+                                    <p class='text-xs font-semibold text-slate-700'>${s}</p>
+                                </div>
+                            `).join('') : `
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>B</div>
+                                    <p class='text-xs font-semibold text-slate-700'>Budi (Lead)</p>
+                                </div>
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>A</div>
+                                    <p class='text-xs font-semibold text-slate-700'>Anggun</p>
+                                </div>
+                            `">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transisi Produk -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Transisi Produk (Previous &rarr; Running)</h5>
+                        <div class="flex items-center justify-between gap-4">
+                            <!-- Previous Product -->
+                            <div class="flex-1 bg-rose-50 border border-rose-100 rounded-xl p-4 relative">
+                                <span class="absolute top-0 right-0 bg-rose-200 text-rose-800 text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl uppercase tracking-wider">Previous</span>
+                                <p class="text-xs text-rose-600 font-semibold mb-1">Warna: <span class="font-bold text-rose-800">Merah</span></p>
+                                <p class="text-base font-bold text-rose-900 mb-2">ASITHYLEN P WHITE 9440 A</p>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-rose-600">Qty Produksi:</span>
+                                    <span class="font-bold text-rose-800 bg-rose-200/50 px-2 py-0.5 rounded">15.251,10 Kg</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Arrow Indicator -->
+                            <div class="flex flex-col items-center px-2">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Pembersihan</p>
+                                <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </div>
+                                <p class="text-xs font-bold text-violet-600 mt-1">3.50 Jam</p>
+                            </div>
+
+                            <!-- Running Product -->
+                            <div class="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-4 relative">
+                                <span class="absolute top-0 right-0 bg-emerald-200 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded-bl-lg rounded-tr-xl uppercase tracking-wider">Running</span>
+                                <p class="text-xs text-emerald-600 font-semibold mb-1">Warna: <span class="font-bold text-emerald-800">White</span></p>
+                                <p class="text-base font-bold text-emerald-900 mb-2">ASITHYLEN P WHITE 9660</p>
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="text-emerald-600">Qty Produksi:</span>
+                                    <span class="font-bold text-emerald-800 bg-emerald-200/50 px-2 py-0.5 rounded">13.794,90 Kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Material Cleaning Details (Table format mimicking Excel) -->
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                            <h5 class="text-xs font-bold text-slate-600 uppercase tracking-widest">Detail Material Cleaning & Biaya</h5>
+                            <span class="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-bold text-navy shadow-sm">Waktu Cleaning: <span class="text-violet-600">3.50 Jam</span></span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm whitespace-nowrap">
+                                <thead class="bg-slate-100/50 text-slate-500 font-bold text-xs uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-5 py-3 border-b border-slate-200">Type Material Cleaning</th>
+                                        <th class="px-5 py-3 border-b border-slate-200">Material Cleaning</th>
+                                        <th class="px-5 py-3 border-b border-slate-200 text-right">Qty/Proses</th>
+                                        <th class="px-5 py-3 border-b border-slate-200 text-right">Total Qty</th>
+                                        <th class="px-5 py-3 border-b border-slate-200 text-right">Harga Material</th>
+                                        <th class="px-5 py-3 border-b border-slate-200 text-right bg-violet-50 text-violet-700">Biaya Cleaning</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr class="hover:bg-slate-50 transition">
+                                        <td class="px-5 py-3 font-semibold text-navy">GRADE B PP</td>
+                                        <td class="px-5 py-3">Bekas Cleaningan PP (Grade B)</td>
+                                        <td class="px-5 py-3 text-right font-medium">30.00 <span class="text-xs text-slate-400">Kg</span></td>
+                                        <td class="px-5 py-3 text-right font-bold text-slate-800">30.00 <span class="text-xs text-slate-400">Kg</span></td>
+                                        <td class="px-5 py-3 text-right text-slate-500">Rp 16.946,00</td>
+                                        <td class="px-5 py-3 text-right font-bold text-violet-700 bg-violet-50/30">Rp 508.371,00</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="bg-slate-50 border-t-2 border-slate-200">
+                                    <tr>
+                                        <td colspan="3" class="px-5 py-3 text-right font-bold text-slate-500 uppercase text-xs">Total Keseluruhan:</td>
+                                        <td class="px-5 py-3 text-right font-black text-navy">30.00 Kg</td>
+                                        <td class="px-5 py-3 text-right font-bold text-slate-500">-</td>
+                                        <td class="px-5 py-3 text-right font-black text-violet-700 bg-violet-100/50">Rp 508.371,00</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <template x-if="selectedEvent.parentSpk || selectedEvent.linkedCleaning">
+                        <div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 flex items-start gap-4 shadow-sm">
+                            <span class="text-xl">🔗</span>
+                            <div>
+                                <p class="text-sm font-bold text-violet-800">Tugas Terhubung (Stacked Task)</p>
+                                <p class="text-xs text-violet-600 mt-1">Cleaning ini di-stack secara otomatis sebelum/sesudah SPK <span class="font-bold bg-white px-1.5 py-0.5 rounded shadow-sm border border-violet-100" x-text="selectedEvent.parentSpk || selectedEvent.linkedCleaning"></span></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- ============ PAGE: RND TRIAL DETAIL ============ -->
+            <div x-show="selectedEvent.type === 'rnd'" class="flex-1 overflow-y-auto p-6 min-h-0 bg-slate-50">
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Informasi Trial R&D</h5>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Nomor / Judul Trial</p>
+                                <p class="text-sm font-bold text-navy" x-text="selectedEvent.title"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Sample Produk</p>
+                                <p class="text-sm font-bold text-cyan" x-text="selectedEvent.product || 'Formula Eksperimen R&D'"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Mesin Digunakan</p>
+                                <p class="text-sm font-bold text-slate-800" x-text="selectedEvent.machine || 'Extruder E-04'"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 mb-1">Durasi Trial</p>
+                                <p class="text-sm font-bold text-slate-800" x-text="(selectedEvent.time || '13:00 - 15:00') + ' WIB'"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Catatan / Objektif Trial</h5>
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 relative overflow-hidden">
+                            <div class="absolute -left-2 -top-2 text-6xl text-slate-200 font-serif leading-none">"</div>
+                            <p class="text-sm text-slate-600 font-medium relative z-10 pl-2">Uji coba komposisi aditif baru untuk meningkatkan flexural strength produk, target peningkatan efisiensi mesin 10% tanpa mengorbankan kejernihan warna. Mohon alokasikan mesin E-04 dengan suhu awal 170°C.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Footer Modal -->
@@ -565,12 +784,12 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.max(0, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)-1)]; setTimeout(() => initStepChart(activeStep), 80)"
-                            x-show="activeStep !== 'timbang'"
+                            x-show="!['cleaning', 'rnd'].includes(selectedEvent.type) && activeStep !== 'timbang'"
                             class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1">
                         ← Sebelumnya
                     </button>
                     <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.min(3, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)+1)]; setTimeout(() => initStepChart(activeStep), 80)"
-                            x-show="activeStep !== 'bagging'"
+                            x-show="!['cleaning', 'rnd'].includes(selectedEvent.type) && activeStep !== 'bagging'"
                             class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl transition flex items-center gap-1">
                         Berikutnya →
                     </button>
