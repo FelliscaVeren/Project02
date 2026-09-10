@@ -77,8 +77,13 @@
             </div>
 
             <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Selesai Produksi</label>
+                <input type="date" x-model="finishDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+            </div>
+
+            <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
-                <input type="date" x-model="tentativeShipDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <input type="date" x-model="tentativeShipDate" :min="finishDate || startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <div>
@@ -174,10 +179,10 @@
 
         <div class="p-6 bg-white border-t border-slate-200 flex justify-end gap-3">
             <a href="{{ route('ppic.calendar') }}" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">Batal</a>
-            <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isAllEnough && qty > 0 ? '' : 'pointer-events: none;'">
+            <button type="button" @click="goToStep2()" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :disabled="!(isAllEnough && qty > 0)">
                 Lanjut: Waktu & Manpower
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -189,8 +194,12 @@
             formula: '',
             qty: null,
             customerName: '',
+            targetOp: '',
             startDate: '',
+            finishDate: '',
             tentativeShipDate: '',
+            keterangan: '',
+            remarks: '',
             isAllEnough: true,
             maxPossibleBatch: 0,
             
@@ -210,8 +219,14 @@
             },
 
             validateDates() {
-                if (this.startDate && this.tentativeShipDate && this.tentativeShipDate < this.startDate) {
-                    this.tentativeShipDate = this.startDate;
+                // Tanggal selesai produksi tidak boleh sebelum tanggal mulai
+                if (this.startDate && this.finishDate && this.finishDate < this.startDate) {
+                    this.finishDate = this.startDate;
+                }
+                // Tanggal kirim tentatif tidak boleh sebelum tanggal selesai produksi (fallback: tanggal mulai)
+                let minShip = this.finishDate || this.startDate;
+                if (minShip && this.tentativeShipDate && this.tentativeShipDate < minShip) {
+                    this.tentativeShipDate = minShip;
                 }
             },
             
@@ -243,6 +258,25 @@
                 
                 // Kalkulator Max Batch adalah nilai terkecil (bottleneck) dari maxBatches
                 this.maxPossibleBatch = Math.min(...maxBatches);
+            },
+
+            // Simpan parameter Langkah 1 supaya bisa dipakai/di-prefill di Langkah 2 (khususnya Tanggal Mulai & Selesai Produksi)
+            goToStep2() {
+                if (!(this.isAllEnough && this.qty > 0)) return;
+                const payload = {
+                    product: this.product,
+                    formula: this.formula,
+                    qty: this.qty,
+                    customerName: this.customerName,
+                    targetOp: this.targetOp,
+                    startDate: this.startDate,
+                    finishDate: this.finishDate,
+                    tentativeShipDate: this.tentativeShipDate,
+                    keterangan: this.keterangan,
+                    remarks: this.remarks
+                };
+                sessionStorage.setItem('ppic_spk_step1', JSON.stringify(payload));
+                window.location.href = "{{ route('ppic.create.step2') }}";
             }
         }))
     });
