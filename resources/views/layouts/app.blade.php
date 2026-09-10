@@ -104,10 +104,48 @@
                     type: 'OUT',
                     date: '2026-08-27T08:15:00',
                     ref: 'SPK-2608-001',
+                    dept: 'Dept. Mixing Powder & Extrusion',
                     items: [
                         { name: 'Resin PVC S-65', qty: 1250, unit: 'Kg' },
                         { name: 'Stabilizer Ca-Zn', qty: 50, unit: 'Kg' },
                         { name: 'Pigment White TiO2', qty: 25, unit: 'Kg' }
+                    ],
+                    user: 'Jane Doe'
+                },
+                {
+                    id: 'MS-2608-002',
+                    type: 'OUT',
+                    date: '2026-08-28T10:30:00',
+                    ref: 'SPK-2608-002',
+                    dept: 'Dept. Extrusion Line 2',
+                    items: [
+                        { name: 'Resin PVC S-65', qty: 750, unit: 'Kg' },
+                        { name: 'Pigment Color Blue', qty: 24, unit: 'Kg' },
+                        { name: 'Stabilizer Ca-Zn', qty: 30, unit: 'Kg' }
+                    ],
+                    user: 'Budi Santoso'
+                },
+                {
+                    id: 'MS-2608-003',
+                    type: 'IN',
+                    date: '2026-08-30T14:00:00',
+                    ref: 'PO-MJU-992',
+                    dept: 'Gudang Bahan Baku (Restock)',
+                    items: [
+                        { name: 'Stabilizer Ca-Zn', qty: 45, unit: 'Kg' },
+                        { name: 'Resin PVC S-65', qty: 500, unit: 'Kg' }
+                    ],
+                    user: 'Ahmad Dani'
+                },
+                {
+                    id: 'MS-2608-004',
+                    type: 'OUT',
+                    date: '2026-09-01T09:00:00',
+                    ref: 'SPK-2608-005',
+                    dept: 'Dept. Mixing Powder',
+                    items: [
+                        { name: 'Resin PVC S-65', qty: 1000, unit: 'Kg' },
+                        { name: 'Pigment White TiO2', qty: 15, unit: 'Kg' }
                     ],
                     user: 'Jane Doe'
                 }
@@ -152,6 +190,20 @@
             slips.unshift(newSlip);
             window.saveSlips(slips);
         };
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sidebarBadge', () => ({
+                pendingCount: 0,
+                init() {
+                    this.updateCount();
+                    window.addEventListener('storage-updated', () => this.updateCount());
+                },
+                updateCount() {
+                    const spks = window.getSPKs() || [];
+                    this.pendingCount = spks.filter(s => s.status === 'Draft' || s.status === 'Revised').length;
+                }
+            }));
+        });
     </script>
     <style type="text/tailwindcss">
         @theme {
@@ -166,7 +218,7 @@
 <body class="antialiased flex h-screen overflow-hidden bg-[#f4f7fb] print:bg-white print:h-auto print:overflow-visible">
     
     <!-- Sidebar -->
-    <aside class="w-64 bg-navy text-white border-r border-navy flex flex-col shadow-xl flex-shrink-0 print:hidden">
+    <aside class="w-64 bg-navy text-white border-r border-navy flex flex-col shadow-xl flex-shrink-0 print:hidden" x-data="sidebarBadge()" x-init="init()">
         <div class="h-16 flex items-center px-6 border-b border-navy-light bg-navy-light/30">
             <h1 class="text-xl font-bold flex items-center gap-2">
                 <span class="text-cyan">Sistem</span>SPK
@@ -197,7 +249,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                     Daftar Tunggu
                 </div>
-                <span class="bg-amber-500/20 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/50">3</span>
+                <span x-show="pendingCount > 0" class="bg-amber-500/20 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/50" x-text="pendingCount"></span>
             </a>
 
             <p class="px-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">Departemen Produksi</p>

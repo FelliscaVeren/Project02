@@ -3,7 +3,7 @@
 @section('title', 'Buat SPK - Langkah 1 (Parameter, Draft Formula & Stok)')
 
 @section('content')
-<div class="max-w-5xl mx-auto h-full pb-10" x-data="spkForm()" x-init="init()">
+<div class="w-full px-4 sm:px-6 lg:px-8 min-h-full pb-10" x-data="spkForm()" x-init="init()">
     
     <!-- Revision Alert Card -->
     <template x-if="isEditMode && editSpk">
@@ -23,7 +23,7 @@
     </template>
     
     <!-- Progress Indicator -->
-    <div class="mb-8">
+    <div class="mb-8 max-w-4xl mx-auto">
         <div class="flex items-center">
             <div class="flex items-center text-cyan relative">
                 <div class="rounded-full transition duration-500 ease-in-out h-10 w-10 py-3 border-2 border-cyan bg-cyan text-white flex items-center justify-center font-bold">1</div>
@@ -43,7 +43,7 @@
             <p class="text-sm text-slate-500">Tentukan produk, kuantitas, dan draft formula untuk mengecek ketersediaan bahan baku (Stok).</p>
         </div>
         
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Produk Akhir</label>
                 <select x-model="product" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
@@ -63,7 +63,7 @@
             <!-- Customer & Delivery Specs -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
-                <input type="text" x-model="customerName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
+                <input type="text" x-model="customerName" @input="formatCustomerName()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
             </div>
 
             <div>
@@ -71,14 +71,28 @@
                 <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
             </div>
 
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal SPK Dibuat</label>
+                    <input type="date" :value="new Date().toISOString().split('T')[0]" disabled
+                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+                    <p class="text-[10px] text-slate-400 mt-1 pl-1">Tanggal dibuat otomatis &amp; tidak dapat diubah</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Jam Pembuatan SPK</label>
+                    <input type="time" :value="new Date().toTimeString().slice(0,5)" disabled
+                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+                </div>
+            </div>
+
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
-                <input type="date" x-model="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Selesai Produksi</label>
+                <input type="date" x-model="finishDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
-                <input type="date" x-model="tentativeShipDate" :min="startDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <input type="date" x-model="tentativeShipDate" :min="finishDate || startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <div>
@@ -174,7 +188,7 @@
 
         <div class="p-6 bg-white border-t border-slate-200 flex justify-end gap-3">
             <a href="{{ route('ppic.calendar') }}" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">Batal</a>
-            <a href="{{ route('ppic.create.step2') }}" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :style="isAllEnough && qty > 0 ? '' : 'pointer-events: none;'">
+            <button type="button" @click="goToStep2()" class="px-6 py-2.5 text-sm font-bold text-white rounded-xl shadow-md transition-colors flex items-center gap-2" :class="isAllEnough && qty > 0 ? 'bg-cyan hover:bg-cyan/90 shadow-cyan/30' : 'bg-slate-300 cursor-not-allowed text-slate-500'" :disabled="!(isAllEnough && qty > 0)">
                 Lanjut: Waktu & Manpower
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
@@ -188,8 +202,42 @@
             product: '',
             formula: '',
             qty: null,
+            customerName: '',
+            targetOp: '',
+            startDate: '',
+            finishDate: '',
+            tentativeShipDate: '',
+            keterangan: '',
+            remarks: '',
             isAllEnough: true,
             maxPossibleBatch: 0,
+            
+            init() {
+                this.$watch('startDate', () => this.validateDates());
+            },
+
+            formatCustomerName() {
+                if (!this.customerName) return;
+                this.customerName = this.customerName.replace(/\b([a-zA-Z]+)/g, (word, p1) => {
+                    let lower = p1.toLowerCase();
+                    if (lower === 'pt') return 'PT';
+                    if (lower === 'cv') return 'CV';
+                    if (lower === 'ud') return 'UD';
+                    return p1.charAt(0).toUpperCase() + p1.slice(1);
+                });
+            },
+
+            validateDates() {
+                // Tanggal selesai produksi tidak boleh sebelum tanggal mulai
+                if (this.startDate && this.finishDate && this.finishDate < this.startDate) {
+                    this.finishDate = this.startDate;
+                }
+                // Tanggal kirim tentatif tidak boleh sebelum tanggal selesai produksi (fallback: tanggal mulai)
+                let minShip = this.finishDate || this.startDate;
+                if (minShip && this.tentativeShipDate && this.tentativeShipDate < minShip) {
+                    this.tentativeShipDate = minShip;
+                }
+            },
             
             materials: [
                 { id: 1, name: 'Resin PVC S-65', qtyPerBatch: 25, stock: 1500, isEnough: true },
@@ -219,6 +267,25 @@
                 
                 // Kalkulator Max Batch adalah nilai terkecil (bottleneck) dari maxBatches
                 this.maxPossibleBatch = Math.min(...maxBatches);
+            },
+
+            // Simpan parameter Langkah 1 supaya bisa dipakai/di-prefill di Langkah 2 (khususnya Tanggal Mulai & Selesai Produksi)
+            goToStep2() {
+                if (!(this.isAllEnough && this.qty > 0)) return;
+                const payload = {
+                    product: this.product,
+                    formula: this.formula,
+                    qty: this.qty,
+                    customerName: this.customerName,
+                    targetOp: this.targetOp,
+                    startDate: this.startDate,
+                    finishDate: this.finishDate,
+                    tentativeShipDate: this.tentativeShipDate,
+                    keterangan: this.keterangan,
+                    remarks: this.remarks
+                };
+                sessionStorage.setItem('ppic_spk_step1', JSON.stringify(payload));
+                window.location.href = "{{ route('ppic.create.step2') }}";
             }
         }))
     });

@@ -209,57 +209,86 @@
             
             <!-- Riwayat & Filter Tanggal -->
             <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col relative">
-                <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center z-10">
-                    <h4 class="font-bold text-navy">Riwayat Pergerakan (Moving Slip History)</h4>
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 z-10">
+                    <div>
+                        <h4 class="font-bold text-navy">Riwayat Pergerakan (Moving Slip History)</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Daftar riwayat permintaan & mutasi material ke produksi</p>
+                    </div>
                     
-                    <!-- Date Range Filter -->
-                    <div class="flex items-center gap-2">
-                        <div class="bg-white border border-slate-200 rounded-lg flex items-center shadow-sm overflow-hidden text-sm">
-                            <span class="pl-3 pr-2 text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></span>
-                            <input type="date" class="py-1.5 px-2 outline-none text-slate-700 text-xs">
-                            <span class="text-slate-300">-</span>
-                            <input type="date" class="py-1.5 px-2 outline-none text-slate-700 text-xs">
+                    <!-- Search & Date Range Filter -->
+                    <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                        <!-- Search Box -->
+                        <div class="relative flex-1 sm:w-48">
+                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <input type="text" x-model="slipSearchQuery" placeholder="Cari Material / SPK..." class="w-full pl-8 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none focus:ring-1 focus:ring-cyan">
                         </div>
-                        <button class="px-3 py-1.5 bg-cyan text-white text-xs font-bold rounded-lg shadow-sm hover:bg-cyan/90">Filter</button>
+
+                        <!-- Date Inputs -->
+                        <div class="bg-white border border-slate-200 rounded-lg flex items-center shadow-sm overflow-hidden text-sm">
+                            <span class="pl-2.5 pr-1.5 text-slate-400"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></span>
+                            <input type="date" x-model="startDateFilter" class="py-1 px-1.5 outline-none text-slate-700 text-xs">
+                            <span class="text-slate-300">-</span>
+                            <input type="date" x-model="endDateFilter" class="py-1 px-1.5 outline-none text-slate-700 text-xs">
+                        </div>
+                        <button @click="clearDateFilter()" x-show="startDateFilter || endDateFilter || slipSearchQuery" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-lg transition">Reset</button>
                     </div>
                 </div>
                 
                 <div class="overflow-y-auto flex-1">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 sticky top-0 shadow-sm">
+                        <thead class="bg-slate-50 sticky top-0 shadow-sm z-10">
                             <tr class="text-[10px] uppercase text-slate-500 font-bold border-b border-slate-200">
-                                <th class="p-3 pl-6">Tgl & Waktu</th>
-                                <th class="p-3">Tipe</th>
-                                <th class="p-3">No. Referensi (System Note)</th>
-                                <th class="p-3">Item Ditarik</th>
-                                <th class="p-3 text-right">Kuantitas</th>
+                                <th class="p-3 pl-5 w-40">Tgl & Waktu Permintaan</th>
+                                <th class="p-3 w-48">No. Slip & Referensi</th>
+                                <th class="p-3 w-36">Tipe & Pemohon</th>
+                                <th class="p-3">Material yang Diminta (Rincian Item)</th>
+                                <th class="p-3 text-right w-24">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Data Auto Generate -->
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">27 Aug, 14:30</td>
-                                <td class="p-3"><span class="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded text-[10px] border border-red-100">OUT (Auto)</span></td>
-                                <td class="p-3 font-semibold text-navy">SPK-2608-001 <span class="block text-[9px] text-slate-400 font-normal">Generated when SPK Released</span></td>
-                                <td class="p-3 text-xs">RM-PVC-001 (Resin PVC)</td>
-                                <td class="p-3 text-right font-bold text-slate-900">-1,250 Kg</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">27 Aug, 14:30</td>
-                                <td class="p-3"><span class="text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded text-[10px] border border-red-100">OUT (Auto)</span></td>
-                                <td class="p-3 font-semibold text-navy">SPK-2608-001 <span class="block text-[9px] text-slate-400 font-normal">Generated when SPK Released</span></td>
-                                <td class="p-3 text-xs">ADD-012 (Stabilizer)</td>
-                                <td class="p-3 text-right font-bold text-slate-900">-50 Kg</td>
-                            </tr>
-                            
-                            <!-- Manual Data -->
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="p-3 pl-6 text-xs font-medium text-slate-500">20 Jul, 09:15</td>
-                                <td class="p-3"><span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded text-[10px] border border-emerald-100">IN (Manual)</span></td>
-                                <td class="p-3 font-semibold text-navy">PO-MJU-992 <span class="block text-[9px] text-slate-400 font-normal">Penerimaan Supplier</span></td>
-                                <td class="p-3 text-xs">ADD-012 (Stabilizer)</td>
-                                <td class="p-3 text-right font-bold text-emerald-600">+45 Kg</td>
-                            </tr>
+                            <template x-for="slip in filteredSlips()" :key="slip.id">
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="p-3 pl-5 text-xs">
+                                        <span class="font-bold text-slate-800 block" x-text="formatDateTime(slip.date)"></span>
+                                    </td>
+                                    <td class="p-3 text-xs">
+                                        <span class="font-bold text-navy text-sm block" x-text="slip.id"></span>
+                                        <span class="font-semibold text-slate-600 block text-[11px]" x-text="'Ref: ' + slip.ref"></span>
+                                        <span class="text-[10px] text-cyan font-bold block mt-0.5" x-text="slip.dept || 'Dept. Mixing Powder'"></span>
+                                    </td>
+                                    <td class="p-3 text-xs">
+                                        <span :class="slip.type === 'OUT' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'" class="px-2 py-0.5 rounded text-[10px] font-bold border inline-block" x-text="slip.type === 'OUT' ? 'OUT (Permintaan Material)' : 'IN (Penerimaan)'"></span>
+                                        <span class="block text-[11px] text-slate-500 mt-1 font-medium" x-text="'Oleh: ' + slip.user"></span>
+                                    </td>
+                                    <td class="p-3">
+                                        <div class="space-y-1 max-w-md">
+                                            <template x-for="(item, idx) in slip.items" :key="idx">
+                                                <div class="flex items-center justify-between text-xs bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+                                                    <span class="font-bold text-slate-700" x-text="item.name"></span>
+                                                    <span :class="slip.type === 'OUT' ? 'text-slate-900' : 'text-emerald-700'" class="font-extrabold text-xs ml-3" x-text="(slip.type === 'OUT' ? '-' : '+') + item.qty.toLocaleString() + ' ' + item.unit"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <a href="{{ route('dokumen.material') }}" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition inline-flex items-center gap-1">
+                                            <svg class="w-3.5 h-3.5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                            Dokumen
+                                        </a>
+                                    </td>
+                                </tr>
+                            </template>
+                            <template x-if="filteredSlips().length === 0">
+                                <tr>
+                                    <td colspan="5" class="text-center py-10 text-slate-400 text-xs">
+                                        <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                        <p class="font-bold text-slate-600">Tidak ada riwayat pergerakan moving slip</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Coba atur ulang filter tanggal atau kata kunci pencarian</p>
+                                    </td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
@@ -276,6 +305,7 @@
             categoryFilter: '',
             startDateFilter: '',
             endDateFilter: '',
+            slipSearchQuery: '',
             showLotModal: false,
             selectedMaterial: null,
             slips: [],
@@ -414,9 +444,19 @@
 
             filteredSlips() {
                 return this.slips.filter(s => {
-                    const slipDate = s.date.split('T')[0];
+                    const slipDate = s.date ? s.date.split('T')[0] : '';
                     if (this.startDateFilter && slipDate < this.startDateFilter) return false;
                     if (this.endDateFilter && slipDate > this.endDateFilter) return false;
+                    
+                    const q = (this.slipSearchQuery || '').toLowerCase().trim();
+                    if (q) {
+                        const matchId = (s.id || '').toLowerCase().includes(q);
+                        const matchRef = (s.ref || '').toLowerCase().includes(q);
+                        const matchDept = (s.dept || '').toLowerCase().includes(q);
+                        const matchUser = (s.user || '').toLowerCase().includes(q);
+                        const matchItem = s.items && s.items.some(item => (item.name || '').toLowerCase().includes(q));
+                        if (!matchId && !matchRef && !matchDept && !matchUser && !matchItem) return false;
+                    }
                     return true;
                 });
             },
