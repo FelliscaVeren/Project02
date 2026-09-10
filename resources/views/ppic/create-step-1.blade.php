@@ -3,7 +3,7 @@
 @section('title', 'Buat SPK - Langkah 1 (Parameter, Draft Formula & Stok)')
 
 @section('content')
-<div class="max-w-5xl mx-auto min-h-full pb-10" x-data="spkForm()" x-init="init()">
+<div class="w-full px-4 sm:px-6 lg:px-8 min-h-full pb-10" x-data="spkForm()" x-init="init()">
     
     <!-- Revision Alert Card -->
     <template x-if="isEditMode && editSpk">
@@ -23,7 +23,7 @@
     </template>
     
     <!-- Progress Indicator -->
-    <div class="mb-8">
+    <div class="mb-8 max-w-4xl mx-auto">
         <div class="flex items-center">
             <div class="flex items-center text-cyan relative">
                 <div class="rounded-full transition duration-500 ease-in-out h-10 w-10 py-3 border-2 border-cyan bg-cyan text-white flex items-center justify-center font-bold">1</div>
@@ -43,7 +43,7 @@
             <p class="text-sm text-slate-500">Tentukan produk, kuantitas, dan draft formula untuk mengecek ketersediaan bahan baku (Stok).</p>
         </div>
         
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Produk Akhir</label>
                 <select x-model="product" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">

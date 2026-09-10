@@ -3,10 +3,10 @@
 @section('title', 'Buat SPK - Langkah 2 (Waktu Proses & Manpower)')
 
 @section('content')
-<div class="max-w-5xl mx-auto min-h-full pb-10" x-data="step2App()">
+<div class="w-full px-4 sm:px-6 lg:px-8 min-h-full pb-10" x-data="step2App()">
 
     <!-- Progress Indicator -->
-    <div class="mb-8">
+<div class="mb-8 max-w-4xl mx-auto">
         <div class="flex items-center">
             <div class="flex items-center text-slate-400 relative">
                 <div class="rounded-full h-10 w-10 border-2 border-slate-200 bg-white flex items-center justify-center font-bold text-slate-400">1</div>

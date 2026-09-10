@@ -100,11 +100,7 @@
                 <div x-show="viewMode === 'calendar'" class="flex-1"></div>
 
             <div class="flex items-center gap-2 flex-shrink-0 flex-wrap">
-                <!-- R&D Trial Request Button -->
-                <button @click="showRndModal = true" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                    Request Trial R&D
-                </button>
+
 
                 <!-- Slot Mesin Extruder E01 - E05 Button -->
                 <button @click="showSlotModal = true" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
@@ -289,6 +285,14 @@
 
             <!-- Step Tabs / Paging Bar -->
             <div x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" class="bg-white border-b border-slate-200 px-6 py-0 flex items-center gap-0 flex-shrink-0">
+                <button x-show="selectedEvent.linkedCleaning" @click="activeStep = 'cleaning'"
+                    :class="activeStep === 'cleaning' ? 'border-b-2 border-violet-500 text-violet-700 bg-violet-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black"
+                          :class="activeStep === 'cleaning' ? 'bg-violet-500 text-white' : 'bg-violet-100 text-violet-600'">🧹</span>
+                    Cleaning
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-violet-100 text-violet-700">Pra-Produksi</span>
+                </button>
                 <button @click="activeStep = 'timbang'; setTimeout(() => initStepChart('timbang'), 80)"
                     :class="activeStep === 'timbang' ? 'border-b-2 border-emerald-500 text-emerald-700 bg-emerald-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
                     class="flex items-center gap-2 px-5 py-3.5 text-xs font-bold transition-all">
@@ -339,10 +343,68 @@
             <!-- Step Pages Body (For Standard SPK) -->
             <div x-show="!['cleaning', 'rnd'].includes(selectedEvent.type)" class="flex-1 overflow-y-auto p-6 min-h-0">
 
+                <!-- ============ PAGE: CLEANING (Pra-Produksi, ditampilkan sebelum Penimbangan) ============ -->
+                <div x-show="activeStep === 'cleaning'" class="space-y-5">
+                    <!-- Header Info Card -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex justify-between items-center relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-32 h-32 bg-violet-50 rounded-bl-full -z-10"></div>
+                        <div class="flex items-center gap-5">
+                            <div class="w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center text-violet-600 shadow-inner">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Pembersihan Mesin & Ganti Warna (Pra-Produksi)</h5>
+                                <h2 class="text-xl font-black text-navy" x-text="selectedEvent.linkedCleaning || 'Cleaning Mixer & Extruder'"></h2>
+                                <p class="text-sm font-semibold text-slate-500 mt-1" x-text="'Target: ' + (selectedEvent.machine || 'Mixer A-01 / Ext Line 1')"></p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Shift Pelaksana</p>
+                            <p class="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg" x-text="selectedEvent.cleaningShift || 'Shift 3 · Team RED'"></p>
+                            <p class="text-xs font-semibold text-slate-500 mt-2" x-text="'Tanggal: ' + (selectedEvent.cleaningDate || '05 Sep 2026')"></p>
+                        </div>
+                    </div>
+
+                    <!-- Operator & QC -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Operator Pelaksana Cleaning</h5>
+                            <div class="space-y-3" x-html="(selectedEvent.cleaningOperators && selectedEvent.cleaningOperators.length > 0) ? selectedEvent.cleaningOperators.map(s => `
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>OP</div>
+                                    <p class='text-xs font-semibold text-slate-700'>${s}</p>
+                                </div>
+                            `).join('') : `
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>B</div>
+                                    <p class='text-xs font-semibold text-slate-700'>Budi (Lead)</p>
+                                </div>
+                                <div class='flex items-center gap-3 p-2 rounded-xl border border-slate-100 bg-slate-50'>
+                                    <div class='w-8 h-8 rounded-full bg-slate-200 flex flex-shrink-0 items-center justify-center text-slate-500 font-bold text-xs'>A</div>
+                                    <p class='text-xs font-semibold text-slate-700'>Anggun</p>
+                                </div>
+                            `">
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                            <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">QC Pemeriksa</h5>
+                            <div class="flex items-center gap-3 p-3 rounded-xl border border-emerald-100 bg-emerald-50">
+                                <div class="w-9 h-9 rounded-full bg-emerald-200 flex flex-shrink-0 items-center justify-center text-emerald-700 font-bold text-xs">QC</div>
+                                <div>
+                                    <p class="text-xs font-bold text-emerald-800" x-text="selectedEvent.qcName || 'Sari Wulandari'"></p>
+                                    <p class="text-[10px] text-emerald-600" x-text="'Hasil Pemeriksaan: ' + (selectedEvent.qcResult || 'Lolos / Bebas Kontaminasi Warna')"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-[10px] text-slate-400">Tahap Cleaning ini dilakukan sebelum Penimbangan (TP) pada SPK berjalan.</p>
+                </div>
+
                 <!-- ============ PAGE: PENIMBANGAN ============ -->
                 <div x-show="activeStep === 'timbang'" class="space-y-5">
                     <!-- Stats Row -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Batch Selesai</p>
                             <p class="text-2xl font-black text-emerald-600">50 <span class="text-sm font-bold text-slate-400">/ 50</span></p>
@@ -363,19 +425,38 @@
                             <p class="text-2xl font-black text-emerald-600">On Time</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Total Delay: 0 menit</p>
                         </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Shift Kerja</p>
+                            <p class="text-base font-black text-navy mt-2" x-text="selectedEvent.timbangShift || 'Shift 1 · Team RED'"></p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1" x-text="selectedEvent.timbangOperators || 'Budi, Mia, Ayu'"></p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tanggal Penimbangan</p>
+                            <p class="text-base font-black text-navy mt-2" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></p>
+                            <p class="text-[10px] text-slate-500 font-semibold mt-1" x-text="'Jam Mulai: ' + (selectedEvent.timbangStartTime || '06:00')"></p>
+                        </div>
                     </div>
                     <!-- Chart -->
                     <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
+                        <div class="flex justify-between items-start mb-4 flex-wrap gap-3">
                             <div>
                                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Grafik Durasi Penimbangan</p>
                                 <p class="text-sm font-bold text-navy mt-0.5">Durasi per Batch (Menit) — Proses Timbang</p>
                             </div>
-                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg">Target ≤ 15 menit</span>
+                            <div class="flex items-center gap-2">
+                                <select x-model="timbangShiftFilter" @change="initStepChart('timbang')" class="bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-bold px-2 py-1.5 text-slate-600 focus:ring-cyan focus:border-cyan outline-none">
+                                    <option value="all">Semua Shift</option>
+                                    <option value="Shift 1">Shift 1 · Team RED</option>
+                                    <option value="Shift 2">Shift 2 · Team GREEN</option>
+                                    <option value="Shift 3">Shift 3 · Team YELLOW</option>
+                                </select>
+                                <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg whitespace-nowrap">Target ≤ 15 menit</span>
+                            </div>
                         </div>
                         <div class="relative h-56">
                             <canvas id="timbangChart"></canvas>
                         </div>
+                        <p class="text-[10px] text-slate-400 mt-2">Arahkan kursor ke batang grafik untuk melihat operator, shift, dan jam mulai penimbangan.</p>
                     </div>
                     <!-- Detail Table -->
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
@@ -388,6 +469,7 @@
                                 <tr class="text-[10px] text-slate-500 font-bold uppercase">
                                     <th class="p-3 text-left">Batch</th>
                                     <th class="p-3 text-left">Operator</th>
+                                    <th class="p-3 text-left">Shift</th>
                                     <th class="p-3 text-right">Mulai</th>
                                     <th class="p-3 text-right">Selesai</th>
                                     <th class="p-3 text-right">Durasi</th>
@@ -395,11 +477,11 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
-                                <tr><td class="p-3 font-bold text-navy">Batch #50</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-right text-slate-500">08:00</td><td class="p-3 text-right text-slate-500">08:13</td><td class="p-3 text-right font-bold text-navy">13 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #49</td><td class="p-3 text-slate-600">Ayu</td><td class="p-3 text-right text-slate-500">07:47</td><td class="p-3 text-right text-slate-500">07:59</td><td class="p-3 text-right font-bold text-navy">12 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #48</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-right text-slate-500">07:31</td><td class="p-3 text-right text-slate-500">07:45</td><td class="p-3 text-right font-bold text-amber-600">14 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-bold">Lambat</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #47</td><td class="p-3 text-slate-600">Fitri</td><td class="p-3 text-right text-slate-500">07:19</td><td class="p-3 text-right text-slate-500">07:30</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #46</td><td class="p-3 text-slate-600">Hana</td><td class="p-3 text-right text-slate-500">07:07</td><td class="p-3 text-right text-slate-500">07:18</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #50</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">08:00</td><td class="p-3 text-right text-slate-500">08:13</td><td class="p-3 text-right font-bold text-navy">13 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #49</td><td class="p-3 text-slate-600">Ayu</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">07:47</td><td class="p-3 text-right text-slate-500">07:59</td><td class="p-3 text-right font-bold text-navy">12 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #48</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">07:31</td><td class="p-3 text-right text-slate-500">07:45</td><td class="p-3 text-right font-bold text-amber-600">14 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-bold">Lambat</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #47</td><td class="p-3 text-slate-600">Fitri</td><td class="p-3 text-slate-500">Shift 2</td><td class="p-3 text-right text-slate-500">07:19</td><td class="p-3 text-right text-slate-500">07:30</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr><td class="p-3 font-bold text-navy">Batch #46</td><td class="p-3 text-slate-600">Hana</td><td class="p-3 text-slate-500">Shift 2</td><td class="p-3 text-right text-slate-500">07:07</td><td class="p-3 text-right text-slate-500">07:18</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -482,12 +564,22 @@
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Delay: 0.0 jam</p>
                         </div>
                     </div>
+                    <!-- Filter Grafik -->
+                    <div class="flex items-center justify-end gap-2">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Filter Grafik:</span>
+                        <select x-model="extruderShiftFilter" @change="initStepChart('extruder')" class="bg-white border border-slate-200 rounded-lg text-[11px] font-bold px-2 py-1.5 text-slate-600 focus:ring-cyan focus:border-cyan outline-none">
+                            <option value="all">Semua Shift</option>
+                            <option value="Shift 1">Shift 1 · Team RED</option>
+                            <option value="Shift 2">Shift 2 · Team GREEN</option>
+                            <option value="Shift 3">Shift 3 · Team YELLOW</option>
+                        </select>
+                    </div>
                     <!-- Charts -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Parameter Mesin</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Parameter Mesin · Per Jam</p>
                                     <p class="text-sm font-bold text-navy mt-0.5">Grafik Suhu Extruder (°C)</p>
                                 </div>
                                 <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-lg">Live</span>
@@ -495,17 +587,19 @@
                             <div class="relative h-48">
                                 <canvas id="tempChart"></canvas>
                             </div>
+                            <p class="text-[10px] text-slate-400 mt-2">Hover titik grafik untuk melihat operator, shift & jam.</p>
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                             <div class="flex justify-between items-start mb-3">
                                 <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ketepatan Waktu</p>
-                                    <p class="text-sm font-bold text-navy mt-0.5">Durasi Proses / Batch (Menit)</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Output · Per Jam</p>
+                                    <p class="text-sm font-bold text-navy mt-0.5">Output Extruder (Kg/Jam)</p>
                                 </div>
                             </div>
                             <div class="relative h-48">
                                 <canvas id="timeChart"></canvas>
                             </div>
+                            <p class="text-[10px] text-slate-400 mt-2">Hover batang grafik untuk melihat operator, shift & jam.</p>
                         </div>
                     </div>
                     <!-- Extruder Parameter Summary -->
@@ -518,6 +612,33 @@
                             <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">RPM Screw</p><p class="text-base font-black text-navy mt-1">35 RPM</p></div>
                             <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Ampere</p><p class="text-base font-black text-navy mt-1">42 A</p></div>
                         </div>
+                    </div>
+                    <!-- Tabel Rincian Per Jam -->
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                            <p class="text-xs font-bold text-slate-700">Rincian Parameter per Jam</p>
+                            <span class="text-[10px] text-slate-400">Sesuai filter shift di atas</span>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">Jam</th>
+                                    <th class="p-3 text-right">Suhu Zone 3 (°C)</th>
+                                    <th class="p-3 text-right">Output (Kg/Jam)</th>
+                                    <th class="p-3 text-left">Operator</th>
+                                    <th class="p-3 text-left">Shift</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                <tr><td class="p-3 font-bold text-navy">06:00</td><td class="p-3 text-right text-slate-600">175</td><td class="p-3 text-right text-slate-600">492</td><td class="p-3 text-slate-600">Budi</td><td class="p-3 text-slate-500">Shift 1</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">07:00</td><td class="p-3 text-right text-slate-600">176</td><td class="p-3 text-right text-slate-600">498</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-slate-500">Shift 1</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">08:00</td><td class="p-3 text-right text-slate-600">178</td><td class="p-3 text-right text-slate-600">505</td><td class="p-3 text-slate-600">Ayu</td><td class="p-3 text-slate-500">Shift 1</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">09:00</td><td class="p-3 text-right text-slate-600">177</td><td class="p-3 text-right text-slate-600">497</td><td class="p-3 text-slate-600">Bagas</td><td class="p-3 text-slate-500">Shift 2</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">10:00</td><td class="p-3 text-right text-slate-600">180</td><td class="p-3 text-right text-slate-600">503</td><td class="p-3 text-slate-600">Rudi</td><td class="p-3 text-slate-500">Shift 2</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">11:00</td><td class="p-3 text-right text-slate-600">179</td><td class="p-3 text-right text-slate-600">499</td><td class="p-3 text-slate-600">Putu</td><td class="p-3 text-slate-500">Shift 2</td></tr>
+                                <tr><td class="p-3 font-bold text-navy">12:00</td><td class="p-3 text-right text-slate-600">178</td><td class="p-3 text-right text-slate-600">495</td><td class="p-3 text-slate-600">Citra</td><td class="p-3 text-slate-500">Shift 3</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -783,12 +904,12 @@
                     <p class="text-[11px] text-slate-500">Data diperbarui otomatis dari sistem mesin & input operator.</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.max(0, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)-1)]; setTimeout(() => initStepChart(activeStep), 80)"
-                            x-show="!['cleaning', 'rnd'].includes(selectedEvent.type) && activeStep !== 'timbang'"
+                    <button @click="let so = stepOrder(); activeStep = so[Math.max(0, so.indexOf(activeStep)-1)]; setTimeout(() => initStepChart(activeStep), 80)"
+                            x-show="!['cleaning', 'rnd'].includes(selectedEvent.type) && activeStep !== stepOrder()[0]"
                             class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1">
                         ← Sebelumnya
                     </button>
-                    <button @click="activeStep = ['timbang','mixing','extruder','bagging'][Math.min(3, ['timbang','mixing','extruder','bagging'].indexOf(activeStep)+1)]; setTimeout(() => initStepChart(activeStep), 80)"
+                    <button @click="let so = stepOrder(); activeStep = so[Math.min(so.length-1, so.indexOf(activeStep)+1)]; setTimeout(() => initStepChart(activeStep), 80)"
                             x-show="!['cleaning', 'rnd'].includes(selectedEvent.type) && activeStep !== 'bagging'"
                             class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl transition flex items-center gap-1">
                         Berikutnya →
@@ -797,79 +918,6 @@
                         Tutup
                     </button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL REQUEST TRIAL R&D (DENGAN CONFLICT ALERT 1 MESIN = 1 SPK) -->
-    <div x-show="showRndModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden" @click.away="showRndModal = false">
-            <div class="p-5 bg-purple-700 text-white flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                    <div>
-                        <h4 class="font-bold text-lg">Pengajuan Request Trial Mesin R&D</h4>
-                        <p class="text-xs text-purple-200">Permintaan uji coba sample mendadak dari R&D ke PPIC</p>
-                    </div>
-                </div>
-                <button @click="showRndModal = false" class="text-white/70 hover:text-white transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nama Sample / Formula Trial</label>
-                    <input type="text" x-model="rndForm.sampleName" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium focus:ring-purple-500 focus:border-purple-500" placeholder="misal: Trial Formulation New Ca-Zn Grade B">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Pilih Mesin Extruder Target</label>
-                        <select x-model="rndForm.machine" @change="checkRndConflict()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium focus:ring-purple-500 focus:border-purple-500">
-                            <option value="Extruder E-01">Extruder E-01 (Occupied by SPK-001)</option>
-                            <option value="Extruder E-02">Extruder E-02</option>
-                            <option value="Extruder E-03">Extruder E-03</option>
-                            <option value="Extruder E-04">Extruder E-04</option>
-                            <option value="Extruder E-05">Extruder E-05</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Durasi Uji Coba (Jam)</label>
-                        <input type="number" x-model="rndForm.durationHour" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800 font-medium" placeholder="4">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Catatan / Spesifikasi Trial R&D</label>
-                    <textarea x-model="rndForm.notes" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-800" placeholder="Keterangan parameter suhu extruder atau komposisi..."></textarea>
-                </div>
-
-                <!-- CONFLICT ALERT BOX (1 MESIN = 1 SPK / TRIAL ONLY) -->
-                <template x-if="rndConflict">
-                    <div class="p-4 bg-red-50 border-2 border-red-300 rounded-2xl space-y-3">
-                        <div class="flex items-start gap-2.5">
-                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                            <div>
-                                <h5 class="font-bold text-red-800 text-xs uppercase tracking-wider">🚨 Peringatan Konflik Mesin (Rules: 1 Mesin = 1 SPK/Trial)</h5>
-                                <p class="text-red-700 mt-1">Mesin <b x-text="rndForm.machine"></b> saat ini sedang digunakan oleh <b class="underline">SPK-2608-001 (PVC Compound A)</b>. 1 mesin tidak boleh menjalankan lebih dari 1 SPK/Trial bersamaan!</p>
-                            </div>
-                        </div>
-                        <div class="pt-2 border-t border-red-200 flex gap-2">
-                            <button @click="shortenExistingSpk()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-[11px] transition">
-                                ✂️ Pendekkan Durasi SPK Eksisting
-                            </button>
-                            <button @click="rescheduleRndTrial()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-800 text-white font-bold rounded-lg text-[11px] transition">
-                                🗓️ Geser Trial ke Slot Kosong
-                            </button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-            <div class="p-5 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-                <button @click="showRndModal = false" class="px-4 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50">Batal</button>
-                <button @click="submitRndTrial()" class="px-5 py-2 text-xs font-bold text-white bg-purple-700 hover:bg-purple-800 rounded-xl shadow-md transition">Kirim Request Trial R&D</button>
             </div>
         </div>
     </div>
@@ -1208,6 +1256,12 @@
             slotSearchQuery: '',
             slotMachineFilter: 'all',
 
+            stepOrder() {
+                return this.selectedEvent.linkedCleaning
+                    ? ['cleaning', 'timbang', 'mixing', 'extruder', 'bagging']
+                    : ['timbang', 'mixing', 'extruder', 'bagging'];
+            },
+
             filteredSlots() {
                 return this.slots.filter(s => {
                     const matchMachine = this.slotMachineFilter === 'all' || s.machine.toLowerCase() === this.slotMachineFilter.toLowerCase();
@@ -1240,8 +1294,21 @@
                 machine: '',
                 shifts: [],
                 substatus: '',
-                type: 'running'
+                type: 'running',
+                timbangShift: '',
+                timbangOperators: '',
+                timbangDate: '',
+                timbangStartTime: '',
+                cleaningShift: '',
+                cleaningDate: '',
+                cleaningOperators: [],
+                qcName: '',
+                qcResult: ''
             },
+
+            // Filter grafik per halaman step
+            timbangShiftFilter: 'all',
+            extruderShiftFilter: 'all',
             
             // R&D Trial Form
             rndForm: {
@@ -1314,20 +1381,31 @@
                 };
 
                 if (step === 'timbang') {
+                    const timbangData = [
+                        { batch: 'B46', mins: 11, operator: 'Hana', shift: 'Shift 2', start: '07:07' },
+                        { batch: 'B47', mins: 11, operator: 'Fitri', shift: 'Shift 2', start: '07:19' },
+                        { batch: 'B48', mins: 14, operator: 'Mia', shift: 'Shift 1', start: '07:31' },
+                        { batch: 'B49', mins: 12, operator: 'Ayu', shift: 'Shift 1', start: '07:47' },
+                        { batch: 'B50', mins: 13, operator: 'Mia', shift: 'Shift 1', start: '08:00' }
+                    ];
+                    const filteredTimbang = this.timbangShiftFilter === 'all'
+                        ? timbangData
+                        : timbangData.filter(d => d.shift === this.timbangShiftFilter);
+
                     const ctx = document.getElementById('timbangChart');
                     if (ctx) {
                         this.timbangChartInstance = new Chart(ctx.getContext('2d'), {
                             type: 'bar',
                             data: {
-                                labels: ['B46','B47','B48','B49','B50'],
+                                labels: filteredTimbang.map(d => d.batch),
                                 datasets: [{
                                     label: 'Durasi (mnt)',
-                                    data: [11, 11, 14, 12, 13],
+                                    data: filteredTimbang.map(d => d.mins),
                                     backgroundColor: (ctx) => ctx.raw > 12 ? '#f59e0b' : '#10b981',
                                     borderRadius: 5
                                 }, {
                                     label: 'Target',
-                                    data: [12, 12, 12, 12, 12],
+                                    data: filteredTimbang.map(() => 12),
                                     type: 'line',
                                     borderColor: '#e11d48',
                                     borderDash: [4,4],
@@ -1336,7 +1414,23 @@
                                     fill: false
                                 }]
                             },
-                            options: { ...defaultBarOpts, scales: { y: { min: 0, max: 20 } } }
+                            options: {
+                                ...defaultBarOpts,
+                                scales: { y: { min: 0, max: 20 } },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (ctx) => ctx.dataset.label === 'Target' ? 'Target: ' + ctx.raw + ' mnt' : 'Durasi: ' + ctx.raw + ' mnt',
+                                            afterLabel: (ctx) => {
+                                                if (ctx.dataset.label === 'Target') return '';
+                                                const d = filteredTimbang[ctx.dataIndex];
+                                                return d ? ['Operator: ' + d.operator, 'Shift: ' + d.shift, 'Jam Mulai: ' + d.start] : '';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         });
                     }
                 }
@@ -1375,19 +1469,46 @@
                 }
 
                 if (step === 'extruder') {
+                    const extruderData = [
+                        { hour: '06:00', temp: 175, output: 492, operator: 'Budi', shift: 'Shift 1' },
+                        { hour: '07:00', temp: 176, output: 498, operator: 'Mia', shift: 'Shift 1' },
+                        { hour: '08:00', temp: 178, output: 505, operator: 'Ayu', shift: 'Shift 1' },
+                        { hour: '09:00', temp: 177, output: 497, operator: 'Bagas', shift: 'Shift 2' },
+                        { hour: '10:00', temp: 180, output: 503, operator: 'Rudi', shift: 'Shift 2' },
+                        { hour: '11:00', temp: 179, output: 499, operator: 'Putu', shift: 'Shift 2' },
+                        { hour: '12:00', temp: 178, output: 495, operator: 'Citra', shift: 'Shift 3' }
+                    ];
+                    const filteredExtruder = this.extruderShiftFilter === 'all'
+                        ? extruderData
+                        : extruderData.filter(d => d.shift === this.extruderShiftFilter);
+
+                    const tooltipMeta = (d) => d ? ['Operator: ' + d.operator, 'Shift: ' + d.shift, 'Jam: ' + d.hour] : '';
+
                     const ctxTemp = document.getElementById('tempChart');
                     if (ctxTemp) {
                         this.tempChartInstance = new Chart(ctxTemp.getContext('2d'), {
                             type: 'line',
                             data: {
-                                labels: ['B1','B5','B10','B15','B20','B25','B28'],
+                                labels: filteredExtruder.map(d => d.hour),
                                 datasets: [{
                                     label: 'Suhu Zone 3 (°C)',
-                                    data: [175, 176, 178, 177, 180, 179, 178],
+                                    data: filteredExtruder.map(d => d.temp),
                                     borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.1)', borderWidth: 2, fill: true
                                 }]
                             },
-                            options: { ...defaultLineOpts, scales: { y: { min: 160, max: 190 } } }
+                            options: {
+                                ...defaultLineOpts,
+                                scales: { y: { min: 160, max: 190 } },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (ctx) => 'Suhu: ' + ctx.raw + ' °C',
+                                            afterLabel: (ctx) => tooltipMeta(filteredExtruder[ctx.dataIndex])
+                                        }
+                                    }
+                                }
+                            }
                         });
                     }
                     const ctxTime = document.getElementById('timeChart');
@@ -1395,10 +1516,22 @@
                         this.timeChartInstance = new Chart(ctxTime.getContext('2d'), {
                             type: 'bar',
                             data: {
-                                labels: ['B24','B25','B26','B27','B28'],
-                                datasets: [{ label: 'Durasi (mnt)', data: [12, 11, 14, 12, 13], backgroundColor: '#10b981', borderRadius: 4 }]
+                                labels: filteredExtruder.map(d => d.hour),
+                                datasets: [{ label: 'Output (Kg/Jam)', data: filteredExtruder.map(d => d.output), backgroundColor: '#10b981', borderRadius: 4 }]
                             },
-                            options: { ...defaultBarOpts, scales: { y: { min: 0, max: 20 } } }
+                            options: {
+                                ...defaultBarOpts,
+                                scales: { y: { min: 0, max: 600 } },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: (ctx) => 'Output: ' + ctx.raw + ' Kg/Jam',
+                                            afterLabel: (ctx) => tooltipMeta(filteredExtruder[ctx.dataIndex])
+                                        }
+                                    }
+                                }
+                            }
                         });
                     }
                 }
@@ -1535,7 +1668,16 @@
                     substatus: ext.substatus || '',
                     type: ext.type || 'running',
                     parentSpk: ext.parentSpk || '',
-                    linkedCleaning: ext.linkedCleaning || ''
+                    linkedCleaning: ext.linkedCleaning || '',
+                    timbangShift: ext.timbangShift || 'Shift 1 · Team RED',
+                    timbangOperators: ext.timbangOperators || 'Budi, Mia, Ayu',
+                    timbangDate: ext.timbangDate || info.event.startStr,
+                    timbangStartTime: ext.timbangStartTime || '06:00',
+                    cleaningShift: ext.cleaningShift || 'Shift 3 · Team RED',
+                    cleaningDate: ext.cleaningDate || info.event.startStr,
+                    cleaningOperators: ext.cleaningOperators || [],
+                    qcName: ext.qcName || 'Sari Wulandari',
+                    qcResult: ext.qcResult || 'Lolos / Bebas Kontaminasi Warna'
                 };
                 alpineState.showEventModal = true;
             },
@@ -1590,7 +1732,16 @@
                             team: 'S1:RED | S2:GREEN | S3:YELLOW',
                             shifts: ['Shift 1 — Team RED: Budi, Mia, Ayu', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Citra, Edi, Fikri'],
                             substatus: 'Sedang Penimbangan (TP) & Mixing (MP) (56%)',
-                            linkedCleaning: '🧹 Cleaning Mixer A-01 & Feeder 01 (Ter-stack Pasca SPK-2608-001)'
+                            linkedCleaning: '🧹 Cleaning Mixer A-01 & Feeder 01 (Ter-stack Pasca SPK-2608-001)',
+                            timbangShift: 'Shift 1 · Team RED',
+                            timbangOperators: 'Budi, Mia, Ayu',
+                            timbangDate: fmt(today),
+                            timbangStartTime: '06:00',
+                            cleaningShift: 'Shift 3 · Team RED',
+                            cleaningDate: fmt(addDays(today, -1)),
+                            cleaningOperators: ['Budi (Lead)', 'Anggun'],
+                            qcName: 'Sari Wulandari',
+                            qcResult: 'Lolos / Bebas Kontaminasi Warna'
                         },
                         start: fmt(today) + 'T06:00:00',
                         end: fmt(addDays(today, 2)) + 'T22:00:00',
