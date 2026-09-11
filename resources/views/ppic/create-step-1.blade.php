@@ -3,25 +3,8 @@
 @section('title', 'Buat SPK - Langkah 1 (Parameter, Draft Formula & Stok)')
 
 @section('content')
-<div class="w-full px-4 sm:px-6 lg:px-8 min-h-full pb-10" x-data="spkForm()" x-init="init()">
-    
-    <!-- Revision Alert Card -->
-    <template x-if="isEditMode && editSpk">
-        <div class="mb-6 p-5 bg-amber-50 border-l-4 border-l-amber-500 rounded-xl shadow-sm text-sm text-amber-800">
-            <div class="flex items-start gap-3">
-                <svg class="w-6 h-6 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                <div>
-                    <h4 class="font-bold text-base text-navy">Modifikasi SPK Terrevisi: <span x-text="editSpk.id"></span></h4>
-                    <p class="mt-1 font-medium">Draft ini dikembalikan oleh departemen R&D / Penguji karena memerlukan perbaikan.</p>
-                    <div class="mt-3 p-3 bg-white/80 rounded-lg border border-amber-200">
-                        <p class="font-bold text-xs text-navy uppercase tracking-wider mb-1">Catatan Revisi Otorisator:</p>
-                        <p class="italic text-slate-700" x-text="editSpk.revisionNote"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-    
+<div class="w-full px-4 sm:px-6 lg:px-8 min-h-full pb-10" x-data="spkForm()">
+
     <!-- Progress Indicator -->
     <div class="mb-8 max-w-4xl mx-auto">
         <div class="flex items-center">
@@ -42,8 +25,10 @@
             <h3 class="text-lg font-bold text-navy">Spesifikasi Dasar SPK</h3>
             <p class="text-sm text-slate-500">Tentukan produk, kuantitas, dan draft formula untuk mengecek ketersediaan bahan baku (Stok).</p>
         </div>
-        
+
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- 1. Produk + Qty: dua parameter inti yang memicu simulasi stok -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Produk Akhir</label>
                 <select x-model="product" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
@@ -60,75 +45,72 @@
                 </div>
             </div>
 
-            <!-- Customer & Delivery Specs -->
+            <!-- Draft Formula: tetap satu grup dengan Produk + Qty, muncul begitu produk dipilih -->
+            <div x-show="product !== ''">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Draft Formula / Resep</label>
+                <select x-model="formula" @change="calculateStock" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                    <option value="">-- Tarik Formula dari Master Data --</option>
+                    <option value="form-a1">Formula-PVC-A-Rev01 (Standard)</option>
+                </select>
+            </div>
+
+            <!-- 2. Info pesanan -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
                 <input type="text" x-model="customerName" @input="formatCustomerName()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
             </div>
-
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Target OP (Output / Hour)</label>
                 <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
             </div>
 
-            <div class="flex flex-col gap-2">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal SPK Dibuat</label>
-                    <input type="date" :value="new Date().toISOString().split('T')[0]" disabled
-                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
-                    <p class="text-[10px] text-slate-400 mt-1 pl-1">Tanggal dibuat otomatis &amp; tidak dapat diubah</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1">Jam Pembuatan SPK</label>
-                    <input type="time" :value="new Date().toTimeString().slice(0,5)" disabled
-                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
-                </div>
-            </div>
-
+            <!-- 3. Lini waktu produksi: berurutan mulai -> selesai -> kirim -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
                 <input type="date" x-model="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
-
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Selesai Produksi</label>
                 <input type="date" x-model="finishDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
-
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
                 <input type="date" x-model="tentativeShipDate" :min="finishDate || startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
+            <!-- 4. Metadata otomatis, read-only -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal SPK Dibuat</label>
+                <input type="date" :value="new Date().toISOString().split('T')[0]" disabled
+                       class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+                <p class="text-[10px] text-slate-400 mt-1 pl-1">Tanggal dibuat otomatis &amp; tidak dapat diubah</p>
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Jam Pembuatan SPK</label>
+                <input type="time" :value="new Date().toTimeString().slice(0,5)" disabled
+                       class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+            </div>
+
+            <!-- 5. Catatan bebas -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Keterangan SPK</label>
                 <input type="text" x-model="keterangan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Sesuai spesifikasi standar pabrik">
             </div>
-
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Remarks / Catatan Khusus</label>
                 <input type="text" x-model="remarks" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: Order Prioritas Tinggi">
-            </div>
-            
-            <!-- Draft Formula & Rincian Transparan -->
-            <div class="md:col-span-2 border-t border-slate-100 pt-6 mt-2" x-show="product !== ''">
-                <label class="block text-sm font-bold text-slate-700 mb-2">Draft Formula / Resep (Integrasi Tahap 1)</label>
-                <select x-model="formula" @change="calculateStock" class="w-full md:w-1/2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
-                    <option value="">-- Tarik Formula dari Master Data --</option>
-                    <option value="form-a1">Formula-PVC-A-Rev01 (Standard)</option>
-                </select>
             </div>
         </div>
 
         <!-- Widget Stok Realtime Semua Material -->
         <div class="p-6 bg-slate-50 border-t border-slate-200" x-show="formula !== '' && qty > 0" style="display:none;" x-transition>
-            
+
             <div class="flex justify-between items-end mb-4">
                 <h4 class="text-sm font-bold text-slate-700 flex items-center gap-2">
                     <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                     Simulasi Ketersediaan Stok Material
                 </h4>
-                
+
                 <!-- Kalkulator Batch -->
                 <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
@@ -138,7 +120,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Tabel Simulasi Semua Material -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4">
                 <table class="w-full text-left text-sm">
@@ -184,7 +166,7 @@
                     <p class="mt-1 text-red-600">Ada satu atau lebih bahan baku yang stok fisiknya kurang dari target kebutuhan batch Anda. Anda tidak dapat melanjutkan pembuatan SPK ini.</p>
                 </div>
             </div>
-            
+
             <div x-show="isAllEnough" style="display:none;" x-transition class="p-4 rounded-xl bg-emerald-50 text-emerald-800 flex items-center gap-3 border border-emerald-200">
                 <svg class="w-5 h-5 flex-shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <p class="text-sm font-bold">Validasi Sukses: Semua material mencukupi untuk jumlah batch ini. Silakan lanjutkan ke pengaturan waktu.</p>
@@ -216,10 +198,6 @@
             remarks: '',
             isAllEnough: true,
             maxPossibleBatch: 0,
-            
-            init() {
-                this.$watch('startDate', () => this.validateDates());
-            },
 
             formatCustomerName() {
                 if (!this.customerName) return;
@@ -243,33 +221,33 @@
                     this.tentativeShipDate = minShip;
                 }
             },
-            
+
             materials: [
                 { id: 1, name: 'Resin PVC S-65', qtyPerBatch: 25, stock: 1500, isEnough: true },
                 { id: 2, name: 'Stabilizer Ca-Zn', qtyPerBatch: 1, stock: 100, isEnough: true },
                 { id: 3, name: 'Pigment White', qtyPerBatch: 0.5, stock: 10, isEnough: true }
             ],
-            
+
             calculateStock() {
                 if (!this.qty || this.formula === '') {
                     this.isAllEnough = true;
                     return;
                 }
-                
+
                 let allEnough = true;
                 let maxBatches = [];
-                
+
                 this.materials.forEach(item => {
                     let needed = item.qtyPerBatch * this.qty;
                     item.isEnough = item.stock >= needed;
                     if(!item.isEnough) allEnough = false;
-                    
+
                     // Hitung maksimal batch per material
                     maxBatches.push(Math.floor(item.stock / item.qtyPerBatch));
                 });
-                
+
                 this.isAllEnough = allEnough;
-                
+
                 // Kalkulator Max Batch adalah nilai terkecil (bottleneck) dari maxBatches
                 this.maxPossibleBatch = Math.min(...maxBatches);
             },
