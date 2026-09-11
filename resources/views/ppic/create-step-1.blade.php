@@ -71,6 +71,20 @@
                 <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
             </div>
 
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal SPK Dibuat</label>
+                    <input type="date" :value="new Date().toISOString().split('T')[0]" disabled
+                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+                    <p class="text-[10px] text-slate-400 mt-1 pl-1">Tanggal dibuat otomatis &amp; tidak dapat diubah</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Jam Pembuatan SPK</label>
+                    <input type="time" :value="new Date().toTimeString().slice(0,5)" disabled
+                           class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 font-semibold cursor-not-allowed">
+                </div>
+            </div>
+
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
                 <input type="date" x-model="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">

@@ -40,7 +40,7 @@
                 <!-- Start DateTime -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal & Jam Mulai</label>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-col gap-2">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Tanggal</label>
                             <input type="date" x-model="startDate" :disabled="datesLocked" @change="calculate" :class="datesLocked ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50'" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
@@ -59,7 +59,7 @@
                 <!-- Finish DateTime -->
                 <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal & Jam Selesai</label>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-col gap-2">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Tanggal</label>
                             <input type="date" x-model="finishDate" :disabled="datesLocked" :min="startDate" @change="calculate" :class="datesLocked ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50'" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
