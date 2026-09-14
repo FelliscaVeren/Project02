@@ -20,6 +20,7 @@
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">Legenda</p>
             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-[#112338] inline-block flex-shrink-0"></span><span class="text-[10px] text-slate-600">Running (On Process)</span></div>
             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded border-2 border-dashed border-slate-400 bg-slate-100 inline-block flex-shrink-0"></span><span class="text-[10px] text-slate-600">Draft (Belum Release)</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-purple-600 inline-block flex-shrink-0 shadow-sm"></span><span class="text-[10px] text-purple-800 font-bold">🧪 Trial Sample R&D</span></div>
             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-violet-500 inline-block flex-shrink-0"></span><span class="text-[10px] text-slate-600">Cleaning Mesin</span></div>
         </div>
         
@@ -101,11 +102,36 @@
 
             <div class="flex items-center gap-2 flex-shrink-0 flex-wrap">
 
+                <!-- Tombol Pengajuan Trial R&D (HANYA TAMPIL DI ROLE R&D) -->
+                <button x-show="currentRole === 'rnd'" 
+                        @click="showRndModal = true" 
+                        class="px-3.5 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 ring-2 ring-violet-300">
+                    <span class="text-sm">🧪</span>
+                    <span>Pengajuan Trial R&D</span>
+                </button>
+
+                <!-- Tombol Penugasan Mandor (Foreman) (HANYA TAMPIL DI ROLE KEPALA PRODUKSI / FOREMAN) -->
+                <button x-show="currentRole === 'foreman'" 
+                        @click="showForemanAssignModal = true" 
+                        class="relative px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 ring-2 ring-amber-300">
+                    <span class="text-sm">👷</span>
+                    <span>Penugasan Mandor (Foreman)</span>
+                    <span x-show="foremanPendingCount() > 0" class="px-1.5 py-0.5 bg-white text-amber-800 text-[10px] rounded-full font-extrabold" x-text="foremanPendingCount()"></span>
+                </button>
+
+                <!-- Tombol Notifikasi & Persetujuan PPIC (HANYA TAMPIL DI ROLE PPIC / JIKA ADA NOTIF) -->
+                <button x-show="currentRole === 'ppic'" 
+                        @click="showPpicNotifModal = true" 
+                        class="relative px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 border-cyan text-cyan ring-1 ring-cyan">
+                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    <span>Persetujuan Trial (PPIC)</span>
+                    <span x-show="pendingCount() > 0" class="px-1.5 py-0.5 bg-rose-500 text-white text-[10px] rounded-full font-extrabold animate-pulse" x-text="pendingCount()"></span>
+                </button>
 
                 <!-- Slot Mesin Extruder E01 - E05 Button -->
                 <button @click="showSlotModal = true" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    Slot Mesin Extruder (E01-E05)
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Slot Mesin (E01-E05)
                 </button>
 
                 <a href="{{ route('ppic.create.step1') }}" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
@@ -1134,33 +1160,98 @@
             <!-- ============ PAGE: RND TRIAL DETAIL ============ -->
             <div x-show="selectedEvent.type === 'rnd'" class="flex-1 overflow-y-auto p-6 min-h-0 bg-slate-50">
                 <div class="max-w-3xl mx-auto space-y-6">
+                    <!-- Header Info & Status Approval -->
                     <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Informasi Trial R&D</h5>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="flex justify-between items-start mb-4 border-b border-slate-100 pb-3">
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Nomor / Judul Trial</p>
-                                <p class="text-sm font-bold text-navy" x-text="selectedEvent.title"></p>
+                                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Informasi Trial R&D</h5>
+                                <h4 class="text-lg font-extrabold text-navy mt-1" x-text="selectedEvent.title"></h4>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-lg flex items-center gap-1">
+                                    <span>✓ Approved PPIC</span>
+                                </span>
+                                <span class="px-2.5 py-1 bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg flex items-center gap-1">
+                                    <span>👷 Assigned Foreman</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                            <div>
+                                <p class="text-slate-500 mb-1">Sample Produk</p>
+                                <p class="font-bold text-violet-700" x-text="selectedEvent.product || 'Formula Eksperimen R&D'"></p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Sample Produk</p>
-                                <p class="text-sm font-bold text-cyan" x-text="selectedEvent.product || 'Formula Eksperimen R&D'"></p>
+                                <p class="text-slate-500 mb-1">Mesin Digunakan</p>
+                                <p class="font-bold text-slate-800" x-text="selectedEvent.machine || 'Extruder E-01'"></p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Mesin Digunakan</p>
-                                <p class="text-sm font-bold text-slate-800" x-text="selectedEvent.machine || 'Extruder E-04'"></p>
+                                <p class="text-slate-500 mb-1">Durasi & Waktu</p>
+                                <p class="font-bold text-slate-800" x-text="(selectedEvent.time || '10:00 - 14:00') + ' WIB'"></p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 mb-1">Durasi Trial</p>
-                                <p class="text-sm font-bold text-slate-800" x-text="(selectedEvent.time || '13:00 - 15:00') + ' WIB'"></p>
+                                <p class="text-slate-500 mb-1">Tim Eksekusi</p>
+                                <p class="font-bold text-slate-800">Tim R&D + Foreman</p>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Video Report Documentation Hyperlink Card -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm border-l-4 border-l-violet-600">
+                        <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+                            <h5 class="text-xs font-bold text-navy uppercase tracking-widest flex items-center gap-2">
+                                <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Video Dokumentasi & Report Trial
+                            </h5>
+                            <span class="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded font-bold">Hyperlink Akses Video</span>
+                        </div>
+
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Video Laporan Hasil Pengujian Sample</p>
+                                    <p class="text-[11px] text-slate-500">Video dokumentasi jalannya trial mesin, observasi lelehan aditif, & rekaman QC.</p>
+                                </div>
+                                <a :href="selectedEvent.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'" 
+                                   target="_blank" 
+                                   class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                                    ▶ Tonton Video Report Trial
+                                </a>
+                            </div>
+
+                            <div class="pt-2 border-t border-slate-200 flex items-center gap-2">
+                                <span class="text-[11px] font-bold text-slate-500">URL Hyperlink:</span>
+                                <input type="text" 
+                                       x-model="selectedEvent.videoUrl" 
+                                       placeholder="https://youtube.com/watch?v=..." 
+                                       class="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 font-mono focus:ring-violet-500 focus:border-violet-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detail Assignment Foreman -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Assignment Operator (Foreman)</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                                <p class="text-slate-500 mb-1">Lead Operator Trial</p>
+                                <p class="font-bold text-navy text-sm">Budi (Lead Operator)</p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
+                                <p class="text-slate-500 mb-1">Operator Pendamping</p>
+                                <p class="font-bold text-navy text-sm">Anggun, Mia (Operators)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Catatan & Objektif Trial -->
                     <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                         <h5 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Catatan / Objektif Trial</h5>
                         <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 relative overflow-hidden">
                             <div class="absolute -left-2 -top-2 text-6xl text-slate-200 font-serif leading-none">"</div>
-                            <p class="text-sm text-slate-600 font-medium relative z-10 pl-2">Uji coba komposisi aditif baru untuk meningkatkan flexural strength produk, target peningkatan efisiensi mesin 10% tanpa mengorbankan kejernihan warna. Mohon alokasikan mesin E-04 dengan suhu awal 170°C.</p>
+                            <p class="text-sm text-slate-600 font-medium relative z-10 pl-2" x-text="selectedEvent.keterangan || 'Uji coba komposisi aditif baru untuk meningkatkan flexural strength produk, target peningkatan efisiensi mesin 10% tanpa mengorbankan kejernihan warna.'"></p>
                         </div>
                     </div>
                 </div>
@@ -1259,6 +1350,276 @@
 
             <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
                 <button @click="showSlotModal = false" class="px-5 py-2 bg-navy text-white text-xs font-bold rounded-xl shadow-md hover:bg-navy-light transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 1: FORM PENGAJUAN TRIAL SAMPLE R&D ================= -->
+    <div x-show="showRndModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden" @click.away="showRndModal = false">
+            <div class="p-5 bg-gradient-to-r from-violet-700 to-purple-800 text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <span class="text-xl">🧪</span>
+                        Form Pengajuan Trial Sample R&D
+                    </h4>
+                    <p class="text-xs text-violet-200 mt-0.5">Pengajuan uji coba sample / formula baru ke PPIC & Penjadwalan Mesin</p>
+                </div>
+                <button @click="showRndModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[78vh] overflow-y-auto text-xs">
+                <!-- Nama Sample / Formula -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Sample / Formula Trial <span class="text-rose-500">*</span></label>
+                    <input type="text" x-model="rndForm.sampleName" placeholder="Contoh: Compound PVC High-Impact X-900" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                </div>
+
+                <!-- Mesin Target & Durasi -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Mesin Target Trial <span class="text-rose-500">*</span></label>
+                        <select x-model="rndForm.machine" @change="checkRndConflict()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                            <option value="Extruder E-01">Extruder E-01 (Sedang Aktif SPK-2608-001)</option>
+                            <option value="Extruder E-02">Extruder E-02 (Kosong / Bebas)</option>
+                            <option value="Extruder E-03">Extruder E-03 (Terisi SPK-2608-002)</option>
+                            <option value="Extruder E-04">Extruder E-04 (Cleaning Line)</option>
+                            <option value="Extruder E-05">Extruder E-05 (Terisi SPK-2608-007)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Durasi Estimasi Trial</label>
+                        <select x-model="rndForm.durationHour" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                            <option value="2">2 Jam Trial</option>
+                            <option value="4">4 Jam Trial (Standard)</option>
+                            <option value="6">6 Jam Trial</option>
+                            <option value="8">8 Jam (1 Shift Full)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Urgent / Mendadak Checkbox -->
+                <div class="bg-violet-50 border border-violet-200 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <p class="font-bold text-violet-900 text-xs">⚡ Pengajuan Urgent / Trial Mendadak</p>
+                        <p class="text-[10px] text-violet-700">Memprioritaskan notifikasi pengajuan langsung ke PPIC saat rilis formula baru.</p>
+                    </div>
+                    <input type="checkbox" x-model="rndForm.isUrgent" class="w-4 h-4 text-violet-600 rounded border-slate-300 focus:ring-violet-500">
+                </div>
+
+                <!-- Real-time 1 Mesin 1 SPK Conflict Alert Banner -->
+                <div x-show="rndConflict" class="bg-amber-50 border border-amber-300 rounded-2xl p-4 space-y-2">
+                    <div class="flex items-center gap-2 text-amber-800 font-bold">
+                        <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span>Deteksi Bentrok Jadwal Mesin (Aturan 1 Mesin = 1 SPK/Trial)</span>
+                    </div>
+                    <p class="text-slate-700 text-[11px]" x-text="rndConflictDetails"></p>
+                    <div class="bg-white/80 rounded-xl p-2.5 border border-amber-200 text-[10px] text-slate-600">
+                        <b>Catatan PPIC saat Approval:</b> PPIC akan mengevaluasi apakah SPK eksisting (SPK-2608-001) dipendekkan/diundur durasinya atau trial dialihkan ke Extruder E-02.
+                    </div>
+                </div>
+
+                <!-- Catatan / Objektif Trial -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catatan / Objektif Pengujian Sample</label>
+                    <textarea x-model="rndForm.notes" rows="2" placeholder="Uji coba aditif modifier impact baru untuk formula bening..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 focus:ring-violet-500 focus:border-violet-500 outline-none"></textarea>
+                </div>
+
+                <!-- Video Report Hyperlink URL -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        <span>Link Video Report Trial (Optional / Dokumentasi)</span>
+                        <span class="text-[10px] text-violet-600">Youtube / Drive / MP4</span>
+                    </label>
+                    <input type="text" x-model="rndForm.videoUrl" placeholder="https://youtube.com/watch?v=..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-mono focus:ring-violet-500 focus:border-violet-500 outline-none">
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <button @click="showRndModal = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">Batal</button>
+                <button @click="submitRndTrial()" class="px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+                    <span>🚀 Kirim Request ke PPIC</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL 2: PUSAT NOTIFIKASI & APPROVAL PPIC ================= -->
+    <div x-show="showPpicNotifModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden" @click.away="showPpicNotifModal = false">
+            <div class="p-5 bg-navy text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        Pusat Notifikasi & Approval Trial R&D (Role: PPIC)
+                    </h4>
+                    <p class="text-xs text-slate-300 mt-0.5">Daftar pengajuan trial sample dari R&D yang memerlukan persetujuan jadwal PPIC</p>
+                </div>
+                <button @click="showPpicNotifModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+                <template x-for="(req, idx) in rndTrialRequests" :key="req.id">
+                    <div class="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm transition-all space-y-3 hover:border-violet-300">
+                        
+                        <!-- Request Header with Clean Badge Layout -->
+                        <div class="flex justify-between items-center flex-wrap gap-3 pb-3 border-b border-slate-100">
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="font-mono font-extrabold text-[11px] bg-violet-100 text-violet-800 px-2.5 py-0.5 rounded-lg border border-violet-200" x-text="req.id"></span>
+                                    <span x-show="req.isUrgent" class="bg-rose-500 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse shadow-sm">⚡ Urgent / Mendadak</span>
+                                    <span class="text-[11px] font-semibold text-slate-400" x-text="req.requestedAt"></span>
+                                </div>
+                                <h5 class="font-extrabold text-navy text-sm mt-1 flex items-center gap-1.5">
+                                    <span>🧪</span>
+                                    <span x-text="req.sampleName"></span>
+                                </h5>
+                            </div>
+                            
+                            <!-- Status Badge (Rapi, No Wrap, No Overlap) -->
+                            <div class="flex-shrink-0">
+                                <span x-show="req.status === 'pending_ppic'" class="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-amber-800 border border-amber-300 font-bold rounded-xl text-xs shadow-sm whitespace-nowrap">
+                                    <span>⏳ Menunggu Persetujuan PPIC</span>
+                                </span>
+                                <span x-show="req.status === 'approved_pending_foreman'" class="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 border border-purple-300 font-bold rounded-xl text-xs shadow-sm whitespace-nowrap">
+                                    <span>✓ Disetujui PPIC (Menunggu Mandor)</span>
+                                </span>
+                                <span x-show="req.status === 'assigned_ready'" class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md whitespace-nowrap">
+                                    <span>✓ Penugasan Mandor Selesai</span>
+                                </span>
+                                <span x-show="req.status === 'rejected'" class="inline-flex items-center gap-1 px-3 py-1 bg-rose-100 text-rose-800 border border-rose-300 font-bold rounded-xl text-xs shadow-sm whitespace-nowrap">
+                                    <span>✕ Ditolak PPIC</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Details Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px]">
+                            <div>
+                                <p class="text-slate-400 mb-0.5">Target Mesin Requested</p>
+                                <p class="font-bold text-navy" x-text="req.machine"></p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-0.5">Durasi Estimasi</p>
+                                <p class="font-bold text-slate-800" x-text="req.durationHour + ' Jam'"></p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-0.5">Status Konflik Mesin</p>
+                                <p class="font-bold" :class="req.conflictWith.includes('SPK') ? 'text-amber-600' : 'text-emerald-600'" x-text="req.conflictWith"></p>
+                            </div>
+                        </div>
+
+                        <!-- Catatan R&D & Video Link -->
+                        <div class="space-y-1.5 text-[11px]">
+                            <p class="text-slate-600"><b>Catatan R&D:</b> <span x-text="req.notes"></span></p>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-violet-700">Link Video Laporan:</span>
+                                <a :href="req.videoUrl" target="_blank" class="text-cyan font-semibold underline truncate hover:text-navy" x-text="req.videoUrl"></a>
+                            </div>
+                        </div>
+
+                        <!-- Aksi Tombol PPIC (Jika Status Pending) -->
+                        <div x-show="req.status === 'pending_ppic'" class="pt-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+                            <span class="text-[11px] text-amber-700 font-bold flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Keputusan PPIC (Aturan 1 Mesin = 1 SPK):
+                            </span>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button @click="approvePpicTrial(req.id, 'shorten')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1">
+                                    <span>✓ Setujui & Diundur SPK-2608-001</span>
+                                </button>
+                                <button @click="approvePpicTrial(req.id, 'shift')" class="px-3.5 py-1.5 bg-cyan hover:bg-cyan/90 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1">
+                                    <span>🔀 Setujui & Alihkan Extruder E-02</span>
+                                </button>
+                                <button @click="rejectPpicTrial(req.id)" class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold text-xs rounded-xl transition">
+                                    <span>✕ Tolak</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button @click="showPpicNotifModal = false" class="px-5 py-2 bg-navy text-white text-xs font-bold rounded-xl shadow-md hover:bg-navy-light transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL 3: ASSIGNMENT FOREMAN ================= -->
+    <div x-show="showForemanAssignModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden" @click.away="showForemanAssignModal = false">
+            <div class="p-5 bg-gradient-to-r from-amber-600 to-amber-700 text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <span class="text-xl">👷</span>
+                        Penugasan Mesin & Operator Trial (Mandor / Foreman)
+                    </h4>
+                    <p class="text-xs text-amber-100 mt-0.5">Penugasan Ketua Operator & Operator Pendamping untuk trial R&D</p>
+                </div>
+                <button @click="showForemanAssignModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+                <template x-for="req in rndTrialRequests.filter(r => r.status === 'approved_pending_foreman' || r.status === 'assigned_ready')" :key="req.id">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-amber-800 text-[10px] bg-amber-100 px-2 py-0.5 rounded" x-text="req.id + ' · Disetujui PPIC'"></span>
+                                <h5 class="font-bold text-navy text-sm mt-1" x-text="'🧪 Trial: ' + req.sampleName"></h5>
+                                <p class="text-slate-500 text-[11px]">Mesin Target: <b class="text-slate-800" x-text="req.machine"></b> | Durasi: <b class="text-slate-800" x-text="req.durationHour + ' Jam'"></b></p>
+                            </div>
+                            <span x-show="req.status === 'assigned_ready'" class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-lg text-[10px]">✓ Penugasan Selesai</span>
+                        </div>
+
+                        <!-- Form Input Penugasan Mandor -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Ketua Operator (Lead Operator)</label>
+                                <select x-model="req.assignedLead" class="w-full bg-white border border-slate-300 rounded-xl p-2 text-xs font-bold text-navy focus:ring-amber-500 outline-none">
+                                    <option value="">-- Pilih Ketua Operator --</option>
+                                    <option value="Budi (Ketua Operator)">Budi (Ketua Op - Shift 1)</option>
+                                    <option value="Bagas (Ketua Operator)">Bagas (Ketua Op - Shift 2)</option>
+                                    <option value="Citra (Ketua Operator)">Citra (Ketua Op - Shift 3)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Operator Pendamping</label>
+                                <select x-model="req.assignedOperator" class="w-full bg-white border border-slate-300 rounded-xl p-2 text-xs font-bold text-navy focus:ring-amber-500 outline-none">
+                                    <option value="">-- Pilih Tim Pendamping --</option>
+                                    <option value="Anggun, Mia (Operators)">Anggun & Mia (Tim MERAH)</option>
+                                    <option value="Rudi, Putu (Operators)">Rudi & Putu (Tim HIJAU)</option>
+                                    <option value="Fitri, Irfan (Operators)">Fitri & Irfan (Tim KUNING)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button @click="assignForemanTrial(req.id, req.assignedLead, req.assignedOperator, 'Persiapan suhu die 175°C & pendampingan R&D.')" 
+                                    class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+                                <span>💾 Simpan Penugasan Mandor</span>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+                <template x-if="rndTrialRequests.filter(r => r.status === 'approved_pending_foreman' || r.status === 'assigned_ready').length === 0">
+                    <div class="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
+                        <p class="font-semibold text-xs text-slate-600">Belum ada Trial R&D yang membutuhkan penugasan Mandor</p>
+                        <p class="text-[10px] mt-0.5">Pengajuan trial R&D perlu disetujui terlebih dahulu oleh PPIC.</p>
+                    </div>
+                </template>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button @click="showForemanAssignModal = false" class="px-5 py-2 bg-navy text-white text-xs font-bold rounded-xl shadow-md hover:bg-navy-light transition">Tutup</button>
             </div>
         </div>
     </div>
@@ -1635,6 +1996,7 @@
         }));
 
         Alpine.data('calendarApp', () => ({
+            currentRole: localStorage.getItem('active_role') || 'ppic',
             viewMode: 'calendar',
             searchQuery: '',
             statusFilter: 'all',
@@ -1643,9 +2005,43 @@
             showEventModal: false,
             activeStep: 'cleaning', // Tab 1 = Cleaning
             showRndModal: false,
+            showPpicNotifModal: false,
+            showForemanAssignModal: false,
             showSlotModal: false,
             slotSearchQuery: '',
             slotMachineFilter: 'all',
+
+            // R&D Trial Form State
+            rndForm: {
+                sampleName: 'Compound PVC High-Impact X-900',
+                machine: 'Extruder E-01',
+                durationHour: 4,
+                isUrgent: true,
+                notes: 'Uji coba aditif modifier impact baru untuk formula bening, mendadak sebelum batch rilis.',
+                videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+            },
+            rndConflict: true,
+            rndConflictDetails: 'Mesin Extruder E-01 sedang terpakai oleh SPK-2608-001 (27 Aug - 29 Aug 2026). Aturan: 1 Mesin hanya 1 SPK/Trial.',
+
+            // Daftar Pengajuan Trial R&D (Role Simulation Data)
+            rndTrialRequests: [
+                {
+                    id: 'TRL-RND-101',
+                    sampleName: 'Formula PVC Transparan Rev-04',
+                    machine: 'Extruder E-01',
+                    durationHour: 4,
+                    isUrgent: true,
+                    notes: 'Uji coba penyeimbang suhu die & viskositas aditif baru, mendadak sebelum run masal.',
+                    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    status: 'pending_ppic', // pending_ppic | approved_pending_foreman | rejected | assigned_ready
+                    conflictWith: 'SPK-2608-001 (Extruder E-01)',
+                    requestedAt: 'Hari ini, 09:30 WIB',
+                    assignedLead: 'Budi (Lead Op)',
+                    assignedOperator: 'Anggun, Mia',
+                    foremanNotes: 'Suhu extruder diset 175°C, didampingi tim R&D.',
+                    rejectionNote: ''
+                }
+            ],
 
             stepOrder() {
                 return this.selectedEvent.linkedCleaning
@@ -1694,7 +2090,8 @@
                 cleaningDate: '',
                 cleaningOperators: [],
                 qcName: '',
-                qcResult: ''
+                qcResult: '',
+                videoUrl: ''
             },
 
             // Filter grafik per halaman step
@@ -1728,6 +2125,9 @@
             init() {
                 this.syncSlotsFromSPKs();
                 window.addEventListener('storage-updated', () => this.syncSlotsFromSPKs());
+                window.addEventListener('role-changed', e => {
+                    this.currentRole = e.detail.role;
+                });
 
                 this.$watch('showEventModal', value => {
                     if (value) {
@@ -1978,11 +2378,19 @@
                     alert('Waktu slot mesin berhasil diperbarui!');
                 }
             },
+            pendingCount() {
+                return this.rndTrialRequests.filter(r => r.status === 'pending_ppic').length;
+            },
+            foremanPendingCount() {
+                return this.rndTrialRequests.filter(r => r.status === 'approved_pending_foreman').length;
+            },
             checkRndConflict() {
                 if (this.rndForm.machine === 'Extruder E-01') {
                     this.rndConflict = true;
+                    this.rndConflictDetails = 'Mesin Extruder E-01 sedang terpakai oleh SPK-2608-001 (27 Aug - 29 Aug 2026). Aturan: 1 Mesin hanya 1 SPK/Trial.';
                 } else {
                     this.rndConflict = false;
+                    this.rndConflictDetails = '';
                 }
             },
             submitRndTrial() {
@@ -1990,43 +2398,119 @@
                     alert('Harap masukkan Nama Sample / Formula Trial R&D!');
                     return;
                 }
-                if (this.rndConflict) {
-                    alert('PERHATIAN: Ada konflik jadwal mesin! Harap atur pemendekan SPK atau geser jadwal terlebih dahulu.');
-                    return;
-                }
                 const trialId = 'TRL-RND-' + Math.floor(100 + Math.random() * 900);
-                const newTrial = {
+                this.rndTrialRequests.unshift({
                     id: trialId,
-                    title: '🧪 Trial R&D: ' + this.rndForm.sampleName,
-                    start: new Date().toISOString().split('T')[0] + 'T10:00:00',
-                    end: new Date().toISOString().split('T')[0] + 'T' + (10 + parseInt(this.rndForm.durationHour || 4)) + ':00:00',
-                    backgroundColor: '#8b5cf6',
-                    borderColor: '#7c3aed',
-                    extendedProps: {
-                        product: this.rndForm.sampleName,
-                        customer: 'Internal R&D Department',
-                        machine: this.rndForm.machine,
-                        keterangan: this.rndForm.notes || 'Pengajuan Trial R&D Uji Coba Sample Formula',
-                        type: 'rnd_trial',
-                        team: 'Tim R&D',
-                        completedBatch: 0,
-                        totalBatch: 1,
-                        shifts: ['Shift 2 — Tim R&D: Trial Lead'],
-                        substatus: 'Pengujian Sample R&D'
-                    }
-                };
-                if (window.calendarInstance) {
-                    window.calendarInstance.addEvent(newTrial);
-                }
-                this.slots.unshift({
+                    sampleName: this.rndForm.sampleName,
                     machine: this.rndForm.machine,
-                    spkNo: trialId,
-                    product: '🧪 ' + this.rndForm.sampleName,
-                    date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
-                    time: '10:00 - ' + (10 + parseInt(this.rndForm.durationHour || 4)) + ':00'
+                    durationHour: parseInt(this.rndForm.durationHour || 4),
+                    isUrgent: this.rndForm.isUrgent,
+                    notes: this.rndForm.notes || 'Pengajuan trial sample formula R&D',
+                    videoUrl: this.rndForm.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    status: 'pending_ppic',
+                    conflictWith: this.rndConflict ? `Mesin ${this.rndForm.machine} sedang dipakai SPK-2608-001` : 'Tidak Ada (Mesin Bebas)',
+                    requestedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+                    assignedLead: '',
+                    assignedOperator: '',
+                    foremanNotes: '',
+                    rejectionNote: ''
                 });
-                alert(`Request Trial Sample R&D (${this.rndForm.sampleName}) berhasil diajukan ke PPIC & dijadwalkan secara real-time!`);
+                alert(`Pengajuan Trial Sample R&D (${this.rndForm.sampleName}) BERHASIL dikirim ke PPIC!\n\nStatus: Pending Approval PPIC.\nPPIC menerima notifikasi otomatis untuk mengecek ketersediaan mesin & jadwal.`);
                 this.showRndModal = false;
+            },
+            approvePpicTrial(reqId, mode) {
+                const req = this.rndTrialRequests.find(r => r.id === reqId);
+                if (!req) return;
+
+                if (mode === 'shorten') {
+                    req.status = 'approved_pending_foreman';
+                    if (window.calendarInstance) {
+                        let ev = window.calendarInstance.getEventById('SPK-2608-001') || window.calendarInstance.getEvents().find(e => e.title && e.title.includes('SPK-2608-001'));
+                        if (ev) ev.setEnd(new Date().toISOString().split('T')[0] + 'T09:30:00');
+                    }
+                    const newTrial = {
+                        id: req.id,
+                        title: '🧪 Trial R&D: ' + req.sampleName,
+                        start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+                        end: new Date().toISOString().split('T')[0] + 'T' + (10 + parseInt(req.durationHour || 4)) + ':00:00',
+                        backgroundColor: '#8b5cf6',
+                        borderColor: '#7c3aed',
+                        extendedProps: {
+                            product: req.sampleName,
+                            customer: 'Internal R&D Department',
+                            machine: req.machine,
+                            keterangan: req.notes,
+                            videoUrl: req.videoUrl,
+                            type: 'rnd',
+                            team: 'Tim R&D',
+                            completedBatch: 0,
+                            totalBatch: 1,
+                            shifts: ['Shift 2 — Tim R&D'],
+                            substatus: 'Approved PPIC — Pending Foreman'
+                        }
+                    };
+                    if (window.calendarInstance) window.calendarInstance.addEvent(newTrial);
+                    this.slots.unshift({
+                        machine: req.machine,
+                        spkNo: req.id,
+                        product: '🧪 ' + req.sampleName,
+                        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+                        time: '10:00 - ' + (10 + parseInt(req.durationHour || 4)) + ':00'
+                    });
+                    alert(`Trial R&D (${req.sampleName}) BERHASIL DI-APPROVE PPIC!\n\nDurasi SPK-2608-001 dipendekkan & slot ${req.machine} dialokasikan untuk trial.\nStatus sekarang: Pending Assignment Foreman.`);
+                } else if (mode === 'shift') {
+                    req.machine = 'Extruder E-02';
+                    req.status = 'approved_pending_foreman';
+                    const newTrial = {
+                        id: req.id,
+                        title: '🧪 Trial R&D: ' + req.sampleName,
+                        start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+                        end: new Date().toISOString().split('T')[0] + 'T' + (10 + parseInt(req.durationHour || 4)) + ':00:00',
+                        backgroundColor: '#8b5cf6',
+                        borderColor: '#7c3aed',
+                        extendedProps: {
+                            product: req.sampleName,
+                            customer: 'Internal R&D Department',
+                            machine: req.machine,
+                            keterangan: req.notes,
+                            videoUrl: req.videoUrl,
+                            type: 'rnd',
+                            team: 'Tim R&D',
+                            completedBatch: 0,
+                            totalBatch: 1,
+                            shifts: ['Shift 2 — Tim R&D'],
+                            substatus: 'Approved PPIC — Pending Foreman'
+                        }
+                    };
+                    if (window.calendarInstance) window.calendarInstance.addEvent(newTrial);
+                    this.slots.unshift({
+                        machine: req.machine,
+                        spkNo: req.id,
+                        product: '🧪 ' + req.sampleName,
+                        date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+                        time: '10:00 - ' + (10 + parseInt(req.durationHour || 4)) + ':00'
+                    });
+                    alert(`Trial R&D (${req.sampleName}) BERHASIL DI-APPROVE PPIC!\n\nJadwal dialihkan ke ${req.machine} yang kosong.\nStatus sekarang: Pending Assignment Foreman.`);
+                }
+            },
+            rejectPpicTrial(reqId) {
+                const req = this.rndTrialRequests.find(r => r.id === reqId);
+                if (!req) return;
+                const reason = prompt('Masukkan alasan penolakan untuk R&D:', 'Jadwal mesin padat, mohon ajukan di shift 3');
+                if (reason) {
+                    req.status = 'rejected';
+                    req.rejectionNote = reason;
+                    alert(`Pengajuan Trial R&D (${req.sampleName}) DITOLAK oleh PPIC.\nAlasan: ${reason}`);
+                }
+            },
+            assignForemanTrial(reqId, leadOp, helperOp, notes) {
+                const req = this.rndTrialRequests.find(r => r.id === reqId);
+                if (!req) return;
+                req.assignedLead = leadOp || 'Budi (Lead Operator)';
+                req.assignedOperator = helperOp || 'Anggun, Mia (Operators)';
+                req.foremanNotes = notes || 'Suhu extruder diset 175°C, siap trial.';
+                req.status = 'assigned_ready';
+                alert(`Assignment Operator oleh Foreman BERHASIL Disimpan!\n\nLead: ${req.assignedLead}\nOperator: ${req.assignedOperator}\nStatus: Siap Eksekusi Trial R&D.`);
             },
             shortenExistingSpk() {
                 alert('SPK eksisting SPK-2608-001 dipendekkan durasinya! Slot Extruder E-01 sekarang bebas untuk Trial R&D.');
@@ -2091,6 +2575,7 @@
                     shifts: ext.shifts || [],
                     substatus: ext.substatus || '',
                     type: ext.type || 'running',
+                    videoUrl: ext.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                     parentSpk: ext.parentSpk || '',
                     linkedCleaning: ext.linkedCleaning || '',
                     timbangShift: ext.timbangShift || 'Shift 1 · Team RED',
@@ -2109,9 +2594,21 @@
                 let ext = arg.event.extendedProps;
                 let isDraft = ext.type === 'draft';
                 let isCleaning = ext.type === 'cleaning';
-                let isRnd = ext.type === 'rnd_trial';
+                let isRnd = ext.type === 'rnd' || ext.type === 'rnd_trial';
                 let teamBadge = ext.team ? `<span style="font-size:8px;font-weight:700;opacity:0.9;">${ext.team}</span>` : '';
                 
+                if (isRnd) {
+                    return {
+                        html: `<div class="p-1.5 overflow-hidden cursor-pointer shadow-md transition-all hover:scale-[1.02]" style="border-radius:6px; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; border-left: 4px solid #f43f5e; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);">
+                            <div style="font-size:8.5px;font-weight:900;text-transform:uppercase;color:#fef08a;letter-spacing:0.5px;" class="flex items-center gap-1">
+                                <span>🧪 TRIAL SAMPLE R&D</span>
+                            </div>
+                            <div style="font-size:11px;font-weight:800;margin-top:1px;">${arg.event.title}</div>
+                            <div style="font-size:9px;opacity:0.95;font-weight:600;">📍 ${ext.machine || 'Extruder E-01'}</div>
+                        </div>`
+                    };
+                }
+
                 if (isCleaning) {
                     return {
                         html: `<div class="p-1 overflow-hidden cursor-pointer shadow-sm" style="border-radius:4px; background-color: #7c3aed; color: #ffffff; border-left: 3px solid #f59e0b;">
@@ -2126,7 +2623,7 @@
 
                 return {
                     html: `<div class="p-1 overflow-hidden cursor-pointer" style="border-radius:4px;">
-                        <div style="font-size:9px;font-weight:700;text-transform:uppercase;opacity:${isDraft?'0.7':'0.9'}">${arg.event.title}${isDraft?' [DRAFT]':''}${isRnd?' [TRIAL R&D]':''}</div>
+                        <div style="font-size:9px;font-weight:700;text-transform:uppercase;opacity:${isDraft?'0.7':'0.9'}">${arg.event.title}${isDraft?' [DRAFT]':''}</div>
                         <div style="font-size:11px;font-weight:600;">${ext.product||''}</div>
                         ${teamBadge}
                         ${stackBadge}
