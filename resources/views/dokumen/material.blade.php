@@ -32,7 +32,7 @@
         Kembali
     </a>
     <div class="h-4 w-px bg-slate-600"></div>
-    <h1 class="text-sm font-bold flex-1">Dokumen Alur Material — <span class="text-cyan" x-text="activeDoc === 'moving' ? 'Moving Slip' : (activeDoc === 'transfer' ? 'Transfer Slip' : 'Form Serah Terima')"></span></h1>
+    <h1 class="text-sm font-bold flex-1"> <span class="text-cyan" x-text="activeDoc === 'moving' ? 'Moving Slip' : (activeDoc === 'transfer' ? 'Transfer Slip' : 'Form Serah Terima')"></span></h1>
     <div class="flex gap-2">
         <button @click="activeDoc = 'moving'" :class="activeDoc === 'moving' ? 'bg-cyan text-white' : 'bg-navy-light text-slate-300 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Moving Slip</button>
         <button @click="activeDoc = 'transfer'" :class="activeDoc === 'transfer' ? 'bg-cyan text-white' : 'bg-navy-light text-slate-300 hover:text-white'" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Transfer Slip</button>
@@ -56,7 +56,21 @@
                     <div>
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">PT Dunia Kimia Jaya</p>
                         <h1 class="text-2xl font-black text-navy uppercase tracking-tight">Moving Slip</h1>
-                        <p class="text-sm text-slate-500 mt-0.5">Formulir Penambahan Material ke Produksi</p>
+                        <p class="text-sm text-slate-500 mt-0.5">Formulir Permintaan Material ke Gudang (Produksi → Gudang)</p>
+                        <!-- Role Badge -->
+                        <div class="mt-3 flex items-center gap-3">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dibuat oleh:</p>
+                            <div class="flex items-center bg-slate-100 rounded-lg p-0.5 no-print">
+                                <button @click="createdBy = 'ppic'"
+                                        :class="createdBy === 'ppic' ? 'bg-navy text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+                                        class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">PPIC</button>
+                                <button @click="createdBy = 'produksi'"
+                                        :class="createdBy === 'produksi' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+                                        class="px-3 py-1 text-[11px] font-bold rounded-md transition-all">Produksi</button>
+                            </div>
+                            <span x-show="createdBy === 'ppic'" class="px-2.5 py-1 bg-navy text-white text-[10px] font-bold rounded-lg">Persiapan Awal Sebelum Running</span>
+                            <span x-show="createdBy === 'produksi'" class="px-2.5 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-lg">Permintaan Tambahan di Tengah Proses</span>
+                        </div>
                     </div>
                     <div class="text-right">
                         <div class="inline-block bg-amber-100 border border-amber-300 rounded-xl px-4 py-2 text-right">
@@ -168,13 +182,13 @@
                 <div class="grid grid-cols-3 gap-6 pt-4">
                     <div class="text-center">
                         <div class="h-16 border-b border-slate-300 mb-2"></div>
-                        <p class="text-xs font-bold text-slate-600">Diajukan oleh</p>
-                        <p class="text-[10px] text-slate-400">Operator / Produksi</p>
+                        <p class="text-xs font-bold text-slate-600" x-text="createdBy === 'ppic' ? 'Dibuat oleh (PPIC)' : 'Diajukan oleh (Produksi)'"></p>
+                        <p class="text-[10px] text-slate-400" x-text="createdBy === 'ppic' ? 'Staff PPIC' : 'Operator / Foreman'"></p>
                     </div>
                     <div class="text-center">
                         <div class="h-16 border-b border-slate-300 mb-2"></div>
                         <p class="text-xs font-bold text-slate-600">Disetujui oleh</p>
-                        <p class="text-[10px] text-slate-400">Process Engineering (PE)</p>
+                        <p class="text-[10px] text-slate-400" x-text="createdBy === 'ppic' ? 'Kepala Produksi' : 'Process Engineering (PE)'"></p>
                     </div>
                     <div class="text-center">
                         <div class="h-16 border-b border-slate-300 mb-2"></div>
@@ -475,6 +489,7 @@
         }));
 
         Alpine.data('movingSlipApp', () => ({
+            createdBy: 'ppic', // 'ppic' = persiapan awal sebelum running | 'produksi' = tambahan di tengah proses
             rows: [
                 { kode: 'RM-001', nama: 'Resin PVC S-65', unit: 'Kg', lot: 'LOT-260801', qty: 50, remarks: 'Penambahan stok darurat' },
                 { kode: 'RM-003', nama: 'Stabilizer Ca-Zn', unit: 'Kg', lot: 'LOT-260805', qty: 2, remarks: 'Penyesuaian resep' }

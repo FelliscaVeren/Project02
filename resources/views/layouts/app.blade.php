@@ -104,10 +104,48 @@
                     type: 'OUT',
                     date: '2026-08-27T08:15:00',
                     ref: 'SPK-2608-001',
+                    dept: 'Dept. Mixing Powder & Extrusion',
                     items: [
                         { name: 'Resin PVC S-65', qty: 1250, unit: 'Kg' },
                         { name: 'Stabilizer Ca-Zn', qty: 50, unit: 'Kg' },
                         { name: 'Pigment White TiO2', qty: 25, unit: 'Kg' }
+                    ],
+                    user: 'Jane Doe'
+                },
+                {
+                    id: 'MS-2608-002',
+                    type: 'OUT',
+                    date: '2026-08-28T10:30:00',
+                    ref: 'SPK-2608-002',
+                    dept: 'Dept. Extrusion Line 2',
+                    items: [
+                        { name: 'Resin PVC S-65', qty: 750, unit: 'Kg' },
+                        { name: 'Pigment Color Blue', qty: 24, unit: 'Kg' },
+                        { name: 'Stabilizer Ca-Zn', qty: 30, unit: 'Kg' }
+                    ],
+                    user: 'Budi Santoso'
+                },
+                {
+                    id: 'MS-2608-003',
+                    type: 'IN',
+                    date: '2026-08-30T14:00:00',
+                    ref: 'PO-MJU-992',
+                    dept: 'Gudang Bahan Baku (Restock)',
+                    items: [
+                        { name: 'Stabilizer Ca-Zn', qty: 45, unit: 'Kg' },
+                        { name: 'Resin PVC S-65', qty: 500, unit: 'Kg' }
+                    ],
+                    user: 'Ahmad Dani'
+                },
+                {
+                    id: 'MS-2608-004',
+                    type: 'OUT',
+                    date: '2026-09-01T09:00:00',
+                    ref: 'SPK-2608-005',
+                    dept: 'Dept. Mixing Powder',
+                    items: [
+                        { name: 'Resin PVC S-65', qty: 1000, unit: 'Kg' },
+                        { name: 'Pigment White TiO2', qty: 15, unit: 'Kg' }
                     ],
                     user: 'Jane Doe'
                 }
@@ -152,6 +190,20 @@
             slips.unshift(newSlip);
             window.saveSlips(slips);
         };
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sidebarBadge', () => ({
+                pendingCount: 0,
+                init() {
+                    this.updateCount();
+                    window.addEventListener('storage-updated', () => this.updateCount());
+                },
+                updateCount() {
+                    const spks = window.getSPKs() || [];
+                    this.pendingCount = spks.filter(s => s.status === 'Draft' || s.status === 'Revised').length;
+                }
+            }));
+        });
     </script>
     <style type="text/tailwindcss">
         @theme {
@@ -166,7 +218,7 @@
 <body class="antialiased flex h-screen overflow-hidden bg-[#f4f7fb] print:bg-white print:h-auto print:overflow-visible">
     
     <!-- Sidebar -->
-    <aside class="w-64 bg-navy text-white border-r border-navy flex flex-col shadow-xl flex-shrink-0 print:hidden">
+    <aside class="w-64 bg-navy text-white border-r border-navy flex flex-col shadow-xl flex-shrink-0 print:hidden" x-data="sidebarBadge()" x-init="init()">
         <div class="h-16 flex items-center px-6 border-b border-navy-light bg-navy-light/30">
             <h1 class="text-xl font-bold flex items-center gap-2">
                 <span class="text-cyan">Sistem</span>SPK
@@ -197,7 +249,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                     Daftar Tunggu
                 </div>
-                <span class="bg-amber-500/20 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/50">3</span>
+                <span x-show="pendingCount > 0" class="bg-amber-500/20 text-amber-300 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-500/50" x-text="pendingCount"></span>
             </a>
 
             <p class="px-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">Departemen Produksi</p>
@@ -224,20 +276,74 @@
         <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-10 print:hidden">
             <h2 class="text-lg font-bold text-navy">@yield('title')</h2>
             
-            <div class="flex items-center gap-4">
-                <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-navy bg-slate-100 px-3 py-1.5 rounded-lg transition-colors border border-slate-200">
-                        <span class="w-2 h-2 rounded-full bg-cyan"></span>
+            <div class="flex items-center gap-4" x-data="{ 
+                open: false, 
+                currentRole: localStorage.getItem('active_role') || 'ppic',
+                roleLabels: {
+                    'ppic': 'PPIC',
+                    'gudang': 'Gudang / Inventory',
+                    'rnd': 'R&D',
+                    'pe': 'Process Engineering (PE)',
+                    'qc': 'Quality Control (QC)',
+                    'foreman': 'Kepala Produksi / Foreman'
+                },
+                selectRole(role) {
+                    this.currentRole = role;
+                    localStorage.setItem('active_role', role);
+                    window.dispatchEvent(new CustomEvent('role-changed', { detail: { role: role } }));
+                    this.open = false;
+                }
+            }" @role-changed.window="currentRole = $event.detail.role">
+                
+                <!-- Badge Role Aktif -->
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all"
+                     :class="{
+                        'bg-cyan/15 text-cyan border border-cyan/30': currentRole === 'ppic',
+                        'bg-violet-100 text-violet-700 border border-violet-200': currentRole === 'rnd',
+                        'bg-amber-100 text-amber-800 border border-amber-200': currentRole === 'foreman',
+                        'bg-emerald-100 text-emerald-800 border border-emerald-200': currentRole === 'gudang',
+                        'bg-indigo-100 text-indigo-800 border border-indigo-200': currentRole === 'pe',
+                        'bg-rose-100 text-rose-800 border border-rose-200': currentRole === 'qc'
+                     }">
+                    <span class="w-2 h-2 rounded-full animate-pulse" :class="currentRole === 'rnd' ? 'bg-violet-500' : (currentRole === 'foreman' ? 'bg-amber-500' : 'bg-cyan')"></span>
+                    <span class="text-xs">Role: <span x-text="roleLabels[currentRole] || 'PPIC'"></span></span>
+                </div>
+
+                <div class="relative">
+                    <button @click="open = !open" class="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-navy bg-slate-100 px-3 py-1.5 rounded-lg transition-colors border border-slate-200">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         Simulasi Role
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-1 z-50">
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">PPIC</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Gudang / Inventory</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">R&D</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Process Engineering (PE)</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Quality Control (QC)</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Kepala Produksi</a>
+                    <div x-show="open" @click.away="open = false" style="display: none;" class="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-xl shadow-xl py-1 z-50 divide-y divide-slate-100 text-xs">
+                        <div class="py-1">
+                            <button @click="selectRole('ppic')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-cyan/10 hover:text-cyan flex items-center justify-between">
+                                <span>📋 PPIC</span>
+                                <span x-show="currentRole === 'ppic'" class="text-cyan font-bold">✓</span>
+                            </button>
+                            <button @click="selectRole('rnd')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-violet-50 hover:text-violet-700 flex items-center justify-between">
+                                <span>🧪 R&D (Form & Trial)</span>
+                                <span x-show="currentRole === 'rnd'" class="text-violet-600 font-bold">✓</span>
+                            </button>
+                            <button @click="selectRole('foreman')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-800 flex items-center justify-between">
+                                <span>👷 Kepala Produksi / Foreman</span>
+                                <span x-show="currentRole === 'foreman'" class="text-amber-600 font-bold">✓</span>
+                            </button>
+                        </div>
+                        <div class="py-1">
+                            <button @click="selectRole('gudang')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+                                <span>📦 Gudang / Inventory</span>
+                                <span x-show="currentRole === 'gudang'" class="text-slate-600 font-bold">✓</span>
+                            </button>
+                            <button @click="selectRole('pe')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+                                <span>⚙️ Process Engineering (PE)</span>
+                                <span x-show="currentRole === 'pe'" class="text-slate-600 font-bold">✓</span>
+                            </button>
+                            <button @click="selectRole('qc')" class="w-full text-left px-4 py-2 font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+                                <span>🔍 Quality Control (QC)</span>
+                                <span x-show="currentRole === 'qc'" class="text-slate-600 font-bold">✓</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 

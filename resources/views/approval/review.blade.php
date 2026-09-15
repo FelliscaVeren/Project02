@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Review Draft SPK')
+@section('title', 'Approval SPK Baru')
 
 @section('content')
 <div class="max-w-6xl mx-auto h-full flex flex-col gap-6" x-data="approvalFlow()">
@@ -17,10 +17,10 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-        <!-- Kolom Kiri: Info Draft & Transparansi Resep (Lebar 4) -->
+        <!-- Kolom Kiri: Info SPK Baru & Transparansi Resep (Lebar 4) -->
         <div class="lg:col-span-4 space-y-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4 border-b border-slate-100 pb-2">Informasi Draft SPK</h4>
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4 border-b border-slate-100 pb-2">Informasi SPK Baru</h4>
                 
                 <div class="space-y-4 text-sm">
                     <div>
