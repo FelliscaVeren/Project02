@@ -187,6 +187,16 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- BARU: Riwayat pemakaian mesin sebelum cleaning (otomatis, bukan input manual) -->
+                <div class="pt-2">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Riwayat Pemakaian Terakhir (Sebelum Cleaning)</label>
+                    <div class="w-full bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-xs font-bold text-amber-800" x-text="cleaningPreviousProduct"></p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">Otomatis terisi dari riwayat SPK terakhir pada mesin ini, dipakai sebagai acuan risiko kontaminasi sebelum cleaning.</p>
+                </div>
             </div>
 
             <hr class="border-slate-100">
@@ -256,68 +266,73 @@
         </div>
     </div>
 
-    <!-- Preview Modal sebelum submit -->
-    <div x-show="showPreview" style="display:none;" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60">
-        <div @click.outside="showPreview = false" x-show="showPreview" x-transition class="bg-white rounded-2xl border border-slate-200 shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50 sticky top-0">
-                <h3 class="text-lg font-bold text-navy">Preview Draft SPK</h3>
-                <p class="text-sm text-slate-500">Periksa kembali data sebelum melanjutkan ke approval.</p>
+    <!-- Preview Modal sebelum submit — didesain seperti halaman dokumen/buku -->
+    <div x-show="showPreview" style="display:none;" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70">
+        <div @click.outside="showPreview = false" x-show="showPreview" x-transition class="bg-[#fdfcf9] rounded-lg border border-slate-300 shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto font-serif">
+
+            <!-- Header dokumen ala kop surat -->
+            <div class="px-10 pt-8 pb-6 border-b-2 border-navy sticky top-0 bg-[#fdfcf9]">
+                <p class="text-center text-xs tracking-[0.3em] uppercase text-slate-400 font-sans font-bold">Draft Dokumen Internal</p>
+                <h3 class="text-center text-2xl font-bold text-navy tracking-wide mt-1">Surat Perintah Kerja (SPK)</h3>
+                <p class="text-center text-sm text-slate-500 mt-1">Periksa kembali seluruh data di bawah ini sebelum melanjutkan ke tahap approval.</p>
             </div>
 
-            <div class="p-6 space-y-5 text-sm">
+            <div class="px-10 py-8 space-y-9 text-base text-slate-800 leading-relaxed">
+
+                <!-- I. Spesifikasi Dasar -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Spesifikasi Dasar</h4>
-                    <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                        <p class="text-slate-500">Produk</p><p class="font-bold text-navy" x-text="productLabel(step1Data.product)"></p>
-                        <p class="text-slate-500">Quantity</p><p class="font-bold text-navy" x-text="(step1Data.qty || '-') + ' Batch'"></p>
-                        <p class="text-slate-500">Customer</p><p class="font-bold text-navy" x-text="step1Data.customerName || '-'"></p>
-                        <p class="text-slate-500">Target OP</p><p class="font-bold text-navy" x-text="step1Data.targetOp || '-'"></p>
-                        <p class="text-slate-500">Tanggal Kirim (tentatif)</p><p class="font-bold text-navy" x-text="step1Data.tentativeShipDate || '-'"></p>
-                        <p class="text-slate-500">Keterangan</p><p class="font-bold text-navy" x-text="step1Data.keterangan || '-'"></p>
-                        <p class="text-slate-500">Remarks</p><p class="font-bold text-navy" x-text="step1Data.remarks || '-'"></p>
-                    </div>
+                    <h4 class="text-sm font-bold uppercase tracking-[0.15em] text-navy border-b border-slate-300 pb-2 mb-4 font-sans">I. Spesifikasi Dasar</h4>
+                    <dl class="space-y-3">
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Produk:</dt><dd class="font-bold text-navy" x-text="productLabel(step1Data.product)"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Quantity:</dt><dd class="font-bold text-navy" x-text="step1Data.qty ? (step1Data.qty + ' Batch') : '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Customer:</dt><dd class="font-bold text-navy" x-text="step1Data.customerName || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Target OP:</dt><dd class="font-bold text-navy" x-text="step1Data.targetOp || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Tanggal Kirim (tentatif):</dt><dd class="font-bold text-navy" x-text="step1Data.tentativeShipDate || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Keterangan:</dt><dd class="font-bold text-navy" x-text="step1Data.keterangan || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Remarks:</dt><dd class="font-bold text-navy" x-text="step1Data.remarks || '-'"></dd></div>
+                    </dl>
                 </div>
 
-                <hr class="border-slate-100">
-
+                <!-- II. Waktu Proses -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Waktu Proses</h4>
-                    <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                        <p class="text-slate-500">Mulai</p><p class="font-bold text-navy" x-text="(startDate || '-') + ' ' + startHour"></p>
-                        <p class="text-slate-500">Selesai</p><p class="font-bold text-navy" x-text="(finishDate || '-') + ' ' + finishHour"></p>
-                        <p class="text-slate-500">Total Durasi</p><p class="font-bold text-navy" x-text="totalHours > 0 ? (totalHours + ' Jam · ' + totalDays + ' Hari · ' + totalShifts + ' Shift') : '-'"></p>
-                    </div>
+                    <h4 class="text-sm font-bold uppercase tracking-[0.15em] text-navy border-b border-slate-300 pb-2 mb-4 font-sans">II. Waktu Proses</h4>
+                    <dl class="space-y-3">
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Mulai:</dt><dd class="font-bold text-navy" x-text="startDate ? (startDate + ' ' + startHour) : '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Selesai:</dt><dd class="font-bold text-navy" x-text="finishDate ? (finishDate + ' ' + finishHour) : '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Total Durasi:</dt><dd class="font-bold text-navy" x-text="totalHours > 0 ? (totalHours + ' Jam · ' + totalDays + ' Hari · ' + totalShifts + ' Shift') : '-'"></dd></div>
+                    </dl>
                 </div>
 
-                <hr class="border-slate-100">
-
+                <!-- III. Alokasi Mesin & Cleaning -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Alokasi Mesin & Cleaning</h4>
-                    <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                        <p class="text-slate-500">Mixer</p><p class="font-bold text-navy" x-text="selectedMixer || '-'"></p>
-                        <p class="text-slate-500">Extruder</p><p class="font-bold text-navy" x-text="selectedExtruder || '-'"></p>
-                        <p class="text-slate-500">Feeder</p><p class="font-bold text-navy" x-text="selectedFeeder || '-'"></p>
-                        <p class="text-slate-500">Mesin Cleaning</p><p class="font-bold text-navy" x-text="cleaningMachine"></p>
-                        <p class="text-slate-500">Jam Cleaning</p><p class="font-bold text-navy" x-text="cleaningStartHour + ' - ' + cleaningEndHour"></p>
-                        <p class="text-slate-500">Tanggal / Shift Cleaning</p><p class="font-bold text-navy" x-text="cleaningDateLabel + ' · ' + cleaningShiftLabel"></p>
-                    </div>
+                    <h4 class="text-sm font-bold uppercase tracking-[0.15em] text-navy border-b border-slate-300 pb-2 mb-4 font-sans">III. Alokasi Mesin & Cleaning</h4>
+                    <dl class="space-y-3">
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Mixer:</dt><dd class="font-bold text-navy" x-text="selectedMixer || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Extruder:</dt><dd class="font-bold text-navy" x-text="selectedExtruder || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Feeder:</dt><dd class="font-bold text-navy" x-text="selectedFeeder || '-'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Mesin Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningMachine"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Jam Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningStartHour + ' - ' + cleaningEndHour"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Tanggal / Shift Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningDateLabel + ' · ' + cleaningShiftLabel"></dd></div>
+                        <div class="pt-2 mt-1 border-t border-dashed border-slate-200">
+                            <div class="flex flex-wrap items-baseline gap-x-2 pt-2"><dt class="text-slate-500 shrink-0">Riwayat Pemakaian Sebelumnya:</dt><dd class="font-bold text-amber-700" x-text="cleaningPreviousProduct"></dd></div>
+                        </div>
+                    </dl>
                 </div>
 
-                <hr class="border-slate-100">
-
+                <!-- IV. Estimasi Manpower -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Estimasi Manpower / Shift</h4>
-                    <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                        <p class="text-slate-500">Cleaning</p><p class="font-bold text-navy" x-text="mpCleaning + ' Orang'"></p>
-                        <p class="text-slate-500">Penimbangan</p><p class="font-bold text-navy" x-text="mpPenimbangan + ' Orang'"></p>
-                        <p class="text-slate-500">Mixing / Blending</p><p class="font-bold text-navy" x-text="mpMixing + ' Orang'"></p>
-                        <p class="text-slate-500">Extruder</p><p class="font-bold text-navy" x-text="mpExtruder + ' Orang'"></p>
-                        <p class="text-slate-500">Bagging</p><p class="font-bold text-navy" x-text="mpBagging + ' Orang'"></p>
-                    </div>
+                    <h4 class="text-sm font-bold uppercase tracking-[0.15em] text-navy border-b border-slate-300 pb-2 mb-4 font-sans">IV. Estimasi Manpower / Shift</h4>
+                    <dl class="space-y-3">
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Cleaning:</dt><dd class="font-bold text-navy" x-text="mpCleaning + ' Orang'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Penimbangan:</dt><dd class="font-bold text-navy" x-text="mpPenimbangan + ' Orang'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Mixing / Blending:</dt><dd class="font-bold text-navy" x-text="mpMixing + ' Orang'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Extruder:</dt><dd class="font-bold text-navy" x-text="mpExtruder + ' Orang'"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Bagging:</dt><dd class="font-bold text-navy" x-text="mpBagging + ' Orang'"></dd></div>
+                    </dl>
                 </div>
             </div>
 
-            <div class="p-6 border-t border-slate-100 bg-white flex justify-end gap-3 sticky bottom-0">
+            <div class="px-10 py-5 border-t border-slate-200 bg-[#fdfcf9] flex justify-end gap-3 sticky bottom-0 font-sans">
                 <button type="button" @click="showPreview = false" class="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">Kembali Edit</button>
                 <button type="button" @click="submitSpk()" class="px-6 py-2.5 text-sm font-bold text-white bg-cyan hover:bg-cyan/90 rounded-xl shadow-md shadow-cyan/20 transition-colors flex items-center gap-2">
                     Lanjutkan & Submit
@@ -351,6 +366,17 @@
             cleaningStartHour: '06:00',
             cleaningEndHour: '07:00',
 
+            // BARU: dummy riwayat pemakaian terakhir per mesin (nanti diganti data asli dari histori SPK/backend)
+            machineLastUsage: {
+                'Mixer A-01': 'PVC Compound A (Clear) - Kategori Clear',
+                'Mixer B-02': 'PVC Compound B (Color) - Kategori White',
+                'Extruder Line 1': 'PVC Compound A (Clear) - Kategori Clear',
+                'Extruder Line 2': 'PVC Compound B (Color) - Kategori Black',
+                'Extruder Line 5': 'PVC Compound B (Color) - Kategori White',
+                'Extruder Line 6': 'PVC Compound B (Color) - Kategori Grey',
+                'Feeder 01': 'PVC Compound B (Color) - Kategori White',
+            },
+
             // Manpower
             mpCleaning: 1,
             mpPenimbangan: 1,
@@ -380,6 +406,11 @@
                 if (hourNum >= 6 && hourNum < 14) return 'Shift 1 (06:00 - 14:00)';
                 if (hourNum >= 14 && hourNum < 22) return 'Shift 2 (14:00 - 22:00)';
                 return 'Shift 3 (22:00 - 06:00)';
+            },
+
+            // BARU: riwayat pemakaian terakhir otomatis mengikuti mesin yang dipilih untuk di-cleaning
+            get cleaningPreviousProduct() {
+                return this.machineLastUsage[this.cleaningMachine] || 'Belum ada riwayat pemakaian tercatat';
             },
 
             init() {
