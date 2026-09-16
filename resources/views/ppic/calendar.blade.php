@@ -193,37 +193,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Draft SPK row -->
-                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40" x-show="statusFilter === 'all' || statusFilter === 'draft'">
-                            <td class="p-3">
-                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
-                                <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
-                                <p class="text-xs text-navy font-semibold">PT Delta Polymer Indonesia</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
-                                <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600">Working Days: <span class="font-bold">2.0 Days</span></p>
-                                <p class="text-slate-600">Working Mins: <span class="font-bold">960 Mins</span></p>
-                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr</p>
-                            </td>
-                            <td class="p-3">
-                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Target OP: 400 Kg / Jam</span>
-                                <p class="text-slate-500 mt-1 font-semibold">Batch: 0 / 40 Batch Selesai</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Proses: TP &rarr; MP &rarr; Extruder</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600">Ket: <span class="text-slate-500">Sample formulasi hitam mate</span></p>
-                                <p class="text-slate-600">Remarks: <span class="text-slate-500">Menunggu QC approval</span></p>
-                            </td>
-                            <td class="p-3 text-right">
-                                <button @click="releaseSpk('DRF-SPK-2608-05')" class="px-3 py-1.5 bg-cyan text-white font-bold text-xs rounded-lg shadow-sm hover:bg-cyan/90 transition">Release SPK</button>
-                            </td>
-                        </tr>
-                        <!-- Running SPK row -->
+                        <!-- Running SPK 1 -->
                         <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'on_process' || statusFilter === 'released'">
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
@@ -251,11 +221,137 @@
                                 <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Prioritas pengiriman via kontainer 20ft</span></p>
                             </td>
                             <td class="p-3 text-right whitespace-nowrap">
-                                <button @click="openSpkDetailModal({id: 'SPK-2608-001', title: 'SPK-2608-001', customer: 'PT Royal Synthetic Compound', product: 'PVC Compound A (Clear)'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-block">Detail SPK</button>
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-001', title: 'SPK-2608-001', customer: 'PT Royal Synthetic Compound', product: 'PVC Compound A (Clear)'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-001" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
                             </td>
                         </tr>
 
-                        <!-- Removed separate Cleaning row -->
+                        <!-- Running SPK 2 -->
+                        <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'on_process' || statusFilter === 'released'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
+                                <p class="font-bold text-navy text-sm">SPK-2608-002</p>
+                                <p class="text-xs text-navy font-bold">PT Chemindo Utama</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">PVC Compound B (Color)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">08 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-cyan font-bold mt-1">Mixer B-02 · Ext Line 2 (E-02)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Working Days: <span class="font-bold text-navy">3.0 Days</span></p>
+                                <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">1,440 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (On Time)</p>
+                            </td>
+                            <td class="p-3 min-w-[200px]">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-1">
+                                    <p class="font-bold text-blue-800 text-xs">15 / 60 Batch Selesai (25%)</p>
+                                </div>
+                                <p class="text-[10px] text-slate-600">Proses Aktif: <b class="text-cyan">Extruder & Bagging</b></p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Ket: <span class="text-slate-600 font-medium">Pesanan aditif pigmen khusus</span></p>
+                                <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Uji lab QC sebelum pengiriman</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-002', title: 'SPK-2608-002', customer: 'PT Chemindo Utama', product: 'PVC Compound B (Color)'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-002" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Finished SPK 3 -->
+                        <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'finished'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 text-[9px] font-bold uppercase tracking-wide">Finished</span>
+                                <p class="font-bold text-navy text-sm">SPK-2608-003</p>
+                                <p class="text-xs text-navy font-bold">PT Indopack Industri</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Rigid PVC Granule Grade A</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-emerald-600">03 Sep 2026</span></p>
+                                <p class="text-[10px] text-slate-500 font-bold mt-1">Mixer A-02 · Ext Line 3 (E-03)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Working Days: <span class="font-bold text-navy">1.5 Days</span></p>
+                                <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">720 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (Selesai)</p>
+                            </td>
+                            <td class="p-3 min-w-[200px]">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-1">
+                                    <p class="font-bold text-blue-800 text-xs">30 / 30 Batch Selesai (100%)</p>
+                                </div>
+                                <p class="text-[10px] text-emerald-600 font-bold">Proses: Selesai & Transfer Gudang</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Ket: <span class="text-slate-600 font-medium">Batch selesai sesuai target OP</span></p>
+                                <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Siap dikirim ke gudang ekspedisi</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-003', title: 'SPK-2608-003', customer: 'PT Indopack Industri', product: 'Rigid PVC Granule Grade A'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-003" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Draft SPK row -->
+                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40" x-show="statusFilter === 'all' || statusFilter === 'draft'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
+                                <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
+                                <p class="text-xs text-navy font-semibold">PT Delta Polymer Indonesia</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Working Days: <span class="font-bold">2.0 Days</span></p>
+                                <p class="text-slate-600">Working Mins: <span class="font-bold">960 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr</p>
+                            </td>
+                            <td class="p-3">
+                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Target OP: 400 Kg / Jam</span>
+                                <p class="text-slate-500 mt-1 font-semibold">Batch: 0 / 40 Batch Selesai</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Proses: TP &rarr; MP &rarr; Extruder</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Ket: <span class="text-slate-500">Sample formulasi hitam mate</span></p>
+                                <p class="text-slate-600">Remarks: <span class="text-slate-500">Menunggu QC approval</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="releaseSpk('DRF-SPK-2608-05')" class="px-3 py-1.5 bg-cyan text-white font-bold text-xs rounded-lg shadow-sm hover:bg-cyan/90 transition">Release SPK</button>
+                                    <a href="{{ route('spk.detail') }}?id=DRF-SPK-2608-05" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -378,6 +474,14 @@
                     Penyerahan Barang
                     <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-blue-100 text-blue-700">Terima Gudang</span>
                 </button>
+
+                <!-- Tab 8: QC & Laboratorium -->
+                <a href="{{ route('qc.monitoring') }}"
+                    class="flex items-center gap-2 px-4 py-3.5 text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 text-rose-700 bg-rose-50/50 hover:bg-rose-100 rounded-t-xl border-b-2 border-rose-500">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black bg-rose-600 text-white">🔍</span>
+                    QC & Laboratorium
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-rose-200 text-rose-900">Dispersi & Lab Test</span>
+                </a>
 
                 <!-- Overall Progress pill -->
                 <div class="ml-auto flex items-center gap-3 pr-1 flex-shrink-0">

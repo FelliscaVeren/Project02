@@ -321,20 +321,17 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get('id') || 'SPK-2608-001';
                 this.spkId = id;
-                const spks = window.getSPKs ? window.getSPKs() : [];
-                const found = spks.find(s => s.id === id);
-                if (found) {
-                    this.spk = found;
-                } else {
-                    this.spk = {
-                        id: id,
+                
+                const dummyDb = {
+                    'SPK-2608-001': {
+                        id: 'SPK-2608-001',
                         customer: 'PT Royal Synthetic Compound',
                         product: 'PVC Compound A (Clear)',
                         qty: 50,
                         completedBatch: 28,
                         deliveryReq: '2026-09-05',
                         shipDate: '2026-09-06',
-                        targetOp: '500 Kg / Shift',
+                        targetOp: '500 Kg / Jam',
                         workingDays: '2.5 Days',
                         workingMinutes: '1,200 Mins',
                         delayHour: '0.0 Hr',
@@ -342,10 +339,78 @@
                         remarks: 'Prioritas pengiriman via kontainer 20ft',
                         startDate: '2026-08-27',
                         endDate: '2026-08-29',
-                        machine: 'Mixer A-01, Ext-1',
+                        machine: 'Mixer A-01 · Ext Line 1 (E-01)',
                         status: 'Running',
                         subStatus: 'Dalam Penimbangan'
-                    };
+                    },
+                    'SPK-2608-002': {
+                        id: 'SPK-2608-002',
+                        customer: 'PT Chemindo Utama',
+                        product: 'PVC Compound B (Color)',
+                        qty: 60,
+                        completedBatch: 15,
+                        deliveryReq: '2026-09-07',
+                        shipDate: '2026-09-08',
+                        targetOp: '450 Kg / Jam',
+                        workingDays: '3.0 Days',
+                        workingMinutes: '1,440 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Pesanan aditif pigmen khusus',
+                        remarks: 'Uji lab QC sebelum pengiriman',
+                        startDate: '2026-08-28',
+                        endDate: '2026-08-31',
+                        machine: 'Mixer B-02 · Ext Line 2 (E-02)',
+                        status: 'Running',
+                        subStatus: 'Mixing Powder'
+                    },
+                    'SPK-2608-003': {
+                        id: 'SPK-2608-003',
+                        customer: 'PT Indopack Industri',
+                        product: 'Rigid PVC Granule Grade A',
+                        qty: 30,
+                        completedBatch: 30,
+                        deliveryReq: '2026-09-02',
+                        shipDate: '2026-09-03',
+                        targetOp: '500 Kg / Jam',
+                        workingDays: '1.5 Days',
+                        workingMinutes: '720 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Batch selesai sesuai target OP',
+                        remarks: 'Siap dikirim ke gudang ekspedisi',
+                        startDate: '2026-08-25',
+                        endDate: '2026-08-26',
+                        machine: 'Mixer A-02 · Ext Line 3 (E-03)',
+                        status: 'Finished',
+                        subStatus: 'Transfer Gudang'
+                    },
+                    'DRF-SPK-2608-05': {
+                        id: 'DRF-SPK-2608-05',
+                        customer: 'PT Delta Polymer Indonesia',
+                        product: 'PVC Compound C (Black)',
+                        qty: 40,
+                        completedBatch: 0,
+                        deliveryReq: '2026-09-08',
+                        shipDate: '2026-09-09',
+                        targetOp: '400 Kg / Jam',
+                        workingDays: '2.0 Days',
+                        workingMinutes: '960 Mins',
+                        delayHour: '0.0 Hr',
+                        keterangan: 'Sample formulasi hitam mate',
+                        remarks: 'Menunggu QC approval & rilis PPIC',
+                        startDate: '2026-09-01',
+                        endDate: '2026-09-03',
+                        machine: 'Belum Alokasi Mesin',
+                        status: 'Draft',
+                        subStatus: 'Drafting'
+                    }
+                };
+
+                const spks = window.getSPKs ? window.getSPKs() : [];
+                const found = spks.find(s => s.id === id);
+                if (found) {
+                    this.spk = found;
+                } else {
+                    this.spk = dummyDb[id] || dummyDb['SPK-2608-001'];
                 }
             },
             formatDate(d) {
