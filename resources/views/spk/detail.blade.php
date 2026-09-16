@@ -17,7 +17,7 @@
             </a>
             <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-2" onclick="window.print()">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Print SPK / Export PDF
+                Cetak SPK / Ekspor PDF
             </button>
         </div>
     </div>
@@ -55,15 +55,15 @@
                 <div>
                     <table class="w-full text-sm">
                         <tr><td class="py-1 text-slate-500 w-2/5">Tanggal Kirim (Tentatif)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.shipDate || '06 Sep 2026')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Target OP (Output/Hour)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.targetOp || '500 Kg / Jam')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Working Days</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingDays || '2.5 Days')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Working Minutes</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingMinutes || '1,200 Mins')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Target OP (Output/Jam)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.targetOp || '500 Kg / Jam')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Hari Kerja (Working Days)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingDays || '2.5 Hari')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Menit Kerja (Working Mins)</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.workingMinutes || '1,200 Menit')"></td></tr>
                     </table>
                 </div>
                 <div>
                     <table class="w-full text-sm">
                         <tr><td class="py-1 text-slate-500 w-2/5">Mesin Alokasi</td><td class="py-1 font-bold text-navy" x-text="': ' + (spk?.machine || '-')"></td></tr>
-                        <tr><td class="py-1 text-slate-500">Delay (Hour)</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.delayHour || '0.0 Hr')"></td></tr>
+                        <tr><td class="py-1 text-slate-500">Delay (Keterlambatan)</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.delayHour || '0.0 Jam')"></td></tr>
                         <tr><td class="py-1 text-slate-500">Status</td><td class="py-1 font-bold text-emerald-600" x-text="': ' + (spk?.status || '-')"></td></tr>
                         <tr><td class="py-1 text-slate-500">Keterangan</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.keterangan || 'Formula standar high-clarity PVC')"></td></tr>
                         <tr><td class="py-1 text-slate-500">Remarks</td><td class="py-1 font-semibold text-slate-700" x-text="': ' + (spk?.remarks || 'Prioritas pengiriman via kontainer 20ft')"></td></tr>
@@ -75,19 +75,26 @@
 
             <!-- Detail Formula & Kebutuhan Material -->
             <div>
-                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                    Formula & Kebutuhan Material (BOM)
-                </h4>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <h4 class="text-sm font-bold text-navy uppercase tracking-wide flex items-center gap-2">
+                        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        Formula & Kebutuhan Material (BOM)
+                    </h4>
+                    <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        Estimasi Kapasitas Maksimal: <span class="underline text-indigo-600 font-extrabold">60 Batch</span>
+                    </div>
+                </div>
                 
                 <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] uppercase text-slate-500 font-bold">
                                 <th class="p-3">Nama Material</th>
-                                <th class="p-3 text-center">Jumlah Batch</th>
-                                <th class="p-3 text-right">Berat / Batch</th>
-                                <th class="p-3 text-right text-navy">Total Qty (Target)</th>
+                                <th class="p-3 text-right">Kebutuhan / Batch</th>
+                                <th class="p-3 text-right text-navy">Target Kebutuhan</th>
+                                <th class="p-3 text-right text-navy">Stok Fisik Tersedia</th>
+                                <th class="p-3 text-center">Status Validasi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -95,25 +102,40 @@
                                 <td class="p-3 font-medium text-slate-800">
                                     Resin PVC S-65
                                 </td>
-                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
                                 <td class="p-3 text-right text-slate-600">25 Kg</td>
                                 <td class="p-3 text-right font-black text-navy text-[13px]">1,250 Kg</td>
+                                <td class="p-3 text-right font-bold text-slate-700">1,500 Kg</td>
+                                <td class="p-3 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-xs font-bold">
+                                        ✓ Cukup (Valid)
+                                    </span>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="p-3 font-medium text-slate-800">
                                     Stabilizer Ca-Zn
                                 </td>
-                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
                                 <td class="p-3 text-right text-slate-600">1 Kg</td>
                                 <td class="p-3 text-right font-black text-navy text-[13px]">50 Kg</td>
+                                <td class="p-3 text-right font-bold text-slate-700">100 Kg</td>
+                                <td class="p-3 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-xs font-bold">
+                                        ✓ Cukup (Valid)
+                                    </span>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="p-3 font-medium text-slate-800">
                                     Pigment White
                                 </td>
-                                <td class="p-3 text-center text-slate-500 font-bold" x-text="spk?.qty || '50'">50</td>
                                 <td class="p-3 text-right text-slate-600">0.5 Kg</td>
                                 <td class="p-3 text-right font-black text-navy text-[13px]">25 Kg</td>
+                                <td class="p-3 text-right font-bold text-slate-700">10 Kg</td>
+                                <td class="p-3 text-center">
+                                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-xs font-bold">
+                                        ✓ Cukup (Valid)
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
