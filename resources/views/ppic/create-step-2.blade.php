@@ -179,12 +179,10 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Jam Selesai Cleaning</label>
-                        <select x-model="cleaningEndHour" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-cyan outline-none">
-                            <template x-for="h in hours" :key="'cend_'+h">
-                                <option :value="h" x-text="h"></option>
-                            </template>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Durasi Cleaning (Rekomendasi Otomatis)</label>
+                        <div class="w-full bg-violet-50 border border-violet-200 rounded-xl px-3 py-2 text-xs font-bold text-violet-800 flex items-center justify-between shadow-sm">
+                            <span x-text="cleaningDurationRecommended + ' Jam'"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -311,7 +309,7 @@
                         <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Extruder:</dt><dd class="font-bold text-navy" x-text="selectedExtruder || '-'"></dd></div>
                         <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Feeder:</dt><dd class="font-bold text-navy" x-text="selectedFeeder || '-'"></dd></div>
                         <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Mesin Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningMachine"></dd></div>
-                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Jam Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningStartHour + ' - ' + cleaningEndHour"></dd></div>
+                        <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Durasi Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningDurationRecommended + ' Jam '"></dd></div>
                         <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Tanggal / Shift Cleaning:</dt><dd class="font-bold text-navy" x-text="cleaningDateLabel + ' · ' + cleaningShiftLabel"></dd></div>
                         <div class="pt-2 mt-1 border-t border-dashed border-slate-200">
                             <div class="flex flex-wrap items-baseline gap-x-2 pt-2"><dt class="text-slate-500 shrink-0">Riwayat Pemakaian Sebelumnya:</dt><dd class="font-bold text-amber-700" x-text="cleaningPreviousProduct"></dd></div>
@@ -330,6 +328,53 @@
                         <div class="flex flex-wrap items-baseline gap-x-2"><dt class="text-slate-500 shrink-0">Bagging:</dt><dd class="font-bold text-navy" x-text="mpBagging + ' Orang'"></dd></div>
                     </dl>
                 </div>
+
+                <!-- V. Rincian Material & Ketersediaan Stok (Diambil dari Tahap 1 & 2) -->
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-300 pb-2 mb-4 font-sans">
+                        <h4 class="text-sm font-bold uppercase tracking-[0.15em] text-navy">V. Rincian Material & Ketersediaan Stok</h4>
+                        <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            Estimasi Kapasitas Maksimal: <span class="underline text-indigo-600 font-extrabold" x-text="(step1Data.maxPossibleBatch !== undefined ? step1Data.maxPossibleBatch : calculatedMaxPossibleBatch) + ' Batch'"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white font-sans text-xs shadow-sm">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2.5">Material</th>
+                                    <th class="p-2.5 text-right">Kebutuhan / Batch</th>
+                                    <th class="p-2.5 text-right">Target Kebutuhan</th>
+                                    <th class="p-2.5 text-right">Stok Fisik Tersedia</th>
+                                    <th class="p-2.5 text-center">Status Validasi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700">
+                                <template x-for="item in (step1Data.materials || defaultMaterials)" :key="item.id">
+                                    <tr class="hover:bg-slate-50/80">
+                                        <td class="p-2.5 font-bold text-navy" x-text="item.name"></td>
+                                        <td class="p-2.5 text-right"><span x-text="item.qtyPerBatch"></span> <span class="text-slate-400">Kg</span></td>
+                                        <td class="p-2.5 text-right font-bold text-slate-800"><span x-text="(item.qtyPerBatch * (step1Data.qty || 50)).toLocaleString()"></span> <span class="text-slate-400">Kg</span></td>
+                                        <td class="p-2.5 text-right font-bold text-navy"><span x-text="(item.stock).toLocaleString()"></span> <span class="text-slate-400">Kg</span></td>
+                                        <td class="p-2.5 text-center">
+                                            <template x-if="item.isEnough">
+                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-bold">
+                                                    ✓ Cukup (Valid)
+                                                </span>
+                                            </template>
+                                            <template x-if="!item.isEnough">
+                                                <span class="inline-flex items-center gap-1 bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded text-[10px] font-bold">
+                                                    ✕ Kurang
+                                                </span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="px-10 py-5 border-t border-slate-200 bg-[#fdfcf9] flex justify-end gap-3 sticky bottom-0 font-sans">
@@ -347,6 +392,17 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('step2App', () => ({
             step1Data: {},
+            defaultMaterials: [
+                { id: 1, name: 'Resin PVC S-65', qtyPerBatch: 25, stock: 1500, isEnough: true },
+                { id: 2, name: 'Stabilizer Ca-Zn', qtyPerBatch: 1, stock: 100, isEnough: true },
+                { id: 3, name: 'Pigment White', qtyPerBatch: 0.5, stock: 10, isEnough: true }
+            ],
+            get calculatedMaxPossibleBatch() {
+                const qty = this.step1Data.qty || 50;
+                const mats = this.step1Data.materials || this.defaultMaterials;
+                let maxBatches = mats.map(item => Math.floor(item.stock / item.qtyPerBatch));
+                return Math.min(...maxBatches);
+            },
             startDate: '',
             startHour: '06:00',
             finishDate: '',
@@ -364,7 +420,12 @@
             // Cleaning
             cleaningMachine: 'Mixer A-01',
             cleaningStartHour: '06:00',
-            cleaningEndHour: '07:00',
+
+            get cleaningDurationRecommended() {
+                if (this.cleaningMachine.includes('Extruder')) return 3.5;
+                if (this.cleaningMachine.includes('Mixer')) return 2.0;
+                return 1.5;
+            },
 
             // BARU: dummy riwayat pemakaian terakhir per mesin (nanti diganti data asli dari histori SPK/backend)
             machineLastUsage: {

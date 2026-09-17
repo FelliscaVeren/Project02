@@ -29,6 +29,10 @@ Route::prefix('spk')->name('spk.')->group(function() {
     Route::get('/detail', function () { return view('spk.detail'); })->name('detail');
 });
 
+Route::prefix('qc')->name('qc.')->group(function() {
+    Route::get('/monitoring', function () { return view('qc.monitoring'); })->name('monitoring');
+});
+
 Route::get('/dokumen/material', function () { return view('dokumen.material'); })->name('dokumen.material');
 
 

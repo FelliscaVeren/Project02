@@ -252,7 +252,7 @@
                 this.maxPossibleBatch = Math.min(...maxBatches);
             },
 
-            // Simpan parameter Langkah 1 supaya bisa dipakai/di-prefill di Langkah 2 (khususnya Tanggal Mulai & Selesai Produksi)
+            // Simpan parameter Langkah 1 supaya bisa dipakai/di-prefill di Langkah 2 (khususnya Tanggal Mulai & Selesai Produksi serta Rincian Material & Stok)
             goToStep2() {
                 if (!(this.isAllEnough && this.qty > 0)) return;
                 const payload = {
@@ -265,7 +265,10 @@
                     finishDate: this.finishDate,
                     tentativeShipDate: this.tentativeShipDate,
                     keterangan: this.keterangan,
-                    remarks: this.remarks
+                    remarks: this.remarks,
+                    materials: this.materials,
+                    maxPossibleBatch: this.maxPossibleBatch,
+                    isAllEnough: this.isAllEnough
                 };
                 sessionStorage.setItem('ppic_spk_step1', JSON.stringify(payload));
                 window.location.href = "{{ route('ppic.create.step2') }}";

@@ -193,37 +193,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
-                        <!-- Draft SPK row -->
-                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40" x-show="statusFilter === 'all' || statusFilter === 'draft'">
-                            <td class="p-3">
-                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
-                                <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
-                                <p class="text-xs text-navy font-semibold">PT Delta Polymer Indonesia</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
-                                <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600">Working Days: <span class="font-bold">2.0 Days</span></p>
-                                <p class="text-slate-600">Working Mins: <span class="font-bold">960 Mins</span></p>
-                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr</p>
-                            </td>
-                            <td class="p-3">
-                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Target OP: 400 Kg / Jam</span>
-                                <p class="text-slate-500 mt-1 font-semibold">Batch: 0 / 40 Batch Selesai</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Proses: TP &rarr; MP &rarr; Extruder</p>
-                            </td>
-                            <td class="p-3">
-                                <p class="text-slate-600">Ket: <span class="text-slate-500">Sample formulasi hitam mate</span></p>
-                                <p class="text-slate-600">Remarks: <span class="text-slate-500">Menunggu QC approval</span></p>
-                            </td>
-                            <td class="p-3 text-right">
-                                <button @click="releaseSpk('DRF-SPK-2608-05')" class="px-3 py-1.5 bg-cyan text-white font-bold text-xs rounded-lg shadow-sm hover:bg-cyan/90 transition">Release SPK</button>
-                            </td>
-                        </tr>
-                        <!-- Running SPK row -->
+                        <!-- Running SPK 1 -->
                         <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'on_process' || statusFilter === 'released'">
                             <td class="p-3">
                                 <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
@@ -251,11 +221,137 @@
                                 <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Prioritas pengiriman via kontainer 20ft</span></p>
                             </td>
                             <td class="p-3 text-right whitespace-nowrap">
-                                <a href="{{ route('spk.detail') }}?id=SPK-2608-001" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-block">Detail SPK</a>
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-001', title: 'SPK-2608-001', customer: 'PT Royal Synthetic Compound', product: 'PVC Compound A (Clear)'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-001" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
                             </td>
                         </tr>
 
-                        <!-- Removed separate Cleaning row -->
+                        <!-- Running SPK 2 -->
+                        <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'on_process' || statusFilter === 'released'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wide">Running</span>
+                                <p class="font-bold text-navy text-sm">SPK-2608-002</p>
+                                <p class="text-xs text-navy font-bold">PT Chemindo Utama</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">PVC Compound B (Color)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">08 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-cyan font-bold mt-1">Mixer B-02 · Ext Line 2 (E-02)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Working Days: <span class="font-bold text-navy">3.0 Days</span></p>
+                                <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">1,440 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (On Time)</p>
+                            </td>
+                            <td class="p-3 min-w-[200px]">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-1">
+                                    <p class="font-bold text-blue-800 text-xs">15 / 60 Batch Selesai (25%)</p>
+                                </div>
+                                <p class="text-[10px] text-slate-600">Proses Aktif: <b class="text-cyan">Extruder & Bagging</b></p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Ket: <span class="text-slate-600 font-medium">Pesanan aditif pigmen khusus</span></p>
+                                <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Uji lab QC sebelum pengiriman</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-002', title: 'SPK-2608-002', customer: 'PT Chemindo Utama', product: 'PVC Compound B (Color)'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-002" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Finished SPK 3 -->
+                        <tr class="hover:bg-slate-50 transition-colors" x-show="statusFilter === 'all' || statusFilter === 'finished'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 text-[9px] font-bold uppercase tracking-wide">Finished</span>
+                                <p class="font-bold text-navy text-sm">SPK-2608-003</p>
+                                <p class="text-xs text-navy font-bold">PT Indopack Industri</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Rigid PVC Granule Grade A</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-emerald-600">03 Sep 2026</span></p>
+                                <p class="text-[10px] text-slate-500 font-bold mt-1">Mixer A-02 · Ext Line 3 (E-03)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Working Days: <span class="font-bold text-navy">1.5 Days</span></p>
+                                <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">720 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (Selesai)</p>
+                            </td>
+                            <td class="p-3 min-w-[200px]">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-1">
+                                    <p class="font-bold text-blue-800 text-xs">30 / 30 Batch Selesai (100%)</p>
+                                </div>
+                                <p class="text-[10px] text-emerald-600 font-bold">Proses: Selesai & Transfer Gudang</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-700">Ket: <span class="text-slate-600 font-medium">Batch selesai sesuai target OP</span></p>
+                                <p class="text-slate-700">Remarks: <span class="text-slate-600 font-medium">Siap dikirim ke gudang ekspedisi</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="openSpkDetailModal({id: 'SPK-2608-003', title: 'SPK-2608-003', customer: 'PT Indopack Industri', product: 'Rigid PVC Granule Grade A'})" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        Detail SPK
+                                    </button>
+                                    <a href="{{ route('spk.detail') }}?id=SPK-2608-003" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Draft SPK row -->
+                        <tr class="hover:bg-amber-50/50 transition-colors bg-slate-50/40" x-show="statusFilter === 'all' || statusFilter === 'draft'">
+                            <td class="p-3">
+                                <span class="inline-block mb-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-wide border border-dashed border-slate-300">Draft</span>
+                                <p class="font-bold text-slate-500 text-sm">DRF-SPK-2608-05</p>
+                                <p class="text-xs text-navy font-semibold">PT Delta Polymer Indonesia</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
+                                <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Working Days: <span class="font-bold">2.0 Days</span></p>
+                                <p class="text-slate-600">Working Mins: <span class="font-bold">960 Mins</span></p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr</p>
+                            </td>
+                            <td class="p-3">
+                                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px]">Target OP: 400 Kg / Jam</span>
+                                <p class="text-slate-500 mt-1 font-semibold">Batch: 0 / 40 Batch Selesai</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Proses: TP &rarr; MP &rarr; Extruder</p>
+                            </td>
+                            <td class="p-3">
+                                <p class="text-slate-600">Ket: <span class="text-slate-500">Sample formulasi hitam mate</span></p>
+                                <p class="text-slate-600">Remarks: <span class="text-slate-500">Menunggu QC approval</span></p>
+                            </td>
+                            <td class="p-3 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button @click="releaseSpk('DRF-SPK-2608-05')" class="px-3 py-1.5 bg-cyan text-white font-bold text-xs rounded-lg shadow-sm hover:bg-cyan/90 transition">Release SPK</button>
+                                    <a href="{{ route('spk.detail') }}?id=DRF-SPK-2608-05" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg shadow-sm transition inline-flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Preview PDF SPK
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -280,11 +376,16 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
+                    <!-- Tombol Emergency Report (Wajib Selalu Tampil) -->
+                    <button @click="showEmergencyModal = true" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-1.5 animate-pulse">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Emergency Report
+                    </button>
                     <!-- View SPK Fix Button (top right) -->
                     <a x-show="selectedEvent.type !== 'rnd'" :href="'{{ route('spk.detail') }}?id=' + (selectedEvent.title || 'SPK-2608-001')"
                        class="px-4 py-2 bg-white text-navy hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        View SPK Fix
+                        Preview SPK
                     </a>
                     <button @click="showEventModal = false" class="text-white/70 hover:text-white transition bg-black/20 p-2 rounded-full hover:bg-black/40">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -355,6 +456,32 @@
                     Bagging
                     <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-emerald-100 text-emerald-700">Selesai</span>
                 </button>
+                <!-- Tab 6: Sisa Material -->
+                <button @click="activeStep = 'sisa_material'"
+                    :class="activeStep === 'sisa_material' ? 'border-b-2 border-amber-500 text-amber-700 bg-amber-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-4 py-3.5 text-xs font-bold transition-all whitespace-nowrap flex-shrink-0">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black"
+                          :class="activeStep === 'sisa_material' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'">📦</span>
+                    Sisa Material
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-amber-100 text-amber-700">5.5 Kg Sisa</span>
+                </button>
+                <!-- Tab 7: Penyerahan Barang / Transfer Barang -->
+                <button @click="activeStep = 'penyerahan_barang'"
+                    :class="activeStep === 'penyerahan_barang' ? 'border-b-2 border-blue-500 text-blue-700 bg-blue-50/50' : 'text-slate-500 hover:text-slate-700 border-b-2 border-transparent'"
+                    class="flex items-center gap-2 px-4 py-3.5 text-xs font-bold transition-all whitespace-nowrap flex-shrink-0">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black"
+                          :class="activeStep === 'penyerahan_barang' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'">🚚</span>
+                    Penyerahan Barang
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-blue-100 text-blue-700">Terima Gudang</span>
+                </button>
+
+                <!-- Tab 8: QC & Laboratorium -->
+                <a href="{{ route('qc.monitoring') }}"
+                    class="flex items-center gap-2 px-4 py-3.5 text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 text-rose-700 bg-rose-50/50 hover:bg-rose-100 rounded-t-xl border-b-2 border-rose-500">
+                    <span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black bg-rose-600 text-white">🔍</span>
+                    QC & Laboratorium
+                    <span class="px-1.5 py-0.5 text-[9px] rounded-full font-bold bg-rose-200 text-rose-900">Dispersi & Lab Test</span>
+                </a>
 
                 <!-- Overall Progress pill -->
                 <div class="ml-auto flex items-center gap-3 pr-1 flex-shrink-0">
@@ -464,47 +591,48 @@
 
                     <!-- Verifikasi QC (Read-Only) -->
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="px-5 py-3 bg-emerald-50 border-b border-emerald-200 flex justify-between items-center">
+                        <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                             <div>
-                                <h5 class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Hasil Verifikasi QC</h5>
-                                <p class="text-[10px] text-emerald-600 mt-0.5">Semua rangkaian mesin sudah diperiksa dan lolos verifikasi</p>
+                                <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Riwayat Pengecekan QC</h5>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Pemantauan hasil pengecekan kebersihan mesin (Read-Only)</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="w-7 h-7 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-[10px] font-bold">QC</div>
-                                <span class="text-xs font-bold text-emerald-800" x-text="form.namaQC"></span>
+                                <span class="text-xs font-bold text-slate-700" x-text="form.namaQC"></span>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs text-left">
-                                <thead class="bg-slate-100 text-slate-500 font-bold uppercase text-[10px]">
-                                    <tr>
-                                        <th class="px-4 py-2.5 border-b border-slate-200">Rangkaian Mesin</th>
-                                        <th class="px-4 py-2.5 border-b border-slate-200 text-center">Hasil Check 1</th>
-                                        <th class="px-4 py-2.5 border-b border-slate-200 text-center">Status</th>
-                                        <th class="px-4 py-2.5 border-b border-slate-200 text-center">Hasil Check 2</th>
-                                        <th class="px-4 py-2.5 border-b border-slate-200 text-center">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <template x-for="(row, idx) in form.qcRows" :key="idx">
-                                        <tr>
-                                            <td class="px-4 py-2.5 font-semibold text-navy" x-text="row.mesin"></td>
-                                            <td class="px-4 py-2.5 text-center font-semibold text-slate-700" x-text="row.hasil1 || '—'"></td>
-                                            <td class="px-4 py-2.5 text-center">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                                                      :class="row.status1 === 'OK' ? 'bg-emerald-100 text-emerald-700' : (row.status1 === 'Cleaning Ulang' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-400')"
-                                                      x-text="row.status1 || '—'"></span>
-                                            </td>
-                                            <td class="px-4 py-2.5 text-center font-semibold text-slate-700" x-text="row.hasil2 || '—'"></td>
-                                            <td class="px-4 py-2.5 text-center">
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                                                      :class="row.status2 === 'OK' ? 'bg-emerald-100 text-emerald-700' : (row.status2 === 'Cleaning Ulang' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-400')"
-                                                      x-text="row.status2 || '—'"></span>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
+                        <div class="p-5 space-y-4 bg-slate-50">
+                            <template x-for="(iter, idx) in form.qcIterations" :key="idx">
+                                <div class="bg-white border rounded-xl overflow-hidden shadow-sm" :class="iter.status === 'OK' ? 'border-emerald-200' : 'border-rose-200'">
+                                    <div class="px-4 py-3 border-b flex justify-between items-center" :class="iter.status === 'OK' ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-black uppercase tracking-widest" :class="iter.status === 'OK' ? 'text-emerald-800' : 'text-rose-800'" x-text="iter.iteration"></span>
+                                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded text-white" :class="iter.status === 'OK' ? 'bg-emerald-500' : 'bg-rose-500'" x-text="iter.status === 'OK' ? 'Lolos (OK)' : 'Tidak Lolos'"></span>
+                                        </div>
+                                        <div class="text-[10px] font-bold text-slate-400" x-text="'Waktu Cek: ' + iter.time"></div>
+                                    </div>
+                                    <div class="p-4 space-y-3">
+                                        <template x-if="iter.status !== 'OK'">
+                                            <div>
+                                                <p class="text-[10px] font-bold text-rose-600 uppercase tracking-wider mb-1">Catatan Penolakan QC</p>
+                                                <p class="text-xs text-slate-700 font-medium" x-text="iter.qcNotes"></p>
+                                            </div>
+                                        </template>
+                                        <template x-if="iter.status === 'OK'">
+                                            <div>
+                                                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1">Catatan QC</p>
+                                                <p class="text-xs text-slate-700 font-medium" x-text="iter.qcNotes"></p>
+                                            </div>
+                                        </template>
+                                        <template x-if="iter.operatorNotes">
+                                            <div class="pt-3 border-t border-slate-100">
+                                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tindak Lanjut Operator</p>
+                                                <p class="text-xs text-slate-600" x-text="iter.operatorNotes"></p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
 
@@ -613,11 +741,51 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
-                                <tr><td class="p-3 font-bold text-navy">Batch #50</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">08:00</td><td class="p-3 text-right text-slate-500">08:13</td><td class="p-3 text-right font-bold text-navy">13 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #49</td><td class="p-3 text-slate-600">Ayu</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">07:47</td><td class="p-3 text-right text-slate-500">07:59</td><td class="p-3 text-right font-bold text-navy">12 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #48</td><td class="p-3 text-slate-600">Mia</td><td class="p-3 text-slate-500">Shift 1</td><td class="p-3 text-right text-slate-500">07:31</td><td class="p-3 text-right text-slate-500">07:45</td><td class="p-3 text-right font-bold text-amber-600">14 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-bold">Lambat</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #47</td><td class="p-3 text-slate-600">Fitri</td><td class="p-3 text-slate-500">Shift 2</td><td class="p-3 text-right text-slate-500">07:19</td><td class="p-3 text-right text-slate-500">07:30</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Batch #46</td><td class="p-3 text-slate-600">Hana</td><td class="p-3 text-slate-500">Shift 2</td><td class="p-3 text-right text-slate-500">07:07</td><td class="p-3 text-right text-slate-500">07:18</td><td class="p-3 text-right font-bold text-navy">11 mnt</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Batch #50</td>
+                                    <td class="p-3 text-slate-600">Mia</td>
+                                    <td class="p-3 text-slate-500">Shift 1</td>
+                                    <td class="p-3 text-right text-slate-500">08:00</td>
+                                    <td class="p-3 text-right text-slate-500">08:13</td>
+                                    <td class="p-3 text-right font-bold text-navy">13 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Batch #49</td>
+                                    <td class="p-3 text-slate-600">Ayu</td>
+                                    <td class="p-3 text-slate-500">Shift 1</td>
+                                    <td class="p-3 text-right text-slate-500">07:47</td>
+                                    <td class="p-3 text-right text-slate-500">07:57</td>
+                                    <td class="p-3 text-right font-bold text-emerald-600">10 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Batch #48</td>
+                                    <td class="p-3 text-slate-600">Mia</td>
+                                    <td class="p-3 text-slate-500">Shift 1</td>
+                                    <td class="p-3 text-right text-slate-500">07:31</td>
+                                    <td class="p-3 text-right text-slate-500">07:48</td>
+                                    <td class="p-3 text-right font-bold text-red-500">17 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-bold">Lambat</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Batch #47</td>
+                                    <td class="p-3 text-slate-600">Fitri</td>
+                                    <td class="p-3 text-slate-500">Shift 2</td>
+                                    <td class="p-3 text-right text-slate-500">07:19</td>
+                                    <td class="p-3 text-right text-slate-500">07:30</td>
+                                    <td class="p-3 text-right font-bold text-navy">11 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Batch #46</td>
+                                    <td class="p-3 text-slate-600">Hana</td>
+                                    <td class="p-3 text-slate-500">Shift 2</td>
+                                    <td class="p-3 text-right text-slate-500">07:07</td>
+                                    <td class="p-3 text-right text-slate-500">07:16</td>
+                                    <td class="p-3 text-right font-bold text-emerald-600">9 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -663,18 +831,93 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                        <h5 class="text-xs font-bold text-slate-600 mb-3">Ringkasan Parameter Mixing</h5>
-                        <div class="grid grid-cols-3 gap-4 text-sm">
-                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">Suhu Hot Mixing (Avg)</p><p class="text-lg font-black text-navy mt-1">118 °C</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">Suhu Cold Mixing (Avg)</p><p class="text-lg font-black text-navy mt-1">52 °C</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3 text-center"><p class="text-[10px] text-slate-400 font-bold uppercase">RPM Rata-rata</p><p class="text-lg font-black text-navy mt-1">1450 RPM</p></div>
+                    <!-- Tabel Detail Batch Mixing -->
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Rincian Batch Mixing</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Detail setiap batch: operator, shift, jam mulai, jam selesai, dan status</p>
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] font-bold">
+                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">Lebih Cepat</span>
+                                <span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">Tepat Waktu</span>
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded">Lambat</span>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-100">
+                                    <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                        <th class="p-3 text-left">Batch</th>
+                                        <th class="p-3 text-left">Operator</th>
+                                        <th class="p-3 text-left">Shift</th>
+                                        <th class="p-3 text-right">Jam Mulai</th>
+                                        <th class="p-3 text-right">Jam Selesai</th>
+                                        <th class="p-3 text-right">Durasi</th>
+                                        <th class="p-3 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-bold text-navy">Batch #50</td>
+                                        <td class="p-3 text-slate-600">Budi, Anggun</td>
+                                        <td class="p-3 text-slate-500">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500">08:15</td>
+                                        <td class="p-3 text-right text-slate-500">08:33</td>
+                                        <td class="p-3 text-right font-bold text-emerald-600">18 mnt</td>
+                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-bold text-navy">Batch #49</td>
+                                        <td class="p-3 text-slate-600">Anggun</td>
+                                        <td class="p-3 text-slate-500">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500">07:55</td>
+                                        <td class="p-3 text-right text-slate-500">08:14</td>
+                                        <td class="p-3 text-right font-bold text-navy">19 mnt</td>
+                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-bold text-navy">Batch #48</td>
+                                        <td class="p-3 text-slate-600">Budi</td>
+                                        <td class="p-3 text-slate-500">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500">07:30</td>
+                                        <td class="p-3 text-right text-slate-500">07:54</td>
+                                        <td class="p-3 text-right font-bold text-red-500">24 mnt</td>
+                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-bold">Lambat</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-bold text-navy">Batch #47</td>
+                                        <td class="p-3 text-slate-600">Bagas, Rudi</td>
+                                        <td class="p-3 text-slate-500">Shift 2</td>
+                                        <td class="p-3 text-right text-slate-500">07:07</td>
+                                        <td class="p-3 text-right text-slate-500">07:25</td>
+                                        <td class="p-3 text-right font-bold text-emerald-600">18 mnt</td>
+                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-3 font-bold text-navy">Batch #46</td>
+                                        <td class="p-3 text-slate-600">Rudi</td>
+                                        <td class="p-3 text-slate-500">Shift 2</td>
+                                        <td class="p-3 text-right text-slate-500">06:44</td>
+                                        <td class="p-3 text-right text-slate-500">07:05</td>
+                                        <td class="p-3 text-right font-bold text-navy">21 mnt</td>
+                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="bg-slate-50 border-t-2 border-slate-200">
+                                    <tr class="font-black text-slate-600 text-[10px] uppercase">
+                                        <td class="p-3" colspan="5">Rata-rata Durasi</td>
+                                        <td class="p-3 text-right text-navy">20 mnt</td>
+                                        <td class="p-3"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
 
                 <!-- ============ PAGE: EXTRUDER ============ -->
-                <div x-show="activeStep === 'extruder'" class="space-y-5">
+                <div x-show="activeStep === 'extruder'" class="space-y-5" x-data="extruderHourlyApp()">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm ring-1 ring-blue-100">
                             <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Batch Selesai</p>
@@ -700,76 +943,189 @@
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Delay: 0.0 jam</p>
                         </div>
                     </div>
-                    <!-- Filter Grafik -->
-                    <div class="flex items-center justify-end gap-2">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Filter Grafik:</span>
-                        <select x-model="extruderShiftFilter" @change="initStepChart('extruder')" class="bg-white border border-slate-200 rounded-lg text-[11px] font-bold px-2 py-1.5 text-slate-600 focus:ring-cyan focus:border-cyan outline-none">
-                            <option value="all">Semua Shift</option>
-                            <option value="Shift 1">Shift 1 · Team RED</option>
-                            <option value="Shift 2">Shift 2 · Team GREEN</option>
-                            <option value="Shift 3">Shift 3 · Team YELLOW</option>
-                        </select>
-                    </div>
-                    <!-- Charts -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Parameter Mesin · Per Jam</p>
-                                    <p class="text-sm font-bold text-navy mt-0.5">Grafik Suhu Extruder (°C)</p>
-                                </div>
-                                <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-lg">Live</span>
-                            </div>
-                            <div class="relative h-48">
-                                <canvas id="tempChart"></canvas>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-2">Hover titik grafik untuk melihat operator, shift & jam.</p>
+
+                    <!-- Filter Mode Tampilan (Semuanya / Grafik saja / Data saja) -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center justify-between flex-wrap gap-3">
+                        <div>
+                            <p class="text-xs font-bold text-slate-700">Laporan Parameter Extruder — Per Jam</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Filter Tampilan: Data saja, Grafik saja, atau Semuanya</p>
                         </div>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Output · Per Jam</p>
-                                    <p class="text-sm font-bold text-navy mt-0.5">Output Extruder (Kg/Jam)</p>
-                                </div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <!-- Toggle Mode Tampilan -->
+                            <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+                                <button @click="viewModeExtruder = 'all'" :class="viewModeExtruder === 'all' ? 'bg-white shadow-sm text-navy font-bold' : 'text-slate-500 font-medium'" class="px-3 py-1.5 text-xs rounded-lg transition">Semuanya</button>
+                                <button @click="viewModeExtruder = 'chart'" :class="viewModeExtruder === 'chart' ? 'bg-white shadow-sm text-blue-600 font-bold' : 'text-slate-500 font-medium'" class="px-3 py-1.5 text-xs rounded-lg transition">Grafik saja</button>
+                                <button @click="viewModeExtruder = 'data'" :class="viewModeExtruder === 'data' ? 'bg-white shadow-sm text-emerald-600 font-bold' : 'text-slate-500 font-medium'" class="px-3 py-1.5 text-xs rounded-lg transition">Data saja</button>
                             </div>
-                            <div class="relative h-48">
-                                <canvas id="timeChart"></canvas>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-2">Hover batang grafik untuk melihat operator, shift & jam.</p>
-                        </div>
-                    </div>
-                    <!-- Semua Parameter Extruder (Aktual) -->
-                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                        <h5 class="text-xs font-bold text-slate-600 mb-4">Parameter Extruder Aktual (Semua Zone)</h5>
-                        <div class="grid grid-cols-3 md:grid-cols-6 gap-3 text-center">
-                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Zone 1</p><p class="text-base font-black text-navy mt-1">160°C</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Zone 2</p><p class="text-base font-black text-navy mt-1">170°C</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Zone 3</p><p class="text-base font-black text-navy mt-1">175°C</p></div>
-                            <div class="bg-blue-50 rounded-xl p-3 ring-1 ring-blue-200"><p class="text-[10px] text-blue-400 font-bold uppercase">Zone 4 (Die)</p><p class="text-base font-black text-blue-700 mt-1">178°C</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">RPM Screw</p><p class="text-base font-black text-navy mt-1">35 RPM</p></div>
-                            <div class="bg-slate-50 rounded-xl p-3"><p class="text-[10px] text-slate-400 font-bold uppercase">Ampere</p><p class="text-base font-black text-navy mt-1">42 A</p></div>
+                            <select x-model="extruderShiftFilter" @change="initStepChart('extruder')" class="bg-white border border-slate-200 rounded-lg text-[11px] font-bold px-2 py-1.5 text-slate-600 focus:ring-cyan focus:border-cyan outline-none">
+                                <option value="all">Semua Shift</option>
+                                <option value="Shift 1">Shift 1 · Team RED</option>
+                                <option value="Shift 2">Shift 2 · Team GREEN</option>
+                                <option value="Shift 3">Shift 3 · Team YELLOW</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Input Parameter per Jam (Live Input + Grafik) -->
-                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden" x-data="extruderHourlyApp()">
+                    <!-- Parameter Summary Table (Tampil jika viewModeExtruder === 'all' || 'data') -->
+                    <div x-show="viewModeExtruder === 'all' || viewModeExtruder === 'data'" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" x-transition>
+                        <div class="px-5 py-3 bg-navy border-b border-navy/80">
+                            <p class="text-xs font-bold text-white uppercase tracking-widest">Ringkasan Parameter Aktual — Shift Terakhir</p>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">Parameter</th>
+                                    <th class="p-3 text-right">Aktual</th>
+                                    <th class="p-3 text-right">Target</th>
+                                    <th class="p-3 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-slate-700">Suhu Zone 1</td>
+                                    <td class="p-3 text-right font-bold text-navy">160 °C</td>
+                                    <td class="p-3 text-right text-slate-400">155–165 °C</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Normal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-slate-700">Suhu Zone 2</td>
+                                    <td class="p-3 text-right font-bold text-navy">170 °C</td>
+                                    <td class="p-3 text-right text-slate-400">165–175 °C</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Normal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-slate-700">Suhu Zone 3</td>
+                                    <td class="p-3 text-right font-bold text-navy">175 °C</td>
+                                    <td class="p-3 text-right text-slate-400">170–180 °C</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Normal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-blue-700">Suhu Zone 4 (Die)</td>
+                                    <td class="p-3 text-right font-bold text-blue-700">178 °C</td>
+                                    <td class="p-3 text-right text-slate-400">175–182 °C</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Normal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-slate-700">RPM Screw</td>
+                                    <td class="p-3 text-right font-bold text-navy">35 RPM</td>
+                                    <td class="p-3 text-right text-slate-400">30–40 RPM</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Normal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-semibold text-slate-700">Ampere</td>
+                                    <td class="p-3 text-right font-bold text-amber-600">42 A</td>
+                                    <td class="p-3 text-right text-slate-400">&le; 40 A</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-bold">Perhatian</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Individual Parameter Charts Grid (Tampil jika viewModeExtruder === 'all' || 'chart') -->
+                    <div x-show="viewModeExtruder === 'all' || viewModeExtruder === 'chart'" class="grid grid-cols-1 md:grid-cols-2 gap-5" x-transition>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 1</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 155–165 °C</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_z1"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 2</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 165–175 °C</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_z2"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 3</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 170–180 °C</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_z3"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm ring-1 ring-blue-100">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Suhu Zone 4 (Die Head)</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Target: 175–182 °C</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_z4"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">RPM Screw</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 30–40 RPM</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_rpm"></canvas></div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ampere</p>
+                                    <p class="text-xs font-bold text-navy">Grafik per Jam (A)</p>
+                                </div>
+                                <span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Target: &le; 40 A</span>
+                            </div>
+                            <div class="relative h-40"><canvas id="extChart_amp"></canvas></div>
+                        </div>
+                    </div>
+
+                    <!-- Input Parameter per Jam & Tabel Data Rincian (Tampil jika viewModeExtruder === 'all' || 'data') -->
+                    <div x-show="viewModeExtruder === 'all' || viewModeExtruder === 'data'" class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden" x-transition>
                         <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                             <div>
-                                <p class="text-xs font-bold text-slate-700">Pencatatan Parameter per Jam</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Input setiap jam — grafik akan langsung diperbarui secara otomatis</p>
+                                <p class="text-xs font-bold text-slate-700">Detail Rincian Data Extruder per Jam</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Pencatatan aktual Operator, Suhu No. 1 (Zone 1–4), Target Suhu, Hasil Pengecekan, dan Kesimpulan</p>
                             </div>
                             <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse inline-block"></span>
                         </div>
 
                         <!-- Input Form Row -->
                         <div class="p-5 border-b border-slate-100 bg-blue-50/30">
-                            <div class="grid grid-cols-2 md:grid-cols-8 gap-3 items-end">
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end mb-3">
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jam</label>
                                     <input type="time" x-model="newEntry.jam" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Zone 1 (°C)</label>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Dikerjakan oleh (Operator)</label>
+                                    <input type="text" x-model="newEntry.operator" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="Nama Operator">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Suhu (°C)</label>
+                                    <input type="text" x-model="newEntry.targetSuhu" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="160-178°C">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hasil Pengecekan</label>
+                                    <select x-model="newEntry.checkResult" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
+                                        <option value="Sesuai">Sesuai (Normal)</option>
+                                        <option value="Warning">Warning (Perhatian)</option>
+                                        <option value="Deviasi">Penyimpangan (Deviasi)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Kesimpulan</label>
+                                    <input type="text" x-model="newEntry.conclusion" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="Catatan kesimpulan...">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-7 gap-3 items-end">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Suhu No. 1 (Zone 1)</label>
                                     <input type="number" x-model.number="newEntry.z1" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="160">
                                 </div>
                                 <div>
@@ -793,71 +1149,233 @@
                                     <input type="number" x-model.number="newEntry.amp" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="42">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Operator</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" x-model="newEntry.operator" class="flex-1 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="Nama">
-                                        <button @click="addHourlyEntry()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition">+</button>
-                                    </div>
+                                    <button @click="addHourlyEntry()" class="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition">+ Tambah Data</button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Grafik Suhu per Jam (Realtime Update) -->
-                        <div class="p-5 border-b border-slate-100">
+                        <div x-show="viewModeExtruder === 'all'" class="p-5 border-b border-slate-100">
                             <p class="text-xs font-bold text-slate-700 mb-3">Grafik Suhu Extruder per Jam (°C) — Realtime</p>
                             <div class="relative h-44">
                                 <canvas id="extruderHourlyChart"></canvas>
                             </div>
                         </div>
 
-                        <!-- Tabel Rincian Per Jam + Rata-rata -->
+                        <!-- Tabel Rincian Data Per Jam + Rata-rata -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-xs">
                                 <thead class="bg-slate-50 border-b border-slate-100">
                                     <tr class="text-[10px] text-slate-500 font-bold uppercase">
                                         <th class="p-3 text-left">Jam</th>
-                                        <th class="p-3 text-right">Zone 1</th>
+                                        <th class="p-3 text-left">Dikerjakan oleh (Operator)</th>
+                                        <th class="p-3 text-right">Suhu No. 1 (Zone 1)</th>
                                         <th class="p-3 text-right">Zone 2</th>
                                         <th class="p-3 text-right">Zone 3</th>
                                         <th class="p-3 text-right">Zone 4 (Die)</th>
-                                        <th class="p-3 text-right">RPM</th>
-                                        <th class="p-3 text-right">Ampere</th>
-                                        <th class="p-3 text-left">Operator</th>
-                                        <th class="p-3 text-center">Aksi</th>
+                                        <th class="p-3 text-center">Target Suhu</th>
+                                        <th class="p-3 text-center">Hasil Pengecekan</th>
+                                        <th class="p-3 text-left">Kesimpulan</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-50">
                                     <template x-for="(row, idx) in hourlyData" :key="idx">
                                         <tr class="hover:bg-slate-50">
                                             <td class="p-3 font-bold text-navy" x-text="row.jam"></td>
-                                            <td class="p-3 text-right text-slate-600" x-text="row.z1 + '°C'"></td>
+                                            <td class="p-3 font-bold text-slate-700" x-text="row.operator"></td>
+                                            <td class="p-3 text-right font-bold text-slate-800" x-text="row.z1 + '°C'"></td>
                                             <td class="p-3 text-right text-slate-600" x-text="row.z2 + '°C'"></td>
                                             <td class="p-3 text-right text-slate-600" x-text="row.z3 + '°C'"></td>
                                             <td class="p-3 text-right font-bold text-blue-700" x-text="row.z4 + '°C'"></td>
-                                            <td class="p-3 text-right text-slate-600" x-text="row.rpm + ' RPM'"></td>
-                                            <td class="p-3 text-right text-slate-600" x-text="row.amp + ' A'"></td>
-                                            <td class="p-3 text-slate-600" x-text="row.operator"></td>
+                                            <td class="p-3 text-center text-slate-500 font-medium" x-text="row.targetSuhu"></td>
                                             <td class="p-3 text-center">
-                                                <button @click="hourlyData.splice(idx,1); updateHourlyChart()" class="text-red-400 hover:text-red-600 text-[10px] font-bold">Hapus</button>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                      :class="row.checkResult === 'Sesuai' || row.checkResult === 'Normal' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+                                                      x-text="row.checkResult"></span>
                                             </td>
+                                            <td class="p-3 text-slate-600 font-medium" x-text="row.conclusion"></td>
                                         </tr>
                                     </template>
                                 </tbody>
-                                <!-- Rata-rata row -->
                                 <tfoot class="bg-blue-50 border-t-2 border-blue-200">
                                     <tr class="font-black text-blue-800 text-[10px] uppercase">
-                                        <td class="p-3">Rata-rata</td>
+                                        <td class="p-3" colspan="2">Rata-rata Suhu & Parameter</td>
                                         <td class="p-3 text-right" x-text="avg('z1') + '°C'"></td>
                                         <td class="p-3 text-right" x-text="avg('z2') + '°C'"></td>
                                         <td class="p-3 text-right" x-text="avg('z3') + '°C'"></td>
                                         <td class="p-3 text-right" x-text="avg('z4') + '°C'"></td>
-                                        <td class="p-3 text-right" x-text="avg('rpm') + ' RPM'"></td>
-                                        <td class="p-3 text-right" x-text="avg('amp') + ' A'"></td>
-                                        <td class="p-3" colspan="2"></td>
+                                        <td class="p-3 text-center">160–178°C</td>
+                                        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded font-bold">STABIL</span></td>
+                                        <td class="p-3 text-slate-700">Parameter proses dalam batas aman QC</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- ============ PAGE 6: SISA MATERIAL ============ -->
+                <div x-show="activeStep === 'sisa_material'" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white border border-amber-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Total Sisa Material</p>
+                            <p class="text-2xl font-black text-amber-700">5.5 <span class="text-sm font-bold text-slate-400">Kg</span></p>
+                            <p class="text-[10px] text-amber-600 font-semibold mt-1">Efisiensi Pemakaian BOM: 99.6%</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status Penampungan Sisa</p>
+                            <p class="text-base font-black text-navy mt-1">Bin Sisa Gudang 2</p>
+                            <p class="text-[10px] text-emerald-600 font-bold mt-1">✓ Labeling & Timbang Ulang OK</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Petugas Verifikasi</p>
+                            <p class="text-base font-black text-navy mt-1">Hana (QC) & Suryanto (Gudang)</p>
+                            <p class="text-[10px] text-slate-500 mt-1">Terverifikasi 27 Aug 2026</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                            <div>
+                                <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Rincian Sisa Material Pasca-Batch Produksi</h5>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Selisih antara target kebutuhan BOM dan aktual pemakaian pada mesin</p>
+                            </div>
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">Nama Material</th>
+                                    <th class="p-3 text-right">Target Kebutuhan</th>
+                                    <th class="p-3 text-right">Aktual Terpakai</th>
+                                    <th class="p-3 text-right">Sisa Material (Kg)</th>
+                                    <th class="p-3 text-left">Alasan / Keterangan Sisa</th>
+                                    <th class="p-3 text-left">Lokasi Penampungan</th>
+                                    <th class="p-3 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Resin PVC S-65</td>
+                                    <td class="p-3 text-right text-slate-600">1.250,0 Kg</td>
+                                    <td class="p-3 text-right text-slate-600">1.246,0 Kg</td>
+                                    <td class="p-3 text-right font-black text-amber-600">4,0 Kg</td>
+                                    <td class="p-3 text-slate-600">Sisa penakaran di hopper mixer</td>
+                                    <td class="p-3 text-slate-600">Bin Sisa A-01</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Lengkap</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Stabilizer Ca-Zn</td>
+                                    <td class="p-3 text-right text-slate-600">50,0 Kg</td>
+                                    <td class="p-3 text-right text-slate-600">49,0 Kg</td>
+                                    <td class="p-3 text-right font-black text-amber-600">1,0 Kg</td>
+                                    <td class="p-3 text-slate-600">Sisa kemasan segel terbuka</td>
+                                    <td class="p-3 text-slate-600">Loker Aditif Khusus</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Disimpan</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">Pigment White</td>
+                                    <td class="p-3 text-right text-slate-600">25,0 Kg</td>
+                                    <td class="p-3 text-right text-slate-600">24,5 Kg</td>
+                                    <td class="p-3 text-right font-black text-amber-600">0,5 Kg</td>
+                                    <td class="p-3 text-slate-600">Sisa micro-dosing feeder</td>
+                                    <td class="p-3 text-slate-600">Rak Pigment Retur</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Disimpan</span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-amber-50/50 border-t border-amber-200">
+                                <tr class="font-bold text-slate-800">
+                                    <td class="p-3 text-navy">TOTAL SISA MATERIAL</td>
+                                    <td class="p-3 text-right">1.325,0 Kg</td>
+                                    <td class="p-3 text-right">1.319,5 Kg</td>
+                                    <td class="p-3 text-right font-black text-amber-700">5,5 Kg</td>
+                                    <td class="p-3 text-slate-500" colspan="3">Di-repack & dilabeli untuk SPK berikutnya</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ============ PAGE 7: PENYERAHAN BARANG / TRANSFER BARANG ============ -->
+                <div x-show="activeStep === 'penyerahan_barang'" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Total Diserahkan ke Gudang</p>
+                            <p class="text-2xl font-black text-navy">15.000 <span class="text-sm font-bold text-slate-400">Kg</span></p>
+                            <p class="text-[10px] text-blue-600 font-bold mt-1">600 Sak / Bag (25 Kg / Sak)</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">No. Moving / Transfer Slip</p>
+                            <p class="text-base font-black text-navy mt-1">TRF-FG-2026-0829</p>
+                            <p class="text-[10px] text-emerald-600 font-bold mt-1">✓ Status: Accepted by Warehouse</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasi Penyimpanan FG</p>
+                            <p class="text-base font-black text-navy mt-1">Gudang Barang Jadi (Zone A-04)</p>
+                            <p class="text-[10px] text-slate-500 mt-1">Siap muat kontainer</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                            <div>
+                                <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Log Riwayat Penyerahan Barang (Transfer Slip Barang Jadi)</h5>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Daftar bertahap serah terima hasil Bagging dari Lini Produksi ke Gudang Barang Jadi</p>
+                            </div>
+                            <button class="px-3 py-1.5 bg-navy text-white text-xs font-bold rounded-xl hover:bg-navy-light transition flex items-center gap-1">
+                                <span>+ Buat Moving Slip Baru</span>
+                            </button>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">No. Transfer Slip</th>
+                                    <th class="p-3 text-left">Tanggal & Jam Transfer</th>
+                                    <th class="p-3 text-right">Jumlah Sak</th>
+                                    <th class="p-3 text-right">Total Berat (Kg)</th>
+                                    <th class="p-3 text-left">Petugas Serah (Produksi)</th>
+                                    <th class="p-3 text-left">Petugas Terima (Gudang)</th>
+                                    <th class="p-3 text-center">Status Acceptance</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-01</td>
+                                    <td class="p-3 text-slate-600">28 Aug 2026, 14:15</td>
+                                    <td class="p-3 text-right font-bold text-navy">210 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">5.250 Kg</td>
+                                    <td class="p-3 text-slate-600">Putu (Shift 1)</td>
+                                    <td class="p-3 text-slate-600">Suryanto</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-02</td>
+                                    <td class="p-3 text-slate-600">28 Aug 2026, 22:30</td>
+                                    <td class="p-3 text-right font-bold text-navy">200 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">5.000 Kg</td>
+                                    <td class="p-3 text-slate-600">Putri (Shift 2)</td>
+                                    <td class="p-3 text-slate-600">Bambang</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-03</td>
+                                    <td class="p-3 text-slate-600">29 Aug 2026, 06:45</td>
+                                    <td class="p-3 text-right font-bold text-navy">190 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">4.750 Kg</td>
+                                    <td class="p-3 text-slate-600">Fikri (Shift 3)</td>
+                                    <td class="p-3 text-slate-600">Suryanto</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-blue-50/50 border-t border-blue-200">
+                                <tr class="font-bold text-slate-800">
+                                    <td class="p-3 text-navy" colspan="2">TOTAL KESELURUHAN TRANSFER</td>
+                                    <td class="p-3 text-right font-black text-navy">600 Sak</td>
+                                    <td class="p-3 text-right font-black text-navy">15.000 Kg</td>
+                                    <td class="p-3 text-slate-500" colspan="3">Verifikasi 100% Sesuai Target SPK</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
@@ -1197,37 +1715,16 @@
                         </div>
                     </div>
 
-                    <!-- Video Report Documentation Hyperlink Card -->
-                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm border-l-4 border-l-violet-600">
-                        <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
-                            <h5 class="text-xs font-bold text-navy uppercase tracking-widest flex items-center gap-2">
-                                <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                Video Dokumentasi & Report Trial
-                            </h5>
-                            <span class="text-[10px] bg-violet-50 text-violet-700 px-2 py-0.5 rounded font-bold">Hyperlink Akses Video</span>
+
+
+                    <!-- R&D Monitoring Info Banner -->
+                    <div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-violet-200 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-5 h-5 text-violet-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </div>
-
-                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
-                            <div class="flex items-center justify-between gap-3">
-                                <div>
-                                    <p class="text-xs font-bold text-slate-800">Video Laporan Hasil Pengujian Sample</p>
-                                    <p class="text-[11px] text-slate-500">Video dokumentasi jalannya trial mesin, observasi lelehan aditif, & rekaman QC.</p>
-                                </div>
-                                <a :href="selectedEvent.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'" 
-                                   target="_blank" 
-                                   class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
-                                    ▶ Tonton Video Report Trial
-                                </a>
-                            </div>
-
-                            <div class="pt-2 border-t border-slate-200 flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-500">URL Hyperlink:</span>
-                                <input type="text" 
-                                       x-model="selectedEvent.videoUrl" 
-                                       placeholder="https://youtube.com/watch?v=..." 
-                                       class="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 font-mono focus:ring-violet-500 focus:border-violet-500 outline-none">
-                            </div>
+                        <div>
+                            <p class="text-xs font-bold text-violet-800">Status Pemantauan Trial R&amp;D</p>
+                            <p class="text-[11px] text-violet-700 mt-0.5">Selama trial berlangsung, seluruh proses dipantau secara langsung oleh tim <span class="font-bold">R&amp;D</span>. PPIC berperan sebagai pemantau jadwal dan alokasi mesin.</p>
                         </div>
                     </div>
 
@@ -1397,6 +1894,22 @@
                             <option value="6">6 Jam Trial</option>
                             <option value="8">8 Jam (1 Shift Full)</option>
                         </select>
+                        <p class="text-[11px] font-bold text-violet-700 bg-violet-50 border border-violet-200 rounded-lg p-2 mt-2 flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            📌 Catatan: Durasi estimasi trial belum termasuk cleaning.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Start Date & Finish Date -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai Trial <span class="text-rose-500">*</span></label>
+                        <input type="date" x-model="rndForm.startDate" @change="if (rndForm.finishDate && rndForm.finishDate < rndForm.startDate) { rndForm.finishDate = rndForm.startDate; }" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Selesai Trial <span class="text-rose-500">*</span></label>
+                        <input type="date" x-model="rndForm.finishDate" :min="rndForm.startDate" @change="if (rndForm.startDate && rndForm.finishDate < rndForm.startDate) { rndForm.finishDate = rndForm.startDate; }" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
                     </div>
                 </div>
 
@@ -1426,21 +1939,85 @@
                     <label class="block font-bold text-slate-700 mb-1">Catatan / Objektif Pengujian Sample</label>
                     <textarea x-model="rndForm.notes" rows="2" placeholder="Uji coba aditif modifier impact baru untuk formula bening..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 focus:ring-violet-500 focus:border-violet-500 outline-none"></textarea>
                 </div>
-
-                <!-- Video Report Hyperlink URL -->
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
-                        <span>Link Video Report Trial (Optional / Dokumentasi)</span>
-                        <span class="text-[10px] text-violet-600">Youtube / Drive / MP4</span>
-                    </label>
-                    <input type="text" x-model="rndForm.videoUrl" placeholder="https://youtube.com/watch?v=..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-mono focus:ring-violet-500 focus:border-violet-500 outline-none">
-                </div>
             </div>
+
 
             <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                 <button @click="showRndModal = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">Batal</button>
                 <button @click="submitRndTrial()" class="px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
                     <span>🚀 Kirim Request ke PPIC</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: EMERGENCY REPORT (GLOBAL ACROSS ALL SPK TABS) ================= -->
+    <div x-show="showEmergencyModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-rose-200 w-full max-w-xl overflow-hidden" @click.away="showEmergencyModal = false">
+            <div class="p-5 bg-gradient-to-r from-rose-700 to-red-800 text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <span class="text-xl">🚨</span>
+                        Modul Emergency Report & Laporan Darurat
+                    </h4>
+                    <p class="text-xs text-rose-200 mt-0.5">Pelaporan kendala mesin, stop line darurat, dan insiden operasional</p>
+                </div>
+                <button @click="showEmergencyModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[78vh] overflow-y-auto text-xs" x-data="{ emergencyForm: { process: 'Extruder', issueType: 'Mesin Jammed / Breakdown', notes: '', actionTaken: '', reporter: 'Mira (Shift 1)' } }">
+                <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-rose-800">
+                    <p class="font-bold text-xs">⚠️ Catatan Keselamatan & Respon Cepat</p>
+                    <p class="text-[11px] text-rose-700 mt-0.5">Laporan darurat ini akan langsung memicu notifikasi peringatan ke Supervisor Produksi, PPIC, dan Maintenance.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Pos Proses Terkena Kendala <span class="text-rose-500">*</span></label>
+                        <select x-model="emergencyForm.process" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-rose-500 focus:border-rose-500 outline-none">
+                            <option value="Cleaning">Cleaning</option>
+                            <option value="Penimbangan">Penimbangan</option>
+                            <option value="Mixing">Mixing</option>
+                            <option value="Extruder">Extruder</option>
+                            <option value="Bagging">Bagging</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Kategori Kendala Emergency <span class="text-rose-500">*</span></label>
+                        <select x-model="emergencyForm.issueType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-rose-500 focus:border-rose-500 outline-none">
+                            <option value="Mesin Jammed / Breakdown">Mesin Jammed / Breakdown</option>
+                            <option value="Overheat Suhu Exceed Target">Overheat / Suhu Melonjak</option>
+                            <option value="Mati Listrik / Utility Outage">Mati Listrik / Utility Outage</option>
+                            <option value="Kontaminasi Material">Kontaminasi Material / Asal Resep</option>
+                            <option value="Defek Kualitas Produk">Defek Kualitas Produk Parah</option>
+                            <option value="K3 / Incident Safety">K3 / Incident Safety</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rincian Deskripsi Masalah <span class="text-rose-500">*</span></label>
+                    <textarea x-model="emergencyForm.notes" rows="3" placeholder="Jelaskan secara detail kendala yang terjadi pada mesin/proses..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 focus:ring-rose-500 focus:border-rose-500 outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Tindakan Darurat yang Telah Diambil</label>
+                    <input type="text" x-model="emergencyForm.actionTaken" placeholder="Contoh: Stop line sementara & matikan heater zone 3..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-rose-500 focus:border-rose-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Pelapor / Operator On-Duty</label>
+                    <input type="text" x-model="emergencyForm.reporter" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-rose-500 focus:border-rose-500 outline-none">
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <button @click="showEmergencyModal = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">Batal</button>
+                <button @click="showEmergencyModal = false; alert('🚨 Laporan Emergency berhasil dikirim ke Supervisor & Maintenance!')" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+                    <span>🚨 Kirim Laporan Darurat</span>
                 </button>
             </div>
         </div>
@@ -1907,18 +2484,21 @@
                     { nama: 'Sapuan (debu, granule)', qty: '3 Kg' },
                     { nama: 'Limbah B3 (majun, dll)', qty: '2.5 Kg' },
                 ],
-                qcRows: [
-                    { mesin: 'Mixer', hasil1: 'Tidak ada kerak', status1: 'OK', hasil2: 'Warna bersih', status2: 'OK' },
-                    { mesin: 'Gravimetrik - Feeder 1', hasil1: 'Bersih dari sisa material', status1: 'OK', hasil2: 'Sensor aman', status2: 'OK' },
-                    { mesin: 'Gravimetrik - Feeder 2', hasil1: 'Bersih', status1: 'OK', hasil2: 'Putaran lancar', status2: 'OK' },
-                    { mesin: 'Gravimetrik - Feeder 3', hasil1: 'Kosong & bersih', status1: 'OK', hasil2: '-', status2: 'OK' },
-                    { mesin: 'Volumetrik', hasil1: 'Bersih', status1: 'OK', hasil2: '-', status2: 'OK' },
-                    { mesin: 'Extruder', hasil1: 'Screw bersih dari sisa PE', status1: 'OK', hasil2: 'Die head bebas kotoran', status2: 'OK' },
-                    { mesin: 'Mesin Cutting', hasil1: 'Pisau tajam, bersih', status1: 'OK', hasil2: 'Area potong aman', status2: 'OK' },
-                    { mesin: 'Centrifugal Dryer', hasil1: 'Saringan bersih', status1: 'OK', hasil2: 'Kering', status2: 'OK' },
-                    { mesin: 'Mesin Vibra 1', hasil1: 'Mesh bersih tidak tersumbat', status1: 'OK', hasil2: 'Getaran stabil', status2: 'OK' },
-                    { mesin: 'Mesin Vibra 2', hasil1: 'Bersih', status1: 'OK', hasil2: 'OK', status2: 'OK' },
-                    { mesin: 'Silo', hasil1: 'Dinding dalam bersih', status1: 'OK', hasil2: 'Valve lancar', status2: 'OK' },
+                qcIterations: [
+                    {
+                        iteration: 'Check 1',
+                        time: '08:30',
+                        status: 'Tidak Lolos',
+                        qcNotes: 'Sisa material PVC masih menempel pada ujung screw extruder. Saringan centrifugal dryer belum dibersihkan maksimal. Mohon dilakukan pembersihan ulang.',
+                        operatorNotes: 'Akan dilakukan pembersihan ulang menggunakan cairan pelarut (Thinner) dan disikat ulang pada area yang disebutkan.'
+                    },
+                    {
+                        iteration: 'Check 2',
+                        time: '09:15',
+                        status: 'OK',
+                        qcNotes: 'Semua mesin sudah bersih sesuai standar kebersihan mesin (C.PRO.001-24). Area screw dan saringan dipastikan bebas kontaminasi. Siap digunakan untuk SPK selanjutnya.',
+                        operatorNotes: 'Pembersihan selesai dan siap diserahterimakan.'
+                    }
                 ],
             },
             saveCleaning() {
@@ -1932,6 +2512,7 @@
 
         // ====== EXTRUDER HOURLY APP ======
         Alpine.data('extruderHourlyApp', () => ({
+            viewModeExtruder: 'all',
             newEntry: { jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '' },
             hourlyData: [
                 { jam: '06:00', z1: 160, z2: 170, z3: 175, z4: 175, rpm: 35, amp: 41, operator: 'Budi' },
@@ -2003,6 +2584,7 @@
             dateStart: '',
             dateEnd: '',
             showEventModal: false,
+            showEmergencyModal: false,
             activeStep: 'cleaning', // Tab 1 = Cleaning
             showRndModal: false,
             showPpicNotifModal: false,
@@ -2010,6 +2592,20 @@
             showSlotModal: false,
             slotSearchQuery: '',
             slotMachineFilter: 'all',
+
+            openSpkDetailModal(spkData) {
+                this.selectedEvent = {
+                    title: spkData.id || spkData.title || 'SPK-2608-001',
+                    product: spkData.product || 'PVC Compound A (Clear)',
+                    customer: spkData.customer || 'PT Royal Synthetic Compound',
+                    completedBatch: spkData.completedBatch || 28,
+                    totalBatch: spkData.qty || 50,
+                    status: spkData.status || 'Running',
+                    machine: spkData.machine || 'Extruder E-03'
+                };
+                this.activeStep = 'cleaning';
+                this.showEventModal = true;
+            },
 
             // R&D Trial Form State
             rndForm: {
@@ -2261,70 +2857,71 @@
 
                 if (step === 'extruder') {
                     const extruderData = [
-                        { hour: '06:00', temp: 175, output: 492, operator: 'Budi', shift: 'Shift 1' },
-                        { hour: '07:00', temp: 176, output: 498, operator: 'Mia', shift: 'Shift 1' },
-                        { hour: '08:00', temp: 178, output: 505, operator: 'Ayu', shift: 'Shift 1' },
-                        { hour: '09:00', temp: 177, output: 497, operator: 'Bagas', shift: 'Shift 2' },
-                        { hour: '10:00', temp: 180, output: 503, operator: 'Rudi', shift: 'Shift 2' },
-                        { hour: '11:00', temp: 179, output: 499, operator: 'Putu', shift: 'Shift 2' },
-                        { hour: '12:00', temp: 178, output: 495, operator: 'Citra', shift: 'Shift 3' }
+                        { hour: '06:00', z1: 158, z2: 168, z3: 172, z4: 176, rpm: 32, amp: 38, output: 492, operator: 'Budi', shift: 'Shift 1' },
+                        { hour: '07:00', z1: 160, z2: 170, z3: 175, z4: 178, rpm: 34, amp: 40, output: 498, operator: 'Mia', shift: 'Shift 1' },
+                        { hour: '08:00', z1: 161, z2: 171, z3: 176, z4: 180, rpm: 35, amp: 42, output: 505, operator: 'Ayu', shift: 'Shift 1' },
+                        { hour: '09:00', z1: 159, z2: 169, z3: 174, z4: 178, rpm: 34, amp: 41, output: 497, operator: 'Bagas', shift: 'Shift 2' },
+                        { hour: '10:00', z1: 162, z2: 172, z3: 177, z4: 181, rpm: 36, amp: 43, output: 503, operator: 'Rudi', shift: 'Shift 2' },
+                        { hour: '11:00', z1: 160, z2: 170, z3: 176, z4: 179, rpm: 35, amp: 41, output: 499, operator: 'Putu', shift: 'Shift 2' },
+                        { hour: '12:00', z1: 159, z2: 169, z3: 175, z4: 178, rpm: 34, amp: 40, output: 495, operator: 'Citra', shift: 'Shift 3' }
                     ];
                     const filteredExtruder = this.extruderShiftFilter === 'all'
                         ? extruderData
                         : extruderData.filter(d => d.shift === this.extruderShiftFilter);
 
+                    const hours = filteredExtruder.map(d => d.hour);
                     const tooltipMeta = (d) => d ? ['Operator: ' + d.operator, 'Shift: ' + d.shift, 'Jam: ' + d.hour] : '';
+                    const targetLine = (val, len) => Array(len).fill(val);
 
-                    const ctxTemp = document.getElementById('tempChart');
-                    if (ctxTemp) {
-                        this.tempChartInstance = new Chart(ctxTemp.getContext('2d'), {
+                    const makeLineChart = (id, label, data, targetVal, color, yMin, yMax, unit) => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        new Chart(el.getContext('2d'), {
                             type: 'line',
                             data: {
-                                labels: filteredExtruder.map(d => d.hour),
+                                labels: hours,
                                 datasets: [{
-                                    label: 'Suhu Zone 3 (°C)',
-                                    data: filteredExtruder.map(d => d.temp),
-                                    borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.1)', borderWidth: 2, fill: true
+                                    label: label,
+                                    data: data,
+                                    borderColor: color,
+                                    backgroundColor: color + '18',
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 3
+                                }, {
+                                    label: 'Target',
+                                    data: targetLine(targetVal, data.length),
+                                    type: 'line',
+                                    borderColor: '#e11d48',
+                                    borderDash: [5, 4],
+                                    borderWidth: 1.5,
+                                    pointRadius: 0,
+                                    fill: false
                                 }]
                             },
                             options: {
-                                ...defaultLineOpts,
-                                scales: { y: { min: 160, max: 190 } },
+                                responsive: true, maintainAspectRatio: false,
+                                scales: { y: { min: yMin, max: yMax } },
                                 plugins: {
                                     legend: { display: false },
                                     tooltip: {
                                         callbacks: {
-                                            label: (ctx) => 'Suhu: ' + ctx.raw + ' °C',
-                                            afterLabel: (ctx) => tooltipMeta(filteredExtruder[ctx.dataIndex])
+                                            label: (ctx) => ctx.dataset.label === 'Target' ? 'Target: ' + ctx.raw + unit : label + ': ' + ctx.raw + unit,
+                                            afterLabel: (ctx) => ctx.dataset.label === 'Target' ? '' : tooltipMeta(filteredExtruder[ctx.dataIndex])
                                         }
                                     }
                                 }
                             }
                         });
-                    }
-                    const ctxTime = document.getElementById('timeChart');
-                    if (ctxTime) {
-                        this.timeChartInstance = new Chart(ctxTime.getContext('2d'), {
-                            type: 'bar',
-                            data: {
-                                labels: filteredExtruder.map(d => d.hour),
-                                datasets: [{ label: 'Output (Kg/Jam)', data: filteredExtruder.map(d => d.output), backgroundColor: '#10b981', borderRadius: 4 }]
-                            },
-                            options: {
-                                ...defaultBarOpts,
-                                scales: { y: { min: 0, max: 600 } },
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: (ctx) => 'Output: ' + ctx.raw + ' Kg/Jam',
-                                            afterLabel: (ctx) => tooltipMeta(filteredExtruder[ctx.dataIndex])
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    }
+                    };
+
+                    makeLineChart('extChart_z1', 'Zone 1', filteredExtruder.map(d => d.z1), 160, '#6366f1', 148, 172, '°C');
+                    makeLineChart('extChart_z2', 'Zone 2', filteredExtruder.map(d => d.z2), 170, '#0ea5e9', 158, 182, '°C');
+                    makeLineChart('extChart_z3', 'Zone 3', filteredExtruder.map(d => d.z3), 175, '#10b981', 163, 187, '°C');
+                    makeLineChart('extChart_z4', 'Zone 4 Die', filteredExtruder.map(d => d.z4), 179, '#3b82f6', 168, 192, '°C');
+                    makeLineChart('extChart_rpm', 'RPM', filteredExtruder.map(d => d.rpm), 35, '#8b5cf6', 25, 45, ' RPM');
+                    makeLineChart('extChart_amp', 'Ampere', filteredExtruder.map(d => d.amp), 40, '#f59e0b', 30, 50, ' A');
                 }
 
                 if (step === 'bagging') {
