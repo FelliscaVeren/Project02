@@ -210,7 +210,7 @@
                         </tr>
                         <tr class="hover:bg-slate-50">
                             <td class="p-3 text-slate-600 font-medium">Total Delay</td>
-                            <td class="p-3 text-right font-bold text-emerald-600">0.0 Jam (On Time)</td>
+                            <td class="p-3 text-right font-bold text-emerald-600">0.0 Jam (Tepat Waktu)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -239,7 +239,7 @@
                         <!-- Serah Terima Final -->
                         <div>
                             <div class="flex justify-between text-xs font-bold mb-1">
-                                <span class="text-emerald-600">Serah Terima Final (Accepted)</span>
+                                <span class="text-emerald-600">Serah Terima Final (Diterima)</span>
                                 <span class="text-slate-700" x-text="transferStats.finalQty.toLocaleString() + ' Kg (' + transferStats.finalPct + '%)'"></span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
@@ -285,7 +285,7 @@
                                 <td class="p-3 text-right font-bold text-navy" x-text="Number(log.qty).toLocaleString() + ' Kg'"></td>
                                 <td class="p-3 text-slate-600 font-bold" x-text="log.opProduksi"></td>
                                 <td class="p-3 text-slate-600 font-bold" x-text="log.opGudang"></td>
-                                <td class="p-3 text-emerald-600 font-bold">✓ Accepted</td>
+                                <td class="p-3 text-emerald-600 font-bold">✓ Diterima</td>
                             </tr>
                         </template>
                         <tr x-show="transferLogs.filter(l => l.type.includes('Final')).length === 0">
@@ -538,7 +538,7 @@
                 
                 let successMsg = this.transferForm.type.includes('Titip') 
                     ? `Berhasil TITIP BARANG sebanyak ${this.transferForm.qty} Kg. Status: Numpang Gudang.` 
-                    : `Berhasil SERAH TERIMA FINAL sebanyak ${this.transferForm.qty} Kg. Stok berhasil dipotong! (Accepted)`;
+                    : `Berhasil SERAH TERIMA FINAL sebanyak ${this.transferForm.qty} Kg. Stok berhasil dipotong! (Diterima)`;
                     
                 alert(successMsg);
                 this.showTransferModal = false;

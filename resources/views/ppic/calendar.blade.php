@@ -110,6 +110,15 @@
                     <span>Pengajuan Trial R&D</span>
                 </button>
 
+                <!-- Tombol Riwayat Pengajuan Trial (HANYA TAMPIL DI ROLE R&D) -->
+                <button x-show="currentRole === 'rnd'" 
+                        @click="showRndHistoryModal = true" 
+                        class="px-3.5 py-2 bg-violet-100 hover:bg-violet-200 text-violet-800 text-xs font-bold rounded-xl border border-violet-300 shadow-sm transition-all flex items-center gap-1.5">
+                    <span class="text-sm">📜</span>
+                    <span>Riwayat Pengajuan Trial</span>
+                    <span class="px-1.5 py-0.5 bg-violet-600 text-white text-[10px] rounded-full font-extrabold" x-text="rndTrialRequests.length"></span>
+                </button>
+
                 <!-- Tombol Penugasan Mandor (Foreman) (HANYA TAMPIL DI ROLE KEPALA PRODUKSI / FOREMAN) -->
                 <button x-show="currentRole === 'foreman'" 
                         @click="showForemanAssignModal = true" 
@@ -134,7 +143,9 @@
                     Slot Mesin (E01-E05)
                 </button>
 
-                <a href="{{ route('ppic.create.step1') }}" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
+                <a href="{{ route('ppic.create.step1') }}" 
+                   x-show="currentRole === 'ppic'"
+                   class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     Buat SPK
                 </a>
@@ -208,7 +219,7 @@
                             <td class="p-3">
                                 <p class="text-slate-700">Working Days: <span class="font-bold text-navy">2.5 Days</span></p>
                                 <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">1,200 Mins</span></p>
-                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (On Time)</p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (Tepat Waktu)</p>
                             </td>
                             <td class="p-3 min-w-[200px]">
                                 <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2 mb-1">
@@ -249,7 +260,7 @@
                             <td class="p-3">
                                 <p class="text-slate-700">Working Days: <span class="font-bold text-navy">3.0 Days</span></p>
                                 <p class="text-slate-700">Working Mins: <span class="font-bold text-navy">1,440 Mins</span></p>
-                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (On Time)</p>
+                                <p class="text-emerald-600 font-bold">Delay: 0.0 Hr (Tepat Waktu)</p>
                             </td>
                             <td class="p-3 min-w-[200px]">
                                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 mb-1">
@@ -589,6 +600,168 @@
                         </div>
                     </div>
 
+                    <!-- Tabel Hasil Verifikasi QC (Rangkaian Mesin) -->
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h5 class="text-xs font-bold text-navy uppercase tracking-wider flex items-center gap-2">
+                                <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Hasil Verifikasi QC :
+                            </h5>
+                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">C.PRO.001-24 / Matrix QC</span>
+                        </div>
+
+                        <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-sm">
+                            <table class="w-full text-xs text-left border-collapse border-hidden">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                                        <th rowspan="2" class="p-2.5 border border-slate-300 text-center font-bold text-navy w-1/4">Rangkaian Mesin</th>
+                                        <th colspan="2" class="p-2 border border-slate-300 text-center bg-violet-50 text-violet-800">Check 1</th>
+                                        <th colspan="2" class="p-2 border border-slate-300 text-center bg-indigo-50 text-indigo-800">Check 2</th>
+                                        <th colspan="2" class="p-2 border border-slate-300 text-center bg-slate-200 text-slate-800">Check 3</th>
+                                    </tr>
+                                    <tr class="bg-slate-50 text-slate-700 font-bold border-b border-slate-300 text-center">
+                                        <th class="p-2 border border-slate-300">Hasil</th>
+                                        <th class="p-2 border border-slate-300 w-28 whitespace-nowrap">Status</th>
+                                        <th class="p-2 border border-slate-300">Hasil</th>
+                                        <th class="p-2 border border-slate-300 w-28 whitespace-nowrap">Status</th>
+                                        <th class="p-2 border border-slate-300">Hasil</th>
+                                        <th class="p-2 border border-slate-300 w-28 whitespace-nowrap">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <!-- 1. Mixer -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Mixer</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium">Bebas Kontaminasi / Bersih</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 2. Gravimetrik (3 Sub-rows: Feeder 1, Feeder 2, Feeder 3) -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td rowspan="3" class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50 align-top text-left">Gravimetrik</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-semibold"><span class="text-slate-500 font-bold mr-1">Feeder 1:</span> Bersih &amp; Bebas Debu</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-semibold"><span class="text-slate-500 font-bold mr-1">Feeder 2:</span> Bersih &amp; Bebas Residu</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-semibold"><span class="text-slate-500 font-bold mr-1">Feeder 3:</span> Bersih, Hoppers Sesuai</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 3. Volumetrik -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Volumetrik</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium">Bebas Kontaminasi</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 4. Extruder -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Extruder</td>
+                                        <td class="p-2 border border-slate-300 text-rose-700 font-semibold bg-rose-50/40">Sisa PVC menempel pada screw</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap bg-rose-50/40"><span class="px-2.5 py-1 bg-rose-100 text-rose-800 font-bold rounded-md text-[11px] border border-rose-300 whitespace-nowrap inline-block">Tidak Lolos</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium bg-emerald-50/30">Screw &amp; Barrel Bersih (Flushing OK)</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap bg-emerald-50/30"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 5. Mesin Cutting -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Mesin Cutting</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium">Pisau &amp; Chamber Bersih</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 6. Centrifugal Dryer -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Centrifugal Dryer</td>
+                                        <td class="p-2 border border-slate-300 text-rose-700 font-semibold bg-rose-50/40">Saringan belum maksimal</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap bg-rose-50/40"><span class="px-2.5 py-1 bg-rose-100 text-rose-800 font-bold rounded-md text-[11px] border border-rose-300 whitespace-nowrap inline-block">Tidak Lolos</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium bg-emerald-50/30">Saringan disikat &amp; Clean</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap bg-emerald-50/30"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 7. Mesin Vibra (2 Sub-rows: Vibra 1, Vibra 2) -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td rowspan="2" class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50 align-top text-left">Mesin Vibra</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-semibold"><span class="text-slate-500 font-bold mr-1">Vibra 1:</span> Mesh Saringan Bersih</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-semibold"><span class="text-slate-500 font-bold mr-1">Vibra 2:</span> Mesh Saringan Bersih</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- 8. Silo -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 font-bold text-navy border border-slate-300 bg-slate-50/50">Silo</td>
+                                        <td class="p-2 border border-slate-300 text-slate-700 font-medium">Bebas Debu &amp; Residu Material</td>
+                                        <td class="p-2 border border-slate-300 text-center whitespace-nowrap"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[11px] border border-emerald-300 whitespace-nowrap">OK</span></td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-400 text-center font-medium">&mdash;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Ket. Status Legend -->
+                        <div class="pt-2 text-[11px] text-slate-600 flex flex-wrap items-center gap-4 border-t border-slate-100 font-medium">
+                            <span class="font-bold text-navy uppercase tracking-wider text-[10px]">Ket. Status:</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded text-[10px] border border-emerald-300 whitespace-nowrap">OK</span>
+                                <span>= Bersih / Lolos QC</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-1.5 py-0.5 bg-rose-100 text-rose-800 font-bold rounded text-[10px] border border-rose-300 whitespace-nowrap">Tidak Lolos</span>
+                                <span>= Perlu Pembersihan Ulang</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-slate-400 font-bold">&mdash;</span>
+                                <span class="text-slate-500">= Tidak Diperlukan Pengecekan Lanjutan</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Verifikasi QC (Read-Only) -->
                     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
                         <div class="px-5 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
@@ -686,7 +859,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
-                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-2xl font-black text-emerald-600">Tepat Waktu</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Total Delay: 0 menit</p>
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
@@ -724,14 +897,21 @@
                     </div>
                     <!-- Detail Table -->
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-                            <p class="text-xs font-bold text-slate-700">Rincian Batch Terakhir</p>
-                            <span class="text-[10px] text-slate-400">Menampilkan 5 batch terakhir</span>
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between flex-wrap gap-2">
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Rincian Batch Terakhir</p>
+                                <span class="text-[10px] text-slate-400">Menampilkan 5 batch terakhir</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-bold shadow-sm">
+                                <span class="text-sm">⚡</span>
+                                <span>Waktu Tercepat: <b class="text-emerald-900 font-extrabold">9 mnt</b> oleh <b class="text-emerald-900 font-extrabold">Eko</b> (Batch #46 · Shift 2 · <span x-text="selectedEvent.timbangDate || '05 Sep 2026'"></span>)</span>
+                            </div>
                         </div>
                         <table class="w-full text-xs">
                             <thead class="bg-slate-50 border-b border-slate-100">
                                 <tr class="text-[10px] text-slate-500 font-bold uppercase">
                                     <th class="p-3 text-left">Batch</th>
+                                    <th class="p-3 text-left">Tanggal Penimbangan</th>
                                     <th class="p-3 text-left">Operator</th>
                                     <th class="p-3 text-left">Shift</th>
                                     <th class="p-3 text-right">Mulai</th>
@@ -743,7 +923,8 @@
                             <tbody class="divide-y divide-slate-50">
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Batch #50</td>
-                                    <td class="p-3 text-slate-600">Mia</td>
+                                    <td class="p-3 text-slate-600 font-medium" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                    <td class="p-3 text-slate-600">Deni</td>
                                     <td class="p-3 text-slate-500">Shift 1</td>
                                     <td class="p-3 text-right text-slate-500">08:00</td>
                                     <td class="p-3 text-right text-slate-500">08:13</td>
@@ -752,7 +933,8 @@
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Batch #49</td>
-                                    <td class="p-3 text-slate-600">Ayu</td>
+                                    <td class="p-3 text-slate-600 font-medium" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                    <td class="p-3 text-slate-600">Agus</td>
                                     <td class="p-3 text-slate-500">Shift 1</td>
                                     <td class="p-3 text-right text-slate-500">07:47</td>
                                     <td class="p-3 text-right text-slate-500">07:57</td>
@@ -761,7 +943,8 @@
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Batch #48</td>
-                                    <td class="p-3 text-slate-600">Mia</td>
+                                    <td class="p-3 text-slate-600 font-medium" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                    <td class="p-3 text-slate-600">Deni</td>
                                     <td class="p-3 text-slate-500">Shift 1</td>
                                     <td class="p-3 text-right text-slate-500">07:31</td>
                                     <td class="p-3 text-right text-slate-500">07:48</td>
@@ -770,21 +953,23 @@
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Batch #47</td>
-                                    <td class="p-3 text-slate-600">Fitri</td>
+                                    <td class="p-3 text-slate-600 font-medium" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                    <td class="p-3 text-slate-600">Rudi</td>
                                     <td class="p-3 text-slate-500">Shift 2</td>
                                     <td class="p-3 text-right text-slate-500">07:19</td>
                                     <td class="p-3 text-right text-slate-500">07:30</td>
                                     <td class="p-3 text-right font-bold text-navy">11 mnt</td>
                                     <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
                                 </tr>
-                                <tr class="hover:bg-slate-50">
-                                    <td class="p-3 font-bold text-navy">Batch #46</td>
-                                    <td class="p-3 text-slate-600">Hana</td>
+                                <tr class="hover:bg-slate-50 bg-emerald-50/40">
+                                    <td class="p-3 font-bold text-navy flex items-center gap-1">Batch #46 <span class="text-xs" title="Batch Tercepat">🏆</span></td>
+                                    <td class="p-3 text-slate-600 font-medium" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                    <td class="p-3 text-slate-800 font-bold">Eko</td>
                                     <td class="p-3 text-slate-500">Shift 2</td>
                                     <td class="p-3 text-right text-slate-500">07:07</td>
                                     <td class="p-3 text-right text-slate-500">07:16</td>
-                                    <td class="p-3 text-right font-bold text-emerald-600">9 mnt</td>
-                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                    <td class="p-3 text-right font-black text-emerald-600">9 mnt</td>
+                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">⚡ Tercepat</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -811,7 +996,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
-                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-2xl font-black text-emerald-600">Tepat Waktu</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Total Delay: 5 menit</p>
                         </div>
                     </div>
@@ -833,10 +1018,10 @@
                     </div>
                     <!-- Tabel Detail Batch Mixing -->
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between flex-wrap gap-2">
                             <div>
                                 <p class="text-xs font-bold text-slate-700">Rincian Batch Mixing</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Detail setiap batch: operator, shift, jam mulai, jam selesai, dan status</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Detail setiap batch: tanggal, operator, shift, jam, durasi & target, temperatur (°C), ampere (A), dan metode kerja</p>
                             </div>
                             <div class="flex items-center gap-2 text-[10px] font-bold">
                                 <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded">Lebih Cepat</span>
@@ -848,67 +1033,100 @@
                             <table class="w-full text-xs">
                                 <thead class="bg-slate-50 border-b border-slate-100">
                                     <tr class="text-[10px] text-slate-500 font-bold uppercase">
-                                        <th class="p-3 text-left">Batch</th>
-                                        <th class="p-3 text-left">Operator</th>
-                                        <th class="p-3 text-left">Shift</th>
-                                        <th class="p-3 text-right">Jam Mulai</th>
-                                        <th class="p-3 text-right">Jam Selesai</th>
-                                        <th class="p-3 text-right">Durasi</th>
-                                        <th class="p-3 text-right">Status</th>
+                                        <th class="p-3 text-left whitespace-nowrap">Batch</th>
+                                        <th class="p-3 text-left whitespace-nowrap">Tanggal</th>
+                                        <th class="p-3 text-left whitespace-nowrap">Operator</th>
+                                        <th class="p-3 text-left whitespace-nowrap">Shift</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Mulai</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Selesai</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Durasi</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Target Waktu</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Temperatur</th>
+                                        <th class="p-3 text-right whitespace-nowrap">Ampere</th>
+                                        <th class="p-3 text-left whitespace-nowrap">Metode Kerja</th>
+                                        <th class="p-3 text-center whitespace-nowrap">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-50">
+                                <tbody class="divide-y divide-slate-50 bg-white">
                                     <tr class="hover:bg-slate-50">
-                                        <td class="p-3 font-bold text-navy">Batch #50</td>
-                                        <td class="p-3 text-slate-600">Budi, Anggun</td>
-                                        <td class="p-3 text-slate-500">Shift 1</td>
-                                        <td class="p-3 text-right text-slate-500">08:15</td>
-                                        <td class="p-3 text-right text-slate-500">08:33</td>
-                                        <td class="p-3 text-right font-bold text-emerald-600">18 mnt</td>
-                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                        <td class="p-3 font-bold text-navy whitespace-nowrap">Batch #50</td>
+                                        <td class="p-3 text-slate-600 font-medium whitespace-nowrap" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                        <td class="p-3 text-slate-600 whitespace-nowrap">Budi, Deni</td>
+                                        <td class="p-3 text-slate-500 whitespace-nowrap">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">08:15</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">08:31</td>
+                                        <td class="p-3 text-right font-bold text-emerald-600 whitespace-nowrap">16 mnt</td>
+                                        <td class="p-3 text-right text-slate-600 font-medium whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-700 font-bold whitespace-nowrap">118 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold whitespace-nowrap">42 A</td>
+                                        <td class="p-3 text-slate-700 whitespace-nowrap"><span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-semibold border border-slate-200">High-Speed Hot-Cooling</span></td>
+                                        <td class="p-3 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50">
-                                        <td class="p-3 font-bold text-navy">Batch #49</td>
-                                        <td class="p-3 text-slate-600">Anggun</td>
-                                        <td class="p-3 text-slate-500">Shift 1</td>
-                                        <td class="p-3 text-right text-slate-500">07:55</td>
-                                        <td class="p-3 text-right text-slate-500">08:14</td>
-                                        <td class="p-3 text-right font-bold text-navy">19 mnt</td>
-                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                        <td class="p-3 font-bold text-navy whitespace-nowrap">Batch #49</td>
+                                        <td class="p-3 text-slate-600 font-medium whitespace-nowrap" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                        <td class="p-3 text-slate-600 whitespace-nowrap">Deni</td>
+                                        <td class="p-3 text-slate-500 whitespace-nowrap">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:55</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">08:15</td>
+                                        <td class="p-3 text-right font-bold text-navy whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-slate-600 font-medium whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-700 font-bold whitespace-nowrap">120 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold whitespace-nowrap">44 A</td>
+                                        <td class="p-3 text-slate-700 whitespace-nowrap"><span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-semibold border border-slate-200">High-Speed Hot-Cooling</span></td>
+                                        <td class="p-3 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50">
-                                        <td class="p-3 font-bold text-navy">Batch #48</td>
-                                        <td class="p-3 text-slate-600">Budi</td>
-                                        <td class="p-3 text-slate-500">Shift 1</td>
-                                        <td class="p-3 text-right text-slate-500">07:30</td>
-                                        <td class="p-3 text-right text-slate-500">07:54</td>
-                                        <td class="p-3 text-right font-bold text-red-500">24 mnt</td>
-                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-bold">Lambat</span></td>
+                                        <td class="p-3 font-bold text-navy whitespace-nowrap">Batch #48</td>
+                                        <td class="p-3 text-slate-600 font-medium whitespace-nowrap" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                        <td class="p-3 text-slate-600 whitespace-nowrap">Budi</td>
+                                        <td class="p-3 text-slate-500 whitespace-nowrap">Shift 1</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:30</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:55</td>
+                                        <td class="p-3 text-right font-bold text-red-500 whitespace-nowrap">25 mnt</td>
+                                        <td class="p-3 text-right text-slate-600 font-medium whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-700 font-bold whitespace-nowrap">115 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold whitespace-nowrap">40 A</td>
+                                        <td class="p-3 text-slate-700 whitespace-nowrap"><span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-semibold border border-slate-200">High-Speed Dry Blend</span></td>
+                                        <td class="p-3 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-bold">Lambat</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50">
-                                        <td class="p-3 font-bold text-navy">Batch #47</td>
-                                        <td class="p-3 text-slate-600">Bagas, Rudi</td>
-                                        <td class="p-3 text-slate-500">Shift 2</td>
-                                        <td class="p-3 text-right text-slate-500">07:07</td>
-                                        <td class="p-3 text-right text-slate-500">07:25</td>
-                                        <td class="p-3 text-right font-bold text-emerald-600">18 mnt</td>
-                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
+                                        <td class="p-3 font-bold text-navy whitespace-nowrap">Batch #47</td>
+                                        <td class="p-3 text-slate-600 font-medium whitespace-nowrap" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                        <td class="p-3 text-slate-600 whitespace-nowrap">Bagas, Rudi</td>
+                                        <td class="p-3 text-slate-500 whitespace-nowrap">Shift 2</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:07</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:24</td>
+                                        <td class="p-3 text-right font-bold text-emerald-600 whitespace-nowrap">17 mnt</td>
+                                        <td class="p-3 text-right text-slate-600 font-medium whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-700 font-bold whitespace-nowrap">119 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold whitespace-nowrap">43 A</td>
+                                        <td class="p-3 text-slate-700 whitespace-nowrap"><span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-semibold border border-slate-200">High-Speed Hot-Cooling</span></td>
+                                        <td class="p-3 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Lebih Cepat</span></td>
                                     </tr>
                                     <tr class="hover:bg-slate-50">
-                                        <td class="p-3 font-bold text-navy">Batch #46</td>
-                                        <td class="p-3 text-slate-600">Rudi</td>
-                                        <td class="p-3 text-slate-500">Shift 2</td>
-                                        <td class="p-3 text-right text-slate-500">06:44</td>
-                                        <td class="p-3 text-right text-slate-500">07:05</td>
-                                        <td class="p-3 text-right font-bold text-navy">21 mnt</td>
-                                        <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
+                                        <td class="p-3 font-bold text-navy whitespace-nowrap">Batch #46</td>
+                                        <td class="p-3 text-slate-600 font-medium whitespace-nowrap" x-text="selectedEvent.timbangDate || '05 Sep 2026'"></td>
+                                        <td class="p-3 text-slate-600 whitespace-nowrap">Rudi</td>
+                                        <td class="p-3 text-slate-500 whitespace-nowrap">Shift 2</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">06:44</td>
+                                        <td class="p-3 text-right text-slate-500 whitespace-nowrap">07:04</td>
+                                        <td class="p-3 text-right font-bold text-navy whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-slate-600 font-medium whitespace-nowrap">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-700 font-bold whitespace-nowrap">121 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold whitespace-nowrap">45 A</td>
+                                        <td class="p-3 text-slate-700 whitespace-nowrap"><span class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-semibold border border-slate-200">High-Speed Hot-Cooling</span></td>
+                                        <td class="p-3 text-center whitespace-nowrap"><span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">Tepat Waktu</span></td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="bg-slate-50 border-t-2 border-slate-200">
                                     <tr class="font-black text-slate-600 text-[10px] uppercase">
-                                        <td class="p-3" colspan="5">Rata-rata Durasi</td>
-                                        <td class="p-3 text-right text-navy">20 mnt</td>
-                                        <td class="p-3"></td>
+                                        <td class="p-3" colspan="6">Rata-rata Durasi & Parameter</td>
+                                        <td class="p-3 text-right text-navy font-bold">20 mnt</td>
+                                        <td class="p-3 text-right text-slate-500">20 mnt</td>
+                                        <td class="p-3 text-right text-amber-800">118.6 °C</td>
+                                        <td class="p-3 text-right text-cyan font-bold">42.8 A</td>
+                                        <td class="p-3" colspan="2"></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -939,7 +1157,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
-                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-2xl font-black text-emerald-600">Tepat Waktu</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Delay: 0.0 jam</p>
                         </div>
                     </div>
@@ -1470,7 +1688,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Petugas Verifikasi</p>
-                            <p class="text-base font-black text-navy mt-1">Hana (QC) & Suryanto (Gudang)</p>
+                            <p class="text-base font-black text-navy mt-1">Eko (QC) & Suryanto (Gudang)</p>
                             <p class="text-[10px] text-slate-500 mt-1">Terverifikasi 27 Aug 2026</p>
                         </div>
                     </div>
@@ -1484,7 +1702,7 @@
                             <div class="flex items-center gap-3">
                                 <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
                                 <a href="{{ route('dokumen.material') }}?doc=moving" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors whitespace-nowrap">
-                                    + Buat Moving Slip Baru
+                                    Ajukan Simpan Di Gudang
                                 </a>
                             </div>
                         </div>
@@ -1508,7 +1726,7 @@
                                     <td class="p-3 text-right font-black text-amber-600">4,0 Kg</td>
                                     <td class="p-3 text-slate-600">Sisa penakaran di hopper mixer</td>
                                     <td class="p-3 text-slate-600">Bin Sisa A-01</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Lengkap</span></td>
+                                    <td class="p-3 text-center"><span class="px-2.5 py-1 bg-cyan/20 text-cyan border border-cyan/30 rounded-lg text-[10px] font-bold flex items-center gap-1 justify-center mx-auto w-fit">Transfer ke Gudang</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Stabilizer Ca-Zn</td>
@@ -1517,7 +1735,7 @@
                                     <td class="p-3 text-right font-black text-amber-600">1,0 Kg</td>
                                     <td class="p-3 text-slate-600">Sisa kemasan segel terbuka</td>
                                     <td class="p-3 text-slate-600">Loker Aditif Khusus</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Disimpan</span></td>
+                                    <td class="p-3 text-center"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[10px] font-bold flex items-center gap-1 justify-center mx-auto w-fit">Disimpan</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 font-bold text-navy">Pigment White</td>
@@ -1526,7 +1744,7 @@
                                     <td class="p-3 text-right font-black text-amber-600">0,5 Kg</td>
                                     <td class="p-3 text-slate-600">Sisa micro-dosing feeder</td>
                                     <td class="p-3 text-slate-600">Rak Pigment Retur</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Disimpan</span></td>
+                                    <td class="p-3 text-center"><span class="px-2.5 py-1 bg-cyan/20 text-cyan border border-cyan/30 rounded-lg text-[10px] font-bold flex items-center gap-1 justify-center mx-auto w-fit">Transfer ke Gudang</span></td>
                                 </tr>
                             </tbody>
                             <tfoot class="bg-amber-50/50 border-t border-amber-200">
@@ -1553,7 +1771,7 @@
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">No. Moving / Transfer Slip</p>
                             <p class="text-base font-black text-navy mt-1">TRF-FG-2026-0829</p>
-                            <p class="text-[10px] text-emerald-600 font-bold mt-1">✓ Status: Accepted by Warehouse</p>
+                            <p class="text-[10px] text-emerald-600 font-bold mt-1">✓ Status: Diterima oleh Gudang</p>
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Lokasi Penyimpanan FG</p>
@@ -1594,7 +1812,7 @@
                                         <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Mira</span><br>
                                         <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
                                     </td>
-                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
+                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Diterima</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
                                     <td class="p-3 text-slate-500">
@@ -1607,7 +1825,7 @@
                                         <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Putu</span><br>
                                         <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
                                     </td>
-                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
+                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Diterima</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1640,7 +1858,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ketepatan Waktu</p>
-                            <p class="text-2xl font-black text-emerald-600">On Time</p>
+                            <p class="text-2xl font-black text-emerald-600">Tepat Waktu</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Delay: 0 menit</p>
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
@@ -1691,45 +1909,135 @@
                         </div>
                     </div>
 
-                    <!-- Tabel Rincian -->
+                    <!-- Tabel Rincian Bagging (sesuai form produksi) -->
                     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                         <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-                            <p class="text-xs font-bold text-slate-700">Rincian Output per Shift</p>
-                            <span class="text-[10px] text-slate-400">Ringkasan 3 shift terakhir</span>
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Rincian Bagging per Produk</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Catatan produksi bagging: nomor sak, stump, gumpalan, operator, dan absensi</p>
+                            </div>
                         </div>
-                        <table class="w-full text-xs">
-                            <thead class="bg-slate-50 border-b border-slate-100">
-                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
-                                    <th class="p-3 text-left">Shift</th>
-                                    <th class="p-3 text-left">Operator</th>
-                                    <th class="p-3 text-right">Sak Selesai</th>
-                                    <th class="p-3 text-right">Berat (Kg)</th>
-                                    <th class="p-3 text-right">Avg/Sak</th>
-                                    <th class="p-3 text-right">Reject</th>
-                                    <th class="p-3 text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-50">
-                                <tr><td class="p-3 font-bold text-navy">Shift 1</td><td class="p-3 text-slate-600">Budi, Mia</td><td class="p-3 text-right font-bold text-navy">210 sak</td><td class="p-3 text-right text-slate-600">5.250 Kg</td><td class="p-3 text-right text-slate-600">2.0 mnt</td><td class="p-3 text-right text-slate-500">0</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Shift 2</td><td class="p-3 text-slate-600">Ayu, Bagas</td><td class="p-3 text-right font-bold text-navy">200 sak</td><td class="p-3 text-right text-slate-600">5.000 Kg</td><td class="p-3 text-right text-slate-600">2.2 mnt</td><td class="p-3 text-right text-slate-500">1</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                                <tr><td class="p-3 font-bold text-navy">Shift 3</td><td class="p-3 text-slate-600">Rudi, Citra</td><td class="p-3 text-right font-bold text-navy">190 sak</td><td class="p-3 text-right text-slate-600">4.750 Kg</td><td class="p-3 text-right text-slate-600">2.1 mnt</td><td class="p-3 text-right text-slate-500">0</td><td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">On Time</span></td></tr>
-                            </tbody>
-                            <tfoot class="bg-slate-50 border-t border-slate-200">
-                                <tr class="font-bold">
-                                    <td class="p-3 text-navy" colspan="2">TOTAL</td>
-                                    <td class="p-3 text-right font-black text-navy">600 sak</td>
-                                    <td class="p-3 text-right font-black text-navy">15.000 Kg</td>
-                                    <td class="p-3 text-right text-slate-600">2.1 mnt</td>
-                                    <td class="p-3 text-right text-slate-500">1</td>
-                                    <td class="p-3 text-right"><span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">Selesai</span></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wide border-b border-slate-300">
+                                        <th class="p-2.5 border border-slate-300 text-center bg-blue-100 text-blue-800 w-24 align-middle" rowspan="2">BAGGING</th>
+                                        <th class="p-2.5 border border-slate-300 text-left">PRODUK</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">NO SAK AWAL</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">NO SAK AKHIR</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-amber-50 text-amber-800">TOTAL SAK</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">STUMP</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">GUMPALAN</th>
+                                        <th class="p-2.5 border border-slate-300 text-left min-w-[160px]">CATATAN</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 1</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 2</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 3</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-rose-50 text-rose-800 min-w-[120px]">PERSONIL TIDAK HADIR / PULANG LEBIH AWAL</th>
+                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-rose-50 text-rose-800 min-w-[160px]">KETERANGAN TIDAK HADIR / PULANG LEBIH AWAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-white">
+                                    <!-- Baris 1: ASIBLOCK AB 0085 HC -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30">ASIBLOCK AB 0085 HC</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-slate-100 text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-slate-500 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
+                                            <p class="font-semibold text-navy whitespace-nowrap">Ifan Novaldi</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
+                                            <p class="font-semibold text-navy whitespace-nowrap">Muhamad Raafi</p>
+                                            <p class="font-semibold text-navy whitespace-nowrap">Bahtiar</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
+                                            <p class="font-semibold text-navy whitespace-nowrap">Eko Prihatin</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-rose-50/30">
+                                            <p class="font-semibold text-slate-700 whitespace-nowrap">Ari Suryajaya</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-slate-600 bg-rose-50/30">perpanjang sim izin</td>
+                                    </tr>
+
+                                    <!-- Baris 2: ASICLEAR P 0271 -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="p-2.5 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30">ASICLEAR P 0271</td>
+                                        <td class="p-2.5 border border-slate-300 text-center font-bold text-navy">1</td>
+                                        <td class="p-2.5 border border-slate-300 text-center font-bold text-navy">10</td>
+                                        <td class="p-2.5 border border-slate-300 text-center font-black text-navy bg-amber-50">10</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-slate-500 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
+                                            <p class="font-semibold text-navy whitespace-nowrap">Ifan Novaldi</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
+                                            <p class="font-semibold text-navy whitespace-nowrap">Muhamad Raafi</p>
+                                            <p class="font-semibold text-navy whitespace-nowrap">Bahtiar</p>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40 text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-center bg-rose-50/30 text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2.5 border border-slate-300 text-slate-400 bg-rose-50/30 font-medium">&mdash;</td>
+                                    </tr>
+
+                                    <!-- Baris kosong 1 -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors h-9">
+                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                    </tr>
+                                    <!-- Baris kosong 2 -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors h-9 bg-amber-50/30">
+                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                    </tr>
+                                    <!-- Baris kosong 3 -->
+                                    <tr class="hover:bg-slate-50/70 transition-colors h-9">
+                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
+
             <!-- CLEANING DETAIL standalone dihapus — sudah diintegrasikan ke Tab 1 -->
+
             <div x-show="false" class="hidden">
                 <div class="max-w-5xl mx-auto space-y-6">
                     
@@ -1973,7 +2281,7 @@
                             </div>
                             <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-100">
                                 <p class="text-slate-500 mb-1">Operator Pendamping</p>
-                                <p class="font-bold text-navy text-sm">Anggun, Mia (Operators)</p>
+                                <p class="font-bold text-navy text-sm">Bagas, Deni (Operators)</p>
                             </div>
                         </div>
                     </div>
@@ -2136,15 +2444,29 @@
                     </div>
                 </div>
 
-                <!-- Start Date & Finish Date -->
+                <!-- Tanggal Otomatis & Shift -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai Trial <span class="text-rose-500">*</span></label>
-                        <input type="date" x-model="rndForm.startDate" @change="if (rndForm.finishDate && rndForm.finishDate < rndForm.startDate) { rndForm.finishDate = rndForm.startDate; }" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Pengajuan <span class="text-xs font-normal text-slate-500">(Otomatis)</span></label>
+                        <div class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold flex items-center justify-between shadow-inner">
+                            <span x-text="new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })"></span>
+                            <span class="px-2 py-0.5 bg-violet-100 text-violet-700 rounded text-[10px] font-semibold">Otomatis Hari Ini</span>
+                        </div>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Tanggal Selesai Trial <span class="text-rose-500">*</span></label>
-                        <input type="date" x-model="rndForm.finishDate" :min="rndForm.startDate" @change="if (rndForm.startDate && rndForm.finishDate < rndForm.startDate) { rndForm.finishDate = rndForm.startDate; }" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                        <label class="block font-bold text-slate-700 mb-1">Shift <span class="text-rose-500">*</span></label>
+                        <select x-model="rndForm.shift" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                            <optgroup label="Senin - Jum'at">
+                                <option value="Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)">Shift 1 (Jam 08:00 - 16:00)</option>
+                                <option value="Shift 2 — Jam 16:00 - 00:00 (Senin - Jum'at)">Shift 2 (Jam 16:00 - 00:00)</option>
+                                <option value="Shift 3 — Jam 00:00 - 08:00 (Senin - Jum'at)">Shift 3 (Jam 00:00 - 08:00)</option>
+                            </optgroup>
+                            <optgroup label="Sabtu">
+                                <option value="Shift 1 — Jam 08:00 - 13:00 (Sabtu)">Shift 1 (Jam 08:00 - 13:00)</option>
+                                <option value="Shift 2 — Jam 13:00 - 18:00 (Sabtu)">Shift 2 (Jam 13:00 - 18:00)</option>
+                                <option value="Shift 3 — Jam 18:00 - 23:00 (Sabtu)">Shift 3 (Jam 18:00 - 23:00)</option>
+                            </optgroup>
+                        </select>
                     </div>
                 </div>
 
@@ -2176,12 +2498,94 @@
                 </div>
             </div>
 
-
             <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                 <button @click="showRndModal = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">Batal</button>
                 <button @click="submitRndTrial()" class="px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
                     <span>🚀 Kirim Request ke PPIC</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: RIWAYAT PENGAJUAN TRIAL R&D (ROLE R&D) ================= -->
+    <div x-show="showRndHistoryModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-7xl overflow-hidden" @click.away="showRndHistoryModal = false">
+            <div class="p-5 bg-gradient-to-r from-violet-700 to-purple-800 text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg flex items-center gap-2">
+                        <span class="text-xl">📜</span>
+                        Riwayat Pengajuan Trial Sample R&D
+                    </h4>
+                    <p class="text-xs text-violet-200 mt-0.5">Daftar riwayat seluruh pengajuan trial sample ke PPIC</p>
+                </div>
+                <button @click="showRndHistoryModal = false" class="text-white/70 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4 max-h-[82vh] overflow-y-auto text-xs">
+                <div class="flex items-center justify-between bg-violet-50 p-4 rounded-2xl border border-violet-200 flex-wrap gap-2">
+                    <div class="flex items-center gap-2 text-violet-900 font-bold">
+                        <span class="text-base">📌</span>
+                        <span>Status Monitoring Pengajuan Trial R&D</span>
+                        <span class="text-xs font-normal text-violet-700">(Total Pengajuan: <b x-text="rndTrialRequests.length"></b>)</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="w-full">
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="p-3.5 text-left whitespace-nowrap">No. Trial</th>
+                                    <th class="p-3.5 text-left">Sample / Formula Trial</th>
+                                    <th class="p-3.5 text-left whitespace-nowrap">Mesin Target</th>
+                                    <th class="p-3.5 text-center whitespace-nowrap">Durasi</th>
+                                    <th class="p-3.5 text-left">Shift Kerja</th>
+                                    <th class="p-3.5 text-left whitespace-nowrap">Tanggal Pengajuan</th>
+                                    <th class="p-3.5 text-center whitespace-nowrap">Status Approval PPIC</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 bg-white">
+                                <template x-for="req in rndTrialRequests" :key="req.id">
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="p-3.5 font-bold text-violet-700 whitespace-nowrap align-top">
+                                            <span x-text="req.id"></span>
+                                            <span x-show="req.isUrgent" class="block mt-1 text-[9px] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-extrabold w-fit">⚡ URGENT</span>
+                                        </td>
+                                        <td class="p-3.5 align-top">
+                                            <p class="font-bold text-navy text-xs" x-text="req.sampleName"></p>
+                                            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed" x-text="req.notes || 'Pengajuan trial sample formula R&D'"></p>
+                                        </td>
+                                        <td class="p-3.5 text-slate-700 font-semibold whitespace-nowrap align-top">
+                                            <span class="px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-lg" x-text="req.machine"></span>
+                                        </td>
+                                        <td class="p-3.5 text-slate-700 text-center font-bold whitespace-nowrap align-top" x-text="(req.durationHour || 4) + ' Jam'"></td>
+                                        <td class="p-3.5 text-slate-600 align-top">
+                                            <span class="font-medium text-slate-800" x-text="req.shift || 'Shift 1'"></span>
+                                        </td>
+                                        <td class="p-3.5 text-slate-500 whitespace-nowrap align-top font-medium" x-text="req.autoDate || '17 Sep 2026'"></td>
+                                        <td class="p-3.5 text-center whitespace-nowrap align-top">
+                                            <span class="px-3 py-1.5 rounded-xl text-[11px] font-bold inline-block shadow-sm"
+                                                  :class="{
+                                                      'bg-amber-50 text-amber-800 border border-amber-300': req.status === 'pending_ppic',
+                                                      'bg-cyan/15 text-cyan border border-cyan/30': req.status === 'approved_pending_foreman',
+                                                      'bg-emerald-50 text-emerald-800 border border-emerald-300': req.status === 'assigned_ready',
+                                                      'bg-rose-50 text-rose-700 border border-rose-300': req.status === 'rejected'
+                                                  }"
+                                                  x-text="req.status === 'pending_ppic' ? '⏳ Pending Approval PPIC' : (req.status === 'approved_pending_foreman' ? '✓ Disetujui PPIC (Menunggu Foreman)' : (req.status === 'assigned_ready' ? '✅ Siap Produksi Trial' : '❌ Ditolak PPIC'))">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button @click="showRndHistoryModal = false" class="px-6 py-2.5 bg-navy text-white text-xs font-bold rounded-xl shadow-md hover:bg-navy-light transition">Tutup</button>
             </div>
         </div>
     </div>
@@ -2823,6 +3227,7 @@
             showEmergencyModal: false,
             activeStep: 'cleaning', // Tab 1 = Cleaning
             showRndModal: false,
+            showRndHistoryModal: false,
             showPpicNotifModal: false,
             showForemanAssignModal: false,
             showSlotModal: false,
@@ -2848,6 +3253,7 @@
                 sampleName: 'Compound PVC High-Impact X-900',
                 machine: 'Extruder E-01',
                 durationHour: 4,
+                shift: "Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)",
                 isUrgent: true,
                 notes: 'Uji coba aditif modifier impact baru untuk formula bening, mendadak sebelum batch rilis.',
                 videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
@@ -2862,6 +3268,8 @@
                     sampleName: 'Formula PVC Transparan Rev-04',
                     machine: 'Extruder E-01',
                     durationHour: 4,
+                    shift: "Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)",
+                    autoDate: '17 Sep 2026',
                     isUrgent: true,
                     notes: 'Uji coba penyeimbang suhu die & viskositas aditif baru, mendadak sebelum run masal.',
                     videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -2869,7 +3277,7 @@
                     conflictWith: 'SPK-2608-001 (Extruder E-01)',
                     requestedAt: 'Hari ini, 09:30 WIB',
                     assignedLead: 'Budi (Lead Op)',
-                    assignedOperator: 'Anggun, Mia',
+                    assignedOperator: 'Bagas, Deni',
                     foremanNotes: 'Suhu extruder diset 175°C, didampingi tim R&D.',
                     rejectionNote: ''
                 }
@@ -3205,10 +3613,28 @@
                 }
             },
             adjustSlotTime(idx) {
-                const newTime = prompt('Masukkan penyesuaian jam/waktu baru (contoh: 08:00 - 14:00):', this.slots[idx].time);
+                const slot = this.slots[idx];
+                const newTime = prompt('Masukkan penyesuaian jam/waktu baru (contoh: 08:00 - 14:00):', slot.time);
                 if (newTime) {
                     this.slots[idx].time = newTime;
-                    alert('Waktu slot mesin berhasil diperbarui!');
+                    if (window.calendarInstance) {
+                        const ev = window.calendarInstance.getEvents().find(e => 
+                            (e.title && e.title.includes(slot.spkNo)) || 
+                            (e.extendedProps && (e.extendedProps.spkNo === slot.spkNo || e.extendedProps.parentSpk === slot.spkNo))
+                        );
+                        if (ev) {
+                            const timeParts = newTime.match(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/);
+                            if (timeParts && timeParts[1] && timeParts[2]) {
+                                const currentDateStr = ev.startStr ? ev.startStr.split('T')[0] : new Date().toISOString().split('T')[0];
+                                ev.setStart(currentDateStr + 'T' + timeParts[1] + ':00');
+                                ev.setEnd(currentDateStr + 'T' + timeParts[2] + ':00');
+                            }
+                            if (ev.extendedProps) {
+                                ev.setExtendedProp('time', newTime);
+                            }
+                        }
+                    }
+                    alert('Waktu slot mesin berhasil diperbarui dan disinkronkan ke Kalender SPK!');
                 }
             },
             pendingCount() {
@@ -3232,11 +3658,14 @@
                     return;
                 }
                 const trialId = 'TRL-RND-' + Math.floor(100 + Math.random() * 900);
+                const todayFormatted = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
                 this.rndTrialRequests.unshift({
                     id: trialId,
                     sampleName: this.rndForm.sampleName,
                     machine: this.rndForm.machine,
                     durationHour: parseInt(this.rndForm.durationHour || 4),
+                    shift: this.rndForm.shift || 'Shift 1 (07:00 - 15:00)',
+                    autoDate: todayFormatted,
                     isUrgent: this.rndForm.isUrgent,
                     notes: this.rndForm.notes || 'Pengajuan trial sample formula R&D',
                     videoUrl: this.rndForm.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -3340,7 +3769,7 @@
                 const req = this.rndTrialRequests.find(r => r.id === reqId);
                 if (!req) return;
                 req.assignedLead = leadOp || 'Budi (Lead Operator)';
-                req.assignedOperator = helperOp || 'Anggun, Mia (Operators)';
+                req.assignedOperator = helperOp || 'Bagas, Deni (Operators)';
                 req.foremanNotes = notes || 'Suhu extruder diset 175°C, siap trial.';
                 req.status = 'assigned_ready';
                 alert(`Assignment Operator oleh Foreman BERHASIL Disimpan!\n\nLead: ${req.assignedLead}\nOperator: ${req.assignedOperator}\nStatus: Siap Eksekusi Trial R&D.`);
@@ -3418,7 +3847,7 @@
                     cleaningShift: ext.cleaningShift || 'Shift 3 · Team RED',
                     cleaningDate: ext.cleaningDate || info.event.startStr,
                     cleaningOperators: ext.cleaningOperators || [],
-                    qcName: ext.qcName || 'Sari Wulandari',
+                    qcName: ext.qcName || 'Surya Wibowo',
                     qcResult: ext.qcResult || 'Lolos / Bebas Kontaminasi Warna'
                 };
                 alpineState.showEventModal = true;
@@ -3484,17 +3913,17 @@
                             totalBatch: 50,
                             type: 'running',
                             team: 'S1:RED | S2:GREEN | S3:YELLOW',
-                            shifts: ['Shift 1 — Team RED: Budi, Mia, Ayu', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Citra, Edi, Fikri'],
+                            shifts: ['Shift 1 — Team RED: Budi, Deni, Agus', 'Shift 2 — Team GREEN: Bagas, Rudi, Putu', 'Shift 3 — Team YELLOW: Candra, Edi, Fikri'],
                             substatus: 'Sedang Penimbangan (TP) & Mixing (MP) (56%)',
                             linkedCleaning: '🧹 Cleaning Mixer A-01 & Feeder 01 (Ter-stack Pasca SPK-2608-001)',
                             timbangShift: 'Shift 1 · Team RED',
-                            timbangOperators: 'Budi, Mia, Ayu',
+                            timbangOperators: 'Budi, Deni, Agus',
                             timbangDate: fmt(today),
                             timbangStartTime: '06:00',
                             cleaningShift: 'Shift 3 · Team RED',
                             cleaningDate: fmt(addDays(today, -1)),
-                            cleaningOperators: ['Budi (Lead)', 'Anggun'],
-                            qcName: 'Sari Wulandari',
+                            cleaningOperators: ['Budi (Lead)', 'Bagas'],
+                            qcName: 'Surya Wibowo',
                             qcResult: 'Lolos / Bebas Kontaminasi Warna'
                         },
                         start: fmt(today) + 'T06:00:00',
@@ -3521,7 +3950,7 @@
                             totalBatch: 30,
                             type: 'running',
                             team: 'S1:RED | S2:YELLOW',
-                            shifts: ['Shift 1 — Team RED: Anggun, Deva', 'Shift 2 — Team YELLOW: Hana, Irfan'],
+                            shifts: ['Shift 1 — Team RED: Bagas, Deva', 'Shift 2 — Team YELLOW: Eko, Irfan'],
                             substatus: 'Dalam Antrean Mesin'
                         },
                         start: fmt(addDays(today, 3)) + 'T08:00:00',
@@ -3538,7 +3967,7 @@
                             type: 'cleaning',
                             team: 'Team RED · Shift 3',
                             parentSpk: 'SPK-2608-001',
-                            shifts: ['Shift 3 — Team RED: Budi, Anggun (4 jam)']
+                            shifts: ['Shift 3 — Team RED: Budi, Bagas (4 jam)']
                         },
                         start: fmt(addDays(today, 2)) + 'T22:00:00',
                         end: fmt(addDays(today, 3)) + 'T02:00:00',
