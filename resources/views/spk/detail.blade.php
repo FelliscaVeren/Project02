@@ -15,9 +15,9 @@
             <a href="{{ route('ppic.calendar') }}" class="px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition-colors flex items-center gap-2 shadow-sm">
                 &larr; Kembali ke Jadwal
             </a>
-            <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-2" onclick="window.print()">
+            <button @click="showPdfModal = true" class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-sm font-bold rounded-xl shadow-md transition-colors flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Cetak SPK / Ekspor PDF
+                Preview PDF SPK
             </button>
         </div>
     </div>
@@ -74,10 +74,9 @@
             <hr class="border-slate-100">
 
             <!-- Detail Formula & Kebutuhan Material -->
-            <div>
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <h4 class="text-sm font-bold text-navy uppercase tracking-wide flex items-center gap-2">
-                        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
                         Formula & Kebutuhan Material (BOM)
                     </h4>
                     <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
@@ -86,9 +85,8 @@
                     </div>
                 </div>
                 
-                <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] uppercase text-slate-500 font-bold">
                                 <th class="p-3">Nama Material</th>
                                 <th class="p-3 text-right">Kebutuhan / Batch</th>
@@ -140,78 +138,172 @@
                         </tbody>
                     </table>
                 </div>
+
+            <!-- Metode Kerja / Instruksi Kerja -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Metode Kerja (Instruksi Kerja Produksi)
+                    </h4>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded">Approved by RND</span>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                            <th class="p-3 w-12 text-center">Step</th>
+                            <th class="p-3">Instruksi Kerja (SOP)</th>
+                            <th class="p-3">Parameter / Kriteria Standar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-center font-bold text-slate-500">1</td>
+                            <td class="p-3 font-semibold text-navy">Persiapan & Penimbangan Material</td>
+                            <td class="p-3 text-slate-600">Toleransi penimbangan +/- 0.5 Kg untuk bahan utama. Aditif presisi +/- 5 gram.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-center font-bold text-slate-500">2</td>
+                            <td class="p-3 font-semibold text-navy">Proses Mixing (Pencampuran)</td>
+                            <td class="p-3 text-slate-600">Kecepatan mixer 1500 RPM, suhu target 110°C, durasi 10 menit.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-center font-bold text-slate-500">3</td>
+                            <td class="p-3 font-semibold text-navy">Pendinginan (Cooling Mixer)</td>
+                            <td class="p-3 text-slate-600">Turunkan suhu campuran ke 40°C sebelum masuk Extruder.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-center font-bold text-slate-500">4</td>
+                            <td class="p-3 font-semibold text-navy">Ekstrusi (Extrusion)</td>
+                            <td class="p-3 text-slate-600">Suhu Die Zone 4 stabil di 175-182°C. Kecepatan screw konstan.</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-center font-bold text-slate-500">5</td>
+                            <td class="p-3 font-semibold text-navy">Bagging & QC Check</td>
+                            <td class="p-3 text-slate-600">Berat per sak 25 Kg. Lakukan pengecekan sampel setiap 1 jam.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <hr class="border-slate-100">
 
-            <!-- Live Report Final Summary / Parameter Actual -->
-            <div>
-                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Ringkasan Hasil Produksi & Parameter Aktual
-                </h4>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Mesin Parameter Summary -->
-                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white p-4">
-                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Rata-Rata Parameter Mesin</h5>
-                        <table class="w-full text-sm">
-                            <tbody class="divide-y divide-slate-50">
-                                <tr>
-                                    <td class="py-2 text-slate-600 font-medium">Suhu Extruder (Avg)</td>
-                                    <td class="py-2 text-right font-bold text-navy">177 °C</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 text-slate-600 font-medium">Durasi Timbang (Avg/Batch)</td>
-                                    <td class="py-2 text-right font-bold text-navy">12 Menit</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 text-slate-600 font-medium">Output Aktual</td>
-                                    <td class="py-2 text-right font-bold text-cyan">495 Kg / Jam</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 text-slate-600 font-medium">Total Delay</td>
-                                    <td class="py-2 text-right font-bold text-emerald-600">0.0 Jam (On Time)</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- 1. Ringkasan Hasil Produksi & Parameter Aktual -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Ringkasan Hasil Produksi & Parameter Aktual
+                    </h4>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-slate-600 font-medium w-1/2">Suhu Extruder (Avg)</td>
+                            <td class="p-3 text-right font-bold text-navy">177 °C</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-slate-600 font-medium">Durasi Timbang (Avg/Batch)</td>
+                            <td class="p-3 text-right font-bold text-navy">12 Menit</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-slate-600 font-medium">Output Aktual</td>
+                            <td class="p-3 text-right font-bold text-cyan">495 Kg / Jam</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-3 text-slate-600 font-medium">Total Delay</td>
+                            <td class="p-3 text-right font-bold text-emerald-600">0.0 Jam (On Time)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                    <!-- Final Yield & Warehouse Transfer -->
-                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white p-4">
-                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Status Serah Terima Gudang</h5>
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="relative w-16 h-16 flex-shrink-0">
-                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                                    <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                    <path class="text-emerald-500" stroke-dasharray="100, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-navy">100%</div>
+            <!-- 2. Status Serah Terima Gudang -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Status Serah Terima Gudang
+                    </h4>
+                </div>
+                <div class="p-4">
+                    <!-- Progress Bar Titip vs Serah Terima -->
+                    <div class="space-y-4 mb-4">
+                        <!-- Titip Barang -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1">
+                                <span class="text-amber-600">Titip Barang (Numpang)</span>
+                                <span class="text-slate-700" x-text="transferStats.titipQty.toLocaleString() + ' Kg (' + transferStats.titipPct + '%)'"></span>
                             </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-700">15,000 Kg / 15,000 Kg</p>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Telah diserahterimakan ke Gudang Barang Jadi.</p>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-amber-400 h-2 rounded-full" :style="'width: ' + transferStats.titipPct + '%'"></div>
                             </div>
                         </div>
-                        <div class="bg-emerald-50 text-emerald-800 text-[10px] p-2 rounded-lg font-bold border border-emerald-100 flex items-center gap-1">
+                        <!-- Serah Terima Final -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1">
+                                <span class="text-emerald-600">Serah Terima Final (Accepted)</span>
+                                <span class="text-slate-700" x-text="transferStats.finalQty.toLocaleString() + ' Kg (' + transferStats.finalPct + '%)'"></span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-emerald-500 h-2 rounded-full" :style="'width: ' + transferStats.finalPct + '%'"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-800 text-[10px] p-2 rounded-lg font-bold border border-emerald-100 flex items-center justify-between gap-1">
+                        <div class="flex items-center gap-1">
                             <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             SPK Selesai - Tidak Ada Selisih Material
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <hr class="border-slate-100">
+
+            <!-- 3. Riwayat Transfer Final -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Riwayat Transfer Final (Diterima Gudang)
+                    </h4>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr class="text-[11px] uppercase text-slate-500 font-bold">
+                            <th class="p-3">Waktu & Tanggal</th>
+                            <th class="p-3">Nama Barang</th>
+                            <th class="p-3 text-right">Qty</th>
+                            <th class="p-3">Penyerah (Prod)</th>
+                            <th class="p-3">Penerima (Gdg)</th>
+                            <th class="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs">
+                        <template x-for="(log, idx) in transferLogs.filter(l => l.type.includes('Final'))" :key="idx">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 text-slate-500">
+                                    <span class="font-bold text-navy" x-text="log.tanggal"></span><br>
+                                    <span class="text-[10px]" x-text="log.jam"></span>
+                                </td>
+                                <td class="p-3 font-bold text-navy" x-text="log.namaBarang"></td>
+                                <td class="p-3 text-right font-bold text-navy" x-text="Number(log.qty).toLocaleString() + ' Kg'"></td>
+                                <td class="p-3 text-slate-600 font-bold" x-text="log.opProduksi"></td>
+                                <td class="p-3 text-slate-600 font-bold" x-text="log.opGudang"></td>
+                                <td class="p-3 text-emerald-600 font-bold">✓ Accepted</td>
+                            </tr>
+                        </template>
+                        <tr x-show="transferLogs.filter(l => l.type.includes('Final')).length === 0">
+                            <td colspan="6" class="p-4 text-center text-slate-400 font-medium">Belum ada riwayat transfer final.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>           <hr class="border-slate-100">
 
             <!-- Manpower Allocation by Shift & Team -->
-            <div>
-                <h4 class="text-sm font-bold text-navy uppercase tracking-wide mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Alokasi Operator (Berbasis Tim Rotasi Shift)
-                </h4>
-                <div class="border border-slate-200 rounded-xl overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 border-b border-slate-200">
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
+                <div class="p-4 border-b border-slate-200 bg-slate-50">
+                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+                        Alokasi Operator (Berbasis Tim Rotasi Shift)
+                    </h4>
+                </div>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                             <tr class="text-[11px] uppercase text-slate-500 font-bold">
                                 <th class="p-3">Pos Kerja</th>
                                 <th class="p-3">Shift 1 (Hari 1) · <span class="text-red-600">Team RED</span></th>
@@ -311,12 +403,157 @@
         </div>
     </div>
 
+    <!-- Modal Preview PDF SPK -->
+    <div x-show="showPdfModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm print:hidden" x-transition>
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col font-sans overflow-hidden" @click.away="showPdfModal = false">
+            <div class="px-6 py-4 bg-navy text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <h3 class="text-base font-bold">Preview PDF: Surat Perintah Kerja (SPK)</h3>
+                </div>
+                <button @click="showPdfModal = false" class="text-white/80 hover:text-white">&times;</button>
+            </div>
+            
+            <div class="p-6 bg-slate-100 overflow-y-auto flex-1 flex justify-center">
+                <div class="w-full max-w-3xl bg-white shadow-lg shadow-slate-300/50 border border-slate-200 p-8 transform scale-90 sm:scale-100 origin-top">
+                    <!-- SPK Header PDF Mockup -->
+                    <div class="border-b-2 border-navy pb-4 mb-6 flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-black text-navy uppercase">Surat Perintah Kerja</h2>
+                            <p class="text-sm font-bold text-slate-500">PT Dunia Kimia Jaya</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-400 font-bold">No. SPK: <span class="text-navy" x-text="spkId"></span></p>
+                            <p class="text-xs text-slate-400">Tgl Cetak: <span x-text="printTimestamp"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-xs mb-6">
+                        <div>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Customer</span>: <span class="font-bold text-slate-800" x-text="spk?.customer"></span></p>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Produk</span>: <span class="font-bold text-slate-800" x-text="spk?.product"></span></p>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Qty (Batch)</span>: <span class="font-bold text-slate-800" x-text="spk?.qty"></span></p>
+                        </div>
+                        <div>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Tgl Mulai</span>: <span class="font-bold text-slate-800" x-text="spk?.startDate"></span></p>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Tgl Selesai</span>: <span class="font-bold text-slate-800" x-text="spk?.endDate"></span></p>
+                            <p><span class="font-bold text-slate-500 inline-block w-24">Mesin</span>: <span class="font-bold text-slate-800" x-text="spk?.machine"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="text-sm font-bold text-navy border-b border-slate-200 pb-1 mb-2">BOM & Material Requirement</h4>
+                        <table class="w-full text-xs text-left border border-slate-200">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-2 border-r border-slate-200">Material</th>
+                                    <th class="p-2 border-r border-slate-200 text-center">Req/Batch</th>
+                                    <th class="p-2 text-center">Total Req</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-200"><td class="p-2 border-r border-slate-200">Resin PVC S-65</td><td class="p-2 border-r border-slate-200 text-center">25 Kg</td><td class="p-2 text-center font-bold">1,250 Kg</td></tr>
+                                <tr class="border-b border-slate-200"><td class="p-2 border-r border-slate-200">Stabilizer Ca-Zn</td><td class="p-2 border-r border-slate-200 text-center">1 Kg</td><td class="p-2 text-center font-bold">50 Kg</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-between items-end mt-12 pt-6 border-t border-slate-200 text-center text-xs">
+                        <div>
+                            <p class="mb-8 font-bold text-slate-500">Dibuat Oleh,</p>
+                            <p class="font-bold text-slate-800 underline">PPIC Dept</p>
+                        </div>
+                        <div>
+                            <p class="mb-8 font-bold text-slate-500">Disetujui Oleh,</p>
+                            <p class="font-bold text-slate-800 underline">Ka. Produksi</p>
+                        </div>
+                        <div>
+                            <p class="mb-8 font-bold text-slate-500">Diketahui Oleh,</p>
+                            <p class="font-bold text-slate-800 underline">Plant Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-white border-t border-slate-200 flex justify-end gap-3 shrink-0">
+                <button @click="showPdfModal = false" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold text-sm rounded-xl hover:bg-slate-200">Tutup Preview</button>
+                <button onclick="window.print()" class="px-5 py-2 bg-navy hover:bg-navy-light text-white font-bold text-sm rounded-xl shadow flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Download / Print PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('spkDetails', () => ({
             spkId: 'SPK-2608-001',
             spk: null,
             printTimestamp: new Date().toLocaleString('id-ID'),
+            showPdfModal: false,
+            showPdfModal: false,
+
+            transferLogs: [
+                { tanggal: '2026-09-16', jam: '10:00 WIB', type: 'Titip Barang (Sementara)', namaBarang: 'PVC Compound A (Clear)', qty: 1000, opProduksi: 'Mira', opGudang: 'Joko' },
+                { tanggal: '2026-09-16', jam: '14:00 WIB', type: 'Serah Terima Final (Potong Stok)', namaBarang: 'PVC Compound A (Clear)', qty: 2500, opProduksi: 'Putu', opGudang: 'Joko' },
+            ],
+            
+            get transferStats() {
+                // Asumsi Total Qty SPK = 15,000 Kg
+                let totalReq = 15000;
+                let titip = 0;
+                let final = 0;
+                this.transferLogs.forEach(log => {
+                    if (log.type.includes('Titip')) {
+                        titip += Number(log.qty);
+                    } else {
+                        final += Number(log.qty);
+                    }
+                });
+                
+                return {
+                    titipQty: titip,
+                    finalQty: final,
+                    titipPct: ((titip / totalReq) * 100).toFixed(1),
+                    finalPct: ((final / totalReq) * 100).toFixed(1)
+                };
+            },
+
+            submitTransfer() {
+                if(!this.transferForm.qty || !this.transferForm.opProduksi || !this.transferForm.opGudang) {
+                    alert('Mohon lengkapi data wajib (Qty, Operator Produksi, Operator Gudang)!');
+                    return;
+                }
+                
+                this.transferLogs.unshift({
+                    tanggal: this.transferForm.tanggal,
+                    jam: this.transferForm.jam + ' WIB',
+                    type: this.transferForm.type,
+                    qty: this.transferForm.qty,
+                    opProduksi: this.transferForm.opProduksi,
+                    opGudang: this.transferForm.opGudang
+                });
+                
+                let successMsg = this.transferForm.type.includes('Titip') 
+                    ? `Berhasil TITIP BARANG sebanyak ${this.transferForm.qty} Kg. Status: Numpang Gudang.` 
+                    : `Berhasil SERAH TERIMA FINAL sebanyak ${this.transferForm.qty} Kg. Stok berhasil dipotong! (Accepted)`;
+                    
+                alert(successMsg);
+                this.showTransferModal = false;
+                
+                this.transferForm = {
+                    type: 'Titip Barang (Sementara)',
+                    qty: '',
+                    pallet: '',
+                    notes: '',
+                    opProduksi: '',
+                    opGudang: '',
+                    tanggal: new Date().toISOString().split('T')[0],
+                    jam: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                };
+            },
             init() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get('id') || 'SPK-2608-001';

@@ -220,132 +220,63 @@
                 </div>
             </div>
 
-            <div class="p-6 space-y-6">
-                <!-- Info Transfer -->
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-3">
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">No. SPK</span>
-                            <span class="text-sm font-bold text-navy flex-1">SPK-2608-001</span>
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-800">
+                        Pastikan memilih jenis transfer yang tepat. <br>
+                        • <b>Titip Barang:</b> Hanya menumpang fisik di gudang, stok belum dipotong.<br>
+                        • <b>Serah Terima Final:</b> Otomatis memotong stok produksi dan menambah stok gudang.
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Transfer <span class="text-rose-500">*</span></label>
+                        <select x-model="transferForm.type" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                            <option value="Titip Barang (Sementara)">Titip Barang (Sementara - Numpang)</option>
+                            <option value="Serah Terima Final (Potong Stok)">Serah Terima Final (Kasih Barang & Potong Stok)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Quantity (Kg) <span class="text-rose-500">*</span></label>
+                            <input type="number" x-model="transferForm.qty" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: 1000">
                         </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Tanggal Transfer</span>
-                            <span class="text-sm font-bold text-navy flex-1">27 Agustus 2026, 05:30</span>
-                        </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Jenis Permintaan</span>
-                            <span class="text-sm font-bold text-cyan flex-1">Reguler (Sesuai BOM SPK)</span>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Total Pallet</label>
+                            <input type="number" x-model="transferForm.pallet" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: 1">
                         </div>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Shop Name (Dept Dituju)</span>
-                            <span class="text-sm font-bold text-cyan flex-1">Dept. Timbang Produk & Mixing</span>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Operator Produksi (Yg Menyerahkan) <span class="text-rose-500">*</span></label>
+                            <input type="text" x-model="transferForm.opProduksi" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Nama Operator">
                         </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">Asal Gudang</span>
-                            <span class="text-sm font-bold text-navy flex-1">Gudang Bahan Baku Utama (GBB-01)</span>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Operator Gudang (Yg Menerima) <span class="text-rose-500">*</span></label>
+                            <input type="text" x-model="transferForm.opGudang" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Nama Operator">
                         </div>
-                        <div class="flex gap-3 items-start border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold text-slate-400 w-36 flex-shrink-0 pt-0.5">No. PO / Ref</span>
-                            <span class="text-sm font-bold text-navy flex-1">PO-2608-0071</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal <span class="text-rose-500">*</span></label>
+                            <input type="date" x-model="transferForm.tanggal" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Jam <span class="text-rose-500">*</span></label>
+                            <input type="time" x-model="transferForm.jam" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan / Notes</label>
+                        <input type="text" x-model="transferForm.notes" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: Titip 1 pallet nunggu QC passed">
                     </div>
                 </div>
-
-                <!-- Tabel Material -->
-                <div>
-                    <div class="flex justify-between items-center mb-3 no-print">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Rincian Material yang Ditransfer</h3>
-                        <button @click="addRow()" class="flex items-center gap-1 text-[10px] font-bold text-cyan bg-cyan/10 border border-cyan/30 px-2 py-1 rounded-lg hover:bg-cyan/20 transition-colors">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            Tambah Baris
-                        </button>
-                    </div>
-                    <div class="border border-slate-200 rounded-xl overflow-hidden">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr class="text-[11px] uppercase text-slate-500 font-bold">
-                                    <th class="px-3 py-3 w-10">No</th>
-                                    <th class="px-3 py-3">Code</th>
-                                    <th class="px-3 py-3">Description</th>
-                                    <th class="px-3 py-3">Unit</th>
-                                    <th class="px-3 py-3">Lot. Number</th>
-                                    <th class="px-3 py-3 text-right">Quantity</th>
-                                    <th class="px-3 py-3">Remarks</th>
-                                    <th class="px-3 py-3 no-print"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                <template x-for="(row, i) in rows" :key="i">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-3 py-2.5 text-slate-400 text-sm font-semibold" x-text="i + 1"></td>
-                                        <td class="px-3 py-2.5">
-                                            <input x-model="row.kode" type="text" placeholder="Code..." class="w-24 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs font-mono font-bold text-slate-700 py-0.5">
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <input x-model="row.nama" type="text" placeholder="Description..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-semibold text-navy py-0.5">
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <select x-model="row.unit" class="bg-transparent border-b border-dashed border-slate-300 text-xs text-slate-600 outline-none py-0.5">
-                                                <option value="Kg">Kg</option><option value="Liter">Liter</option><option value="Bag">Bag</option><option value="Pcs">Pcs</option>
-                                            </select>
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <input x-model="row.lot" type="text" placeholder="Lot. No..." class="w-28 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs font-mono text-slate-600 py-0.5">
-                                        </td>
-                                        <td class="px-3 py-2.5 text-right">
-                                            <input x-model="row.qty" type="number" step="0.1" min="0" placeholder="0.0" class="w-20 bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-sm font-bold text-navy text-right py-0.5">
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <input x-model="row.remarks" type="text" placeholder="Remarks..." class="w-full bg-transparent border-b border-dashed border-slate-300 focus:border-cyan outline-none text-xs text-slate-500 py-0.5">
-                                        </td>
-                                        <td class="px-3 py-2.5 no-print">
-                                            <button @click="rows.splice(i,1)" class="text-red-400 hover:text-red-600">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </template>
-                                <tr class="bg-slate-50/60 font-bold">
-                                    <td colspan="5" class="px-3 py-3 text-right text-xs uppercase text-slate-500">Total Quantity</td>
-                                    <td class="px-3 py-3 text-right font-black text-navy" x-text="totalQty.toFixed(1)"></td>
-                                    <td colspan="2"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                    <p class="text-xs text-slate-400 mt-2 italic">*Selisih akan otomatis terhitung. Warna kuning = ada selisih, harus dilaporkan ke gudang.</p>
-                </div>
-
-
-                <!-- Status Stok Gudang -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Konfirmasi Update Stok Gudang</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-5 h-5 border-2 border-slate-400 rounded"></div>
-                        <p class="text-sm text-slate-700">Stok gudang telah dikurangi sesuai jumlah transfer aktual di atas.</p>
-                    </div>
-                </div>
-
-                <!-- Tanda Tangan -->
-                <div class="grid grid-cols-3 gap-6 pt-4">
-                    <div class="text-center">
-                        <div class="h-16 border-b border-slate-300 mb-2"></div>
-                        <p class="text-xs font-bold text-slate-600">Dibuat / Diminta oleh</p>
-                        <p class="text-[10px] text-slate-400">PPIC</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-16 border-b border-slate-300 mb-2"></div>
-                        <p class="text-xs font-bold text-slate-600">Disiapkan & Diserahkan</p>
-                        <p class="text-[10px] text-slate-400">Petugas Gudang</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-16 border-b border-slate-300 mb-2"></div>
-                        <p class="text-xs font-bold text-slate-600">Diterima oleh</p>
-                        <p class="text-[10px] text-slate-400">Operator / Produksi</p>
-                    </div>
+                
+                <div class="mt-6 flex justify-end">
+                    <button class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow">Proses Transfer</button>
                 </div>
             </div>
         </div>
@@ -485,7 +416,7 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('docsApp', () => ({
-            activeDoc: 'moving'
+            activeDoc: new URLSearchParams(window.location.search).get('doc') || 'moving'
         }));
 
         Alpine.data('movingSlipApp', () => ({
@@ -503,16 +434,15 @@
         }));
 
         Alpine.data('transferSlipApp', () => ({
-            rows: [
-                { kode: 'RM-001', nama: 'Resin PVC S-65', unit: 'Kg', lot: 'LOT-260801', qty: 500, remarks: 'Transfer Reguler SPK' },
-                { kode: 'RM-003', nama: 'Stabilizer Ca-Zn', unit: 'Kg', lot: 'LOT-260805', qty: 20, remarks: 'Transfer Reguler SPK' },
-                { kode: 'RM-007', nama: 'Pigment White TiO2', unit: 'Kg', lot: 'LOT-260803', qty: 10, remarks: 'Transfer Parsial' }
-            ],
-            addRow() {
-                this.rows.push({ kode: '', nama: '', unit: 'Kg', lot: '', qty: '', remarks: '' });
-            },
-            get totalQty() {
-                return this.rows.reduce((sum, r) => sum + (parseFloat(r.qty) || 0), 0);
+            transferForm: {
+                type: 'Titip Barang (Sementara)',
+                qty: '',
+                pallet: '',
+                notes: '',
+                opProduksi: '',
+                opGudang: '',
+                tanggal: new Date().toISOString().split('T')[0],
+                jam: new Date().toTimeString().split(' ')[0].substring(0, 5)
             }
         }));
     });
