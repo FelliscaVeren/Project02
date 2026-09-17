@@ -1023,66 +1023,307 @@
 
                     <!-- Individual Parameter Charts Grid (Tampil jika viewModeExtruder === 'all' || 'chart') -->
                     <div x-show="viewModeExtruder === 'all' || viewModeExtruder === 'chart'" class="grid grid-cols-1 md:grid-cols-2 gap-5" x-transition>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 1</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+
+                        <!-- Zone 1 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'z1' ? null : 'z1')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 1</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 155–165 °C</span>
+                                        <svg class="w-4 h-4 text-slate-400 transition-transform" :class="openChartDetail === 'z1' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
                                 </div>
-                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 155–165 °C</span>
+                                <div class="relative h-40"><canvas id="extChart_z1"></canvas></div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
                             </div>
-                            <div class="relative h-40"><canvas id="extChart_z1"></canvas></div>
-                        </div>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 2</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                            <div x-show="openChartDetail === 'z1'" x-transition class="border-t border-slate-100 bg-slate-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Detail Data — Suhu Zone 1 (°C)</p>
+                                    <span class="text-[10px] bg-slate-200 text-slate-600 font-bold px-2 py-0.5 rounded">Target: 155–165 °C</span>
                                 </div>
-                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 165–175 °C</span>
-                            </div>
-                            <div class="relative h-40"><canvas id="extChart_z2"></canvas></div>
-                        </div>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 3</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-slate-200">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">Zone 1 (°C)</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.z1 < 155 || row.z1 > 165 ? 'text-rose-600' : 'text-emerald-700'" x-text="row.z1 + ' °C'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.z1 >= 155 && row.z1 <= 165 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'"
+                                                              x-text="row.z1 >= 155 && row.z1 <= 165 ? '✓ Normal' : '⚠ Out'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 170–180 °C</span>
                             </div>
-                            <div class="relative h-40"><canvas id="extChart_z3"></canvas></div>
                         </div>
-                        <div class="bg-white border border-blue-200 rounded-2xl p-4 shadow-sm ring-1 ring-blue-100">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Suhu Zone 4 (Die Head)</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+
+                        <!-- Zone 2 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'z2' ? null : 'z2')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 2</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 165–175 °C</span>
+                                        <svg class="w-4 h-4 text-slate-400 transition-transform" :class="openChartDetail === 'z2' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
                                 </div>
-                                <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Target: 175–182 °C</span>
+                                <div class="relative h-40"><canvas id="extChart_z2"></canvas></div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
                             </div>
-                            <div class="relative h-40"><canvas id="extChart_z4"></canvas></div>
-                        </div>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">RPM Screw</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam</p>
+                            <div x-show="openChartDetail === 'z2'" x-transition class="border-t border-slate-100 bg-slate-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Detail Data — Suhu Zone 2 (°C)</p>
+                                    <span class="text-[10px] bg-slate-200 text-slate-600 font-bold px-2 py-0.5 rounded">Target: 165–175 °C</span>
                                 </div>
-                                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 30–40 RPM</span>
-                            </div>
-                            <div class="relative h-40"><canvas id="extChart_rpm"></canvas></div>
-                        </div>
-                        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                            <div class="flex justify-between items-center mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ampere</p>
-                                    <p class="text-xs font-bold text-navy">Grafik per Jam (A)</p>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-slate-200">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">Zone 2 (°C)</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.z2 < 165 || row.z2 > 175 ? 'text-rose-600' : 'text-emerald-700'" x-text="row.z2 + ' °C'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.z2 >= 165 && row.z2 <= 175 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'"
+                                                              x-text="row.z2 >= 165 && row.z2 <= 175 ? '✓ Normal' : '⚠ Out'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Target: &le; 40 A</span>
                             </div>
-                            <div class="relative h-40"><canvas id="extChart_amp"></canvas></div>
                         </div>
+
+                        <!-- Zone 3 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'z3' ? null : 'z3')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suhu Zone 3</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 170–180 °C</span>
+                                        <svg class="w-4 h-4 text-slate-400 transition-transform" :class="openChartDetail === 'z3' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="relative h-40"><canvas id="extChart_z3"></canvas></div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
+                            </div>
+                            <div x-show="openChartDetail === 'z3'" x-transition class="border-t border-slate-100 bg-slate-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Detail Data — Suhu Zone 3 (°C)</p>
+                                    <span class="text-[10px] bg-slate-200 text-slate-600 font-bold px-2 py-0.5 rounded">Target: 170–180 °C</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-slate-200">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">Zone 3 (°C)</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.z3 < 170 || row.z3 > 180 ? 'text-rose-600' : 'text-emerald-700'" x-text="row.z3 + ' °C'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.z3 >= 170 && row.z3 <= 180 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'"
+                                                              x-text="row.z3 >= 170 && row.z3 <= 180 ? '✓ Normal' : '⚠ Out'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Zone 4 (Die Head) -->
+                        <div class="bg-white border border-blue-200 rounded-2xl shadow-sm ring-1 ring-blue-100 overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'z4' ? null : 'z4')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Suhu Zone 4 (Die Head)</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam (°C)</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Target: 175–182 °C</span>
+                                        <svg class="w-4 h-4 text-blue-400 transition-transform" :class="openChartDetail === 'z4' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="relative h-40"><canvas id="extChart_z4"></canvas></div>
+                                <p class="text-[10px] text-blue-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
+                            </div>
+                            <div x-show="openChartDetail === 'z4'" x-transition class="border-t border-blue-100 bg-blue-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-blue-700 uppercase tracking-wider">Detail Data — Suhu Zone 4 / Die Head (°C)</p>
+                                    <span class="text-[10px] bg-blue-200 text-blue-700 font-bold px-2 py-0.5 rounded">Target: 175–182 °C</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-blue-100">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">Zone 4 Die (°C)</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-blue-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.z4 < 175 || row.z4 > 182 ? 'text-rose-600' : 'text-blue-700'" x-text="row.z4 + ' °C'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.z4 >= 175 && row.z4 <= 182 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'"
+                                                              x-text="row.z4 >= 175 && row.z4 <= 182 ? '✓ Normal' : '⚠ Out'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RPM Screw -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'rpm' ? null : 'rpm')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">RPM Screw</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Target: 30–40 RPM</span>
+                                        <svg class="w-4 h-4 text-slate-400 transition-transform" :class="openChartDetail === 'rpm' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="relative h-40"><canvas id="extChart_rpm"></canvas></div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
+                            </div>
+                            <div x-show="openChartDetail === 'rpm'" x-transition class="border-t border-slate-100 bg-slate-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Detail Data — RPM Screw</p>
+                                    <span class="text-[10px] bg-slate-200 text-slate-600 font-bold px-2 py-0.5 rounded">Target: 30–40 RPM</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-slate-200">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">RPM</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.rpm < 30 || row.rpm > 40 ? 'text-rose-600' : 'text-emerald-700'" x-text="row.rpm + ' RPM'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.rpm >= 30 && row.rpm <= 40 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'"
+                                                              x-text="row.rpm >= 30 && row.rpm <= 40 ? '✓ Normal' : '⚠ Out'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ampere -->
+                        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="p-4 cursor-pointer select-none" @click="openChartDetail = (openChartDetail === 'amp' ? null : 'amp')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ampere</p>
+                                        <p class="text-xs font-bold text-navy">Grafik per Jam (A)</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded">Target: &le; 40 A</span>
+                                        <svg class="w-4 h-4 text-slate-400 transition-transform" :class="openChartDetail === 'amp' ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="relative h-40"><canvas id="extChart_amp"></canvas></div>
+                                <p class="text-[10px] text-slate-400 mt-1 text-center">Klik grafik untuk lihat detail data</p>
+                            </div>
+                            <div x-show="openChartDetail === 'amp'" x-transition class="border-t border-slate-100 bg-amber-50">
+                                <div class="px-4 py-2 flex items-center justify-between">
+                                    <p class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Detail Data — Ampere</p>
+                                    <span class="text-[10px] bg-amber-200 text-amber-700 font-bold px-2 py-0.5 rounded">Target: &le; 40 A</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs">
+                                        <thead class="bg-white border-b border-amber-100">
+                                            <tr class="text-[10px] font-bold text-slate-500 uppercase">
+                                                <th class="p-2.5 text-left">Jam</th>
+                                                <th class="p-2.5 text-left">Operator</th>
+                                                <th class="p-2.5 text-right">Ampere (A)</th>
+                                                <th class="p-2.5 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-amber-100">
+                                            <template x-for="(row, idx) in hourlyData" :key="idx">
+                                                <tr class="hover:bg-white">
+                                                    <td class="p-2.5 font-bold text-navy" x-text="row.jam"></td>
+                                                    <td class="p-2.5 text-slate-600" x-text="row.operator"></td>
+                                                    <td class="p-2.5 text-right font-black" :class="row.amp > 40 ? 'text-rose-600' : 'text-emerald-700'" x-text="row.amp + ' A'"></td>
+                                                    <td class="p-2.5 text-center">
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                                              :class="row.amp <= 40 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+                                                              x-text="row.amp <= 40 ? '✓ Normal' : '⚠ High'"></span>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Input Parameter per Jam & Tabel Data Rincian (Tampil jika viewModeExtruder === 'all' || 'data') -->
@@ -1240,7 +1481,12 @@
                                 <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Rincian Sisa Material Pasca-Batch Produksi</h5>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Selisih antara target kebutuhan BOM dan aktual pemakaian pada mesin</p>
                             </div>
-                            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
+                            <div class="flex items-center gap-3">
+                                <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
+                                <a href="{{ route('dokumen.material') }}?doc=moving" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors whitespace-nowrap">
+                                    + Buat Moving Slip Baru
+                                </a>
+                            </div>
                         </div>
                         <table class="w-full text-xs">
                             <thead class="bg-slate-50 border-b border-slate-100">
@@ -1322,59 +1568,48 @@
                                 <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Log Riwayat Penyerahan Barang (Transfer Slip Barang Jadi)</h5>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Daftar bertahap serah terima hasil Bagging dari Lini Produksi ke Gudang Barang Jadi</p>
                             </div>
-                            <button class="px-3 py-1.5 bg-navy text-white text-xs font-bold rounded-xl hover:bg-navy-light transition flex items-center gap-1">
-                                <span>+ Buat Moving Slip Baru</span>
-                            </button>
+                            <a href="{{ route('dokumen.material') }}?doc=transfer" class="px-3 py-1.5 bg-navy text-white text-xs font-bold rounded-xl hover:bg-navy-light transition flex items-center gap-1 shadow-md">
+                                <span>+ Buat Transfer Slip Baru</span>
+                            </a>
                         </div>
                         <table class="w-full text-xs">
                             <thead class="bg-slate-50 border-b border-slate-100">
-                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
-                                    <th class="p-3 text-left">No. Transfer Slip</th>
-                                    <th class="p-3 text-left">Tanggal & Jam Transfer</th>
-                                    <th class="p-3 text-right">Jumlah Sak</th>
-                                    <th class="p-3 text-right">Total Berat (Kg)</th>
-                                    <th class="p-3 text-left">Petugas Serah (Produksi)</th>
-                                    <th class="p-3 text-left">Petugas Terima (Gudang)</th>
-                                    <th class="p-3 text-center">Status Acceptance</th>
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase text-left">
+                                    <th class="p-3">Waktu & Tanggal</th>
+                                    <th class="p-3">Jenis Slip</th>
+                                    <th class="p-3 text-right">Qty</th>
+                                    <th class="p-3">Operator (Prod &rarr; Gudang)</th>
+                                    <th class="p-3 text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
                                 <tr class="hover:bg-slate-50">
-                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-01</td>
-                                    <td class="p-3 text-slate-600">28 Aug 2026, 14:15</td>
-                                    <td class="p-3 text-right font-bold text-navy">210 Sak</td>
-                                    <td class="p-3 text-right font-bold text-navy">5.250 Kg</td>
-                                    <td class="p-3 text-slate-600">Putu (Shift 1)</td>
-                                    <td class="p-3 text-slate-600">Suryanto</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                    <td class="p-3 text-slate-500">
+                                        <span class="font-bold text-navy">28 Aug 2026</span><br>
+                                        <span class="text-[10px]">10:00 WIB</span>
+                                    </td>
+                                    <td class="p-3 font-bold text-amber-600">Titip Barang (Sementara)</td>
+                                    <td class="p-3 text-right font-bold text-navy">1.000 Kg</td>
+                                    <td class="p-3 text-slate-600">
+                                        <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Mira</span><br>
+                                        <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
+                                    </td>
+                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
-                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-02</td>
-                                    <td class="p-3 text-slate-600">28 Aug 2026, 22:30</td>
-                                    <td class="p-3 text-right font-bold text-navy">200 Sak</td>
-                                    <td class="p-3 text-right font-bold text-navy">5.000 Kg</td>
-                                    <td class="p-3 text-slate-600">Putri (Shift 2)</td>
-                                    <td class="p-3 text-slate-600">Bambang</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
-                                </tr>
-                                <tr class="hover:bg-slate-50">
-                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-03</td>
-                                    <td class="p-3 text-slate-600">29 Aug 2026, 06:45</td>
-                                    <td class="p-3 text-right font-bold text-navy">190 Sak</td>
-                                    <td class="p-3 text-right font-bold text-navy">4.750 Kg</td>
-                                    <td class="p-3 text-slate-600">Fikri (Shift 3)</td>
-                                    <td class="p-3 text-slate-600">Suryanto</td>
-                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                    <td class="p-3 text-slate-500">
+                                        <span class="font-bold text-navy">28 Aug 2026</span><br>
+                                        <span class="text-[10px]">14:00 WIB</span>
+                                    </td>
+                                    <td class="p-3 font-bold text-emerald-600">Serah Terima Final (Potong Stok)</td>
+                                    <td class="p-3 text-right font-bold text-navy">2.500 Kg</td>
+                                    <td class="p-3 text-slate-600">
+                                        <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Putu</span><br>
+                                        <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
+                                    </td>
+                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
                                 </tr>
                             </tbody>
-                            <tfoot class="bg-blue-50/50 border-t border-blue-200">
-                                <tr class="font-bold text-slate-800">
-                                    <td class="p-3 text-navy" colspan="2">TOTAL KESELURUHAN TRANSFER</td>
-                                    <td class="p-3 text-right font-black text-navy">600 Sak</td>
-                                    <td class="p-3 text-right font-black text-navy">15.000 Kg</td>
-                                    <td class="p-3 text-slate-500" colspan="3">Verifikasi 100% Sesuai Target SPK</td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -2513,7 +2748,8 @@
         // ====== EXTRUDER HOURLY APP ======
         Alpine.data('extruderHourlyApp', () => ({
             viewModeExtruder: 'all',
-            newEntry: { jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '' },
+            openChartDetail: null,
+            newEntry: { jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '', targetSuhu: '', checkResult: 'Sesuai', conclusion: '' },
             hourlyData: [
                 { jam: '06:00', z1: 160, z2: 170, z3: 175, z4: 175, rpm: 35, amp: 41, operator: 'Budi' },
                 { jam: '07:00', z1: 161, z2: 171, z3: 176, z4: 176, rpm: 35, amp: 42, operator: 'Mia' },

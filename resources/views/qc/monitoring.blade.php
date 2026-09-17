@@ -134,66 +134,76 @@
                 <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold">✓ Pengecekan Rutin Aktif</span>
             </div>
 
-            <!-- Form Tambah Dispersi 1 Jam -->
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
-                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">+ Input Hasil Pengecekan Dispersi Jam Baru</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Form Input Dispersi Baru -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden mb-6">
+                <div class="absolute top-0 left-0 w-1 h-full bg-navy"></div>
+                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-navy"></span>
+                    INPUT HASIL PENGECEKAN DISPERSI JAM BARU
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Jam Pengecekan <span class="text-rose-500">*</span></label>
-                        <select x-model="newDisperse.jam" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold outline-none focus:ring-cyan focus:border-cyan">
-                            <option value="06:00">06:00 WIB</option>
-                            <option value="07:00">07:00 WIB</option>
-                            <option value="08:00">08:00 WIB</option>
-                            <option value="09:00">09:00 WIB</option>
-                            <option value="10:00">10:00 WIB</option>
-                            <option value="11:00">11:00 WIB</option>
-                            <option value="12:00">12:00 WIB</option>
-                            <option value="13:00">13:00 WIB</option>
-                            <option value="14:00">14:00 WIB</option>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Jam Pengecekan <span class="text-rose-500">*</span></label>
+                        <select class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
+                            <option>13:00 WIB</option>
+                            <option>14:00 WIB</option>
+                            <option>15:00 WIB</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Rating Dispersi (1-5)</label>
-                        <select x-model="newDisperse.rating" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold outline-none focus:ring-cyan focus:border-cyan">
-                            <option value="5">Rating 5 · Sangat Homogen</option>
-                            <option value="4">Rating 4 · Baik / Standard</option>
-                            <option value="3">Rating 3 · Cukup (Ada Bintik Halus)</option>
-                            <option value="2">Rating 2 · Kurang (Aglomerat Merah)</option>
-                            <option value="1">Rating 1 · Sangat Buruk (Gumpalan)</option>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Rating Dispersi (1-5)</label>
+                        <select class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
+                            <option>Rating 4 - Baik / Standard</option>
+                            <option>Rating 5 - Sangat Baik</option>
+                            <option>Rating 3 - Cukup</option>
+                            <option>Rating 2 - Kurang</option>
+                            <option>Rating 1 - Buruk</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Pengecekan Visual</label>
-                        <input type="text" x-model="newDisperse.visual" placeholder="Contoh: Bebas aglomerat & bintik" class="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-navy outline-none focus:ring-cyan focus:border-cyan">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Pengecekan Visual</label>
+                        <input type="text" value="Bebas aglomerat" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-navy focus:ring-2 focus:ring-cyan outline-none">
                     </div>
-
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Status QC <span class="text-rose-500">*</span></label>
-                        <select x-model="newDisperse.status" class="w-full border rounded-xl p-2.5 text-xs font-black outline-none transition"
-                                :class="{
-                                    'bg-emerald-50 text-emerald-800 border-emerald-300': newDisperse.status === 'PASS',
-                                    'bg-amber-50 text-amber-800 border-amber-300': newDisperse.status === 'HOLD',
-                                    'bg-rose-50 text-rose-800 border-rose-300': newDisperse.status === 'REJECT'
-                                }">
-                            <option value="PASS">PASS (Hijau - Lolos)</option>
-                            <option value="HOLD">HOLD (Kuning - Penahanan)</option>
-                            <option value="REJECT">REJECT (Merah - Ditolak)</option>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Status QC <span class="text-rose-500">*</span></label>
+                        <select class="w-full bg-emerald-50 border border-emerald-300 text-emerald-700 rounded-lg px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option>PASS (Hijau - Lolos)</option>
+                            <option>HOLD (Kuning - Evaluasi)</option>
+                            <option>REJECT (Merah - Gagal)</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Catatan QC <span x-show="newDisperse.status === 'REJECT'" class="text-rose-600 font-bold">(Wajib Merah!)</span></label>
-                        <input type="text" x-model="newDisperse.notes" placeholder="Catatan evaluasi atau alasan penolakan..." class="w-full bg-white border rounded-xl p-2.5 text-xs text-navy outline-none focus:ring-cyan focus:border-cyan" :class="newDisperse.status === 'REJECT' ? 'border-rose-400 ring-1 ring-rose-300' : 'border-slate-200'">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Catatan QC</label>
+                        <input type="text" placeholder="Catatan evaluasi atau alasan penolakan..." class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-500 focus:ring-2 focus:ring-cyan outline-none">
                     </div>
                 </div>
-
-                <div class="flex justify-end pt-2">
-                    <button @click="addDisperseEntry()" class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                
+                <div class="mt-4 flex justify-end">
+                    <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Simpan Hasil Dispersi Jam Ini
                     </button>
+                </div>
+            </div>
+
+            <!-- Filter Log Dispersi (PPIC View) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+                <div class="flex-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cari / Filter Log Dispersi</label>
+                    <div class="relative">
+                        <input type="text" x-model="searchDisperse" placeholder="Cari berdasarkan catatan, inspektur, atau jam..." class="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs text-navy outline-none focus:ring-cyan focus:border-cyan">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                <div class="w-48 shrink-0">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filter Status QC</label>
+                    <select x-model="filterDisperseStatus" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs text-navy font-bold outline-none focus:ring-cyan focus:border-cyan">
+                        <option value="">Semua Status</option>
+                        <option value="PASS">Hanya PASS (Hijau)</option>
+                        <option value="HOLD">Hanya HOLD (Kuning)</option>
+                        <option value="REJECT">Hanya REJECT (Merah)</option>
+                    </select>
                 </div>
             </div>
 
@@ -202,6 +212,7 @@
                 <table class="w-full text-left text-xs">
                     <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200">
                         <tr>
+                            <th class="p-3">Tanggal</th>
                             <th class="p-3">Jam Pengecekan</th>
                             <th class="p-3">Visual & Aglomerat</th>
                             <th class="p-3">Rating Dispersi</th>
@@ -212,12 +223,13 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <template x-for="(row, idx) in disperseLogs" :key="idx">
+                        <template x-for="(row, idx) in filteredDisperseLogs" :key="idx">
                             <tr :class="{
                                 'bg-emerald-50/40': row.status === 'PASS',
                                 'bg-amber-50/50': row.status === 'HOLD',
                                 'bg-rose-50/60': row.status === 'REJECT'
                             }">
+                                <td class="p-3 font-semibold text-slate-500" x-text="row.tanggal"></td>
                                 <td class="p-3 font-bold text-navy" x-text="row.jam + ' WIB'"></td>
                                 <td class="p-3 text-slate-700 font-medium" x-text="row.visual"></td>
                                 <td class="p-3 font-bold">
@@ -299,87 +311,23 @@
                 </div>
             </div>
 
-            <!-- Form Quick Entry Physical Test 2 Jam -->
-            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
-                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">+ Form Input Pengujian Fisik & Mekanik (Per 2 Jam)</h4>
-                
-                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">No. Zak</label>
-                        <input type="text" x-model="newPhysical.noZak" placeholder="Misal: Zak #05" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Measurement Time</label>
-                        <select x-model="newPhysical.time" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                            <option value="06:00">06:00 WIB</option>
-                            <option value="08:00">08:00 WIB</option>
-                            <option value="10:00">10:00 WIB</option>
-                            <option value="12:00">12:00 WIB</option>
-                            <option value="14:00">14:00 WIB</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Lot Number</label>
-                        <input type="text" x-model="newPhysical.lotNumber" placeholder="LOT-260816-01" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs text-slate-800 outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Moisture (%)</label>
-                        <input type="number" step="0.01" x-model.number="newPhysical.moisture" placeholder="0.08" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Specific Gravity</label>
-                        <input type="number" step="0.01" x-model.number="newPhysical.sg" placeholder="1.34" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">MFI 1 (g/10min)</label>
-                        <input type="number" step="0.1" x-model.number="newPhysical.mfi1" @input="calcAvgMfi()" placeholder="16.5" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">MFI 2 (g/10min)</label>
-                        <input type="number" step="0.1" x-model.number="newPhysical.mfi2" @input="calcAvgMfi()" placeholder="16.8" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">MFI 3 (g/10min)</label>
-                        <input type="number" step="0.1" x-model.number="newPhysical.mfi3" @input="calcAvgMfi()" placeholder="16.6" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs font-bold text-navy outline-none focus:ring-cyan">
+            <!-- Filter Physical Test (PPIC View) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+                <div class="flex-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cari / Filter Log Physical Test</label>
+                    <div class="relative">
+                        <input type="text" x-model="searchPhysical" placeholder="Cari berdasarkan No. Zak, Lot, atau catatan..." class="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-4 text-xs text-navy outline-none focus:ring-cyan focus:border-cyan">
+                        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 pt-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Average MFI (Otomatis)</label>
-                        <input type="text" :value="newPhysical.avgMfi || '0.0'" disabled class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2 text-xs font-black text-navy cursor-not-allowed">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Status QC <span class="text-rose-500">*</span></label>
-                        <select x-model="newPhysical.status" class="w-full border rounded-xl p-2 text-xs font-black outline-none transition"
-                                :class="{
-                                    'bg-emerald-50 text-emerald-800 border-emerald-300': newPhysical.status === 'PASS',
-                                    'bg-amber-50 text-amber-800 border-amber-300': newPhysical.status === 'HOLD',
-                                    'bg-rose-50 text-rose-800 border-rose-300': newPhysical.status === 'REJECT'
-                                }">
-                            <option value="PASS">PASS (Hijau - Lolos)</option>
-                            <option value="HOLD">HOLD (Kuning - Penahanan)</option>
-                            <option value="REJECT">REJECT (Merah - Ditolak)</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Note / Catatan Lab <span x-show="newPhysical.status === 'REJECT'" class="text-rose-600 font-bold">(Notes Merah Wajib Diisi!)</span></label>
-                        <div class="flex gap-2">
-                            <input type="text" x-model="newPhysical.note" placeholder="Catatan pengujian atau alasan penolakan..." class="w-full bg-white border rounded-xl p-2 text-xs text-navy outline-none focus:ring-cyan" :class="newPhysical.status === 'REJECT' ? 'border-rose-400 ring-1 ring-rose-300' : 'border-slate-200'">
-                            <button @click="addPhysicalEntry()" class="px-4 py-2 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow transition shrink-0 flex items-center gap-1">
-                                + Simpan
-                            </button>
-                        </div>
-                    </div>
+                <div class="w-48 shrink-0">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filter Status QC</label>
+                    <select x-model="filterPhysicalStatus" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs text-navy font-bold outline-none focus:ring-cyan focus:border-cyan">
+                        <option value="">Semua Status</option>
+                        <option value="PASS">Hanya PASS (Hijau)</option>
+                        <option value="HOLD">Hanya HOLD (Kuning)</option>
+                        <option value="REJECT">Hanya REJECT (Merah)</option>
+                    </select>
                 </div>
             </div>
 
@@ -421,7 +369,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-slate-800 text-[11px]">
-                        <template x-for="(row, idx) in physicalLogs" :key="idx">
+                        <template x-for="(row, idx) in filteredPhysicalLogs" :key="idx">
                             <tr class="divide-x divide-slate-200 transition-colors" :class="{
                                 'bg-emerald-50/50 hover:bg-emerald-100/50': row.status === 'PASS',
                                 'bg-amber-50/60 hover:bg-amber-100/60': row.status === 'HOLD',
@@ -618,6 +566,10 @@
         Alpine.data('qcMonitoringApp', () => ({
             selectedSpkId: 'SPK-2608-001',
             activeQcTab: 'disperse',
+            searchDisperse: '',
+            filterDisperseStatus: '',
+            searchPhysical: '',
+            filterPhysicalStatus: '',
             showNcModal: false,
 
             foremanName: 'Budi S. (Foreman RED)',
@@ -638,49 +590,25 @@
                 // reset state if needed
             },
 
-            // FITUR 1: LOG DISPERSI 1 JAM SEKALI
             disperseLogs: [
-                { jam: '06:00', rating: 5, visual: 'Bebas aglomerat & bintik halus', status: 'PASS', notes: 'Dispersi sempurna', inspector: 'Hendra (QC)' },
-                { jam: '07:00', rating: 4, visual: 'Homogen, warna jernih', status: 'PASS', notes: 'Sesuai standar', inspector: 'Hendra (QC)' },
-                { jam: '08:00', rating: 4, visual: 'Homogen standar', status: 'PASS', notes: 'Sesuai standar', inspector: 'Hendra (QC)' },
-                { jam: '09:00', rating: 3, visual: 'Terdeteksi bintik halus pigmen', status: 'HOLD', notes: 'Perlu pengawasan suhu extruder', inspector: 'Hendra (QC)' },
-                { jam: '10:00', rating: 2, visual: 'Bintik merah aglomerat menyebar', status: 'REJECT', notes: 'Aglomerat pigmen tidak meleleh sempurna di die zone 4', inspector: 'Hendra (QC)' },
-                { jam: '11:00', rating: 4, visual: 'Homogen pasca pembersihan die', status: 'PASS', notes: 'Normal kembali', inspector: 'Hendra (QC)' },
-                { jam: '12:00', rating: 5, visual: 'Bebas bintik & sangat jernih', status: 'PASS', notes: 'Sangat homogen', inspector: 'Hendra (QC)' }
+                { tanggal: '2026-09-16', jam: '06:00', rating: 5, visual: 'Bebas aglomerat & bintik halus', status: 'PASS', notes: 'Dispersi sempurna', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '07:00', rating: 4, visual: 'Homogen, warna jernih', status: 'PASS', notes: 'Sesuai standar', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '08:00', rating: 4, visual: 'Homogen standar', status: 'PASS', notes: 'Sesuai standar', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '09:00', rating: 3, visual: 'Terdeteksi bintik halus pigmen', status: 'HOLD', notes: 'Perlu pengawasan suhu extruder', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '10:00', rating: 2, visual: 'Bintik merah aglomerat menyebar', status: 'REJECT', notes: 'Aglomerat pigmen tidak meleleh sempurna di die zone 4', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '11:00', rating: 4, visual: 'Homogen pasca pembersihan die', status: 'PASS', notes: 'Normal kembali', inspector: 'Hendra (QC)' },
+                { tanggal: '2026-09-16', jam: '12:00', rating: 5, visual: 'Bebas bintik & sangat jernih', status: 'PASS', notes: 'Sangat homogen', inspector: 'Hendra (QC)' }
             ],
 
-            newDisperse: {
-                jam: '13:00',
-                rating: 4,
-                visual: 'Bebas aglomerat',
-                status: 'PASS',
-                notes: ''
-            },
-
-            addDisperseEntry() {
-                if (this.newDisperse.status === 'REJECT' && !this.newDisperse.notes.trim()) {
-                    alert('⚠️ Gagal Menyimpan: Catatan penolakan (Notes Merah) WAJIB DIISI jika status QC adalah REJECT!');
-                    return;
-                }
-
-                this.disperseLogs.unshift({
-                    jam: this.newDisperse.jam,
-                    rating: parseInt(this.newDisperse.rating),
-                    visual: this.newDisperse.visual || 'Bebas aglomerat',
-                    status: this.newDisperse.status,
-                    notes: this.newDisperse.notes,
-                    inspector: 'Hendra (QC)'
+            get filteredDisperseLogs() {
+                return this.disperseLogs.filter(row => {
+                    let matchSearch = (row.notes.toLowerCase().includes(this.searchDisperse.toLowerCase()) || 
+                                       row.inspector.toLowerCase().includes(this.searchDisperse.toLowerCase()) ||
+                                       row.visual.toLowerCase().includes(this.searchDisperse.toLowerCase()) ||
+                                       row.jam.includes(this.searchDisperse));
+                    let matchStatus = this.filterDisperseStatus === '' || row.status === this.filterDisperseStatus;
+                    return matchSearch && matchStatus;
                 });
-
-                if (this.newDisperse.status === 'REJECT' || this.newDisperse.status === 'HOLD') {
-                    this.openNcModal({
-                        issueType: 'Dispersi Bintik / Kontaminasi',
-                        description: `Dispersi jam ${this.newDisperse.jam} rating ${this.newDisperse.rating}/5. ${this.newDisperse.notes}`
-                    });
-                }
-
-                alert('✓ Data Pengecekan Dispersi (1 Jam Sekali) BERHASIL disimpan!');
-                this.newDisperse = { jam: '14:00', rating: 4, visual: 'Bebas aglomerat', status: 'PASS', notes: '' };
             },
 
             // FITUR 2: PHYSICAL AND MECHANICAL TEST (2 JAM SEKALI - EXCEL FORMAT)
@@ -691,70 +619,14 @@
                 { noZak: 'Zak #07', time: '12:00', date: '2026-09-16', lotNumber: 'LOT-260816-04', moistureMass: '10.04', moistureVal: 0.06, sgMass: '25.05', sgVal: 1.34, temp: 175, cutTime: 10, cut1Mass: '1.67', mfi1: 16.7, cut2Mass: '1.66', mfi2: 16.6, cut3Mass: '1.68', mfi3: 16.8, avgMfi: 16.70, status: 'PASS', note: 'Hasil normal pasca koreksi suhu', analysedBy: 'Hendra QC', reviewedBy: 'Budi (Foreman)' }
             ],
 
-            newPhysical: {
-                noZak: 'Zak #09',
-                time: '14:00',
-                lotNumber: 'LOT-260816-05',
-                moisture: 0.07,
-                sg: 1.34,
-                mfi1: 16.6,
-                mfi2: 16.7,
-                mfi3: 16.8,
-                avgMfi: 16.70,
-                status: 'PASS',
-                note: ''
-            },
-
-            calcAvgMfi() {
-                let m1 = parseFloat(this.newPhysical.mfi1) || 0;
-                let m2 = parseFloat(this.newPhysical.mfi2) || 0;
-                let m3 = parseFloat(this.newPhysical.mfi3) || 0;
-                if (m1 && m2 && m3) {
-                    this.newPhysical.avgMfi = ((m1 + m2 + m3) / 3).toFixed(2);
-                }
-            },
-
-            addPhysicalEntry() {
-                if (this.newPhysical.status === 'REJECT' && !this.newPhysical.note.trim()) {
-                    alert('⚠️ Gagal Menyimpan: Catatan penolakan (Notes Merah) WAJIB DIISI jika status QC adalah REJECT!');
-                    return;
-                }
-
-                this.calcAvgMfi();
-
-                this.physicalLogs.unshift({
-                    noZak: this.newPhysical.noZak || 'Zak #09',
-                    time: this.newPhysical.time,
-                    date: new Date().toISOString().split('T')[0],
-                    lotNumber: this.newPhysical.lotNumber || 'LOT-260816-05',
-                    moistureMass: '10.00',
-                    moistureVal: this.newPhysical.moisture || 0.07,
-                    sgMass: '25.00',
-                    sgVal: this.newPhysical.sg || 1.34,
-                    temp: 175,
-                    cutTime: 10,
-                    cut1Mass: (this.newPhysical.mfi1 / 10).toFixed(2),
-                    mfi1: this.newPhysical.mfi1 || 16.6,
-                    cut2Mass: (this.newPhysical.mfi2 / 10).toFixed(2),
-                    mfi2: this.newPhysical.mfi2 || 16.7,
-                    cut3Mass: (this.newPhysical.mfi3 / 10).toFixed(2),
-                    mfi3: this.newPhysical.mfi3 || 16.8,
-                    avgMfi: this.newPhysical.avgMfi || 16.70,
-                    status: this.newPhysical.status,
-                    note: this.newPhysical.note,
-                    analysedBy: 'Hendra QC',
-                    reviewedBy: 'Budi (Foreman)'
+            get filteredPhysicalLogs() {
+                return this.physicalLogs.filter(row => {
+                    let matchSearch = (row.noZak.toLowerCase().includes(this.searchPhysical.toLowerCase()) || 
+                                       row.lotNumber.toLowerCase().includes(this.searchPhysical.toLowerCase()) ||
+                                       (row.note && row.note.toLowerCase().includes(this.searchPhysical.toLowerCase())));
+                    let matchStatus = this.filterPhysicalStatus === '' || row.status === this.filterPhysicalStatus;
+                    return matchSearch && matchStatus;
                 });
-
-                if (this.newPhysical.status === 'REJECT' || this.newPhysical.status === 'HOLD') {
-                    this.openNcModal({
-                        issueType: 'MFI Out of Spec',
-                        description: `Sample ${this.newPhysical.noZak} MFI Avg: ${this.newPhysical.avgMfi}. Note: ${this.newPhysical.note}`
-                    });
-                }
-
-                alert('✓ Data Physical and Mechanical Test (2 Jam Sekali) BERHASIL disimpan!');
-                this.newPhysical = { noZak: 'Zak #11', time: '16:00', lotNumber: 'LOT-260816-06', moisture: 0.07, sg: 1.34, mfi1: 16.5, mfi2: 16.7, mfi3: 16.6, avgMfi: 16.60, status: 'PASS', note: '' };
             },
 
             // FITUR 3: NON-CONFORMANCE LOGS & ALERT TO FOREMAN
