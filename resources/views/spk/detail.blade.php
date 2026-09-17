@@ -74,9 +74,10 @@
             <hr class="border-slate-100">
 
             <!-- Detail Formula & Kebutuhan Material -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
-                <div class="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
-                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
+            <div>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <h4 class="text-sm font-bold text-navy uppercase tracking-wide flex items-center gap-2">
+                        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         Formula & Kebutuhan Material (BOM)
                     </h4>
                     <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm">
@@ -216,41 +217,41 @@
                 </table>
             </div>
 
-            <!-- 2. Status Serah Terima Gudang -->
-            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white mt-4">
-                <div class="p-4 border-b border-slate-200 bg-slate-50">
-                    <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">
-                        Status Serah Terima Gudang
-                    </h4>
-                </div>
-                <div class="p-4">
-                    <!-- Progress Bar Titip vs Serah Terima -->
-                    <div class="space-y-4 mb-4">
-                        <!-- Titip Barang -->
-                        <div>
-                            <div class="flex justify-between text-xs font-bold mb-1">
-                                <span class="text-amber-600">Titip Barang (Numpang)</span>
-                                <span class="text-slate-700" x-text="transferStats.titipQty.toLocaleString() + ' Kg (' + transferStats.titipPct + '%)'"></span>
+                    <!-- Final Yield & Warehouse Transfer -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white p-4">
+                        <h5 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-100 pb-2">Status Serah Terima Gudang</h5>
+                        
+                        <!-- Progress Bar Titip vs Serah Terima -->
+                        <div class="space-y-4 mb-4">
+                            <!-- Titip Barang -->
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1">
+                                    <span class="text-amber-600">Titip Barang (Numpang)</span>
+                                    <span class="text-slate-700" x-text="transferStats.titipQty.toLocaleString() + ' Kg (' + transferStats.titipPct + '%)'"></span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-amber-400 h-2 rounded-full" :style="'width: ' + transferStats.titipPct + '%'"></div>
+                                </div>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-amber-400 h-2 rounded-full" :style="'width: ' + transferStats.titipPct + '%'"></div>
-                            </div>
-                        </div>
-                        <!-- Serah Terima Final -->
-                        <div>
-                            <div class="flex justify-between text-xs font-bold mb-1">
-                                <span class="text-emerald-600">Serah Terima Final (Accepted)</span>
-                                <span class="text-slate-700" x-text="transferStats.finalQty.toLocaleString() + ' Kg (' + transferStats.finalPct + '%)'"></span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-emerald-500 h-2 rounded-full" :style="'width: ' + transferStats.finalPct + '%'"></div>
+                            <!-- Serah Terima Final -->
+                            <div>
+                                <div class="flex justify-between text-xs font-bold mb-1">
+                                    <span class="text-emerald-600">Serah Terima Final (Accepted)</span>
+                                    <span class="text-slate-700" x-text="transferStats.finalQty.toLocaleString() + ' Kg (' + transferStats.finalPct + '%)'"></span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                    <div class="bg-emerald-500 h-2 rounded-full" :style="'width: ' + transferStats.finalPct + '%'"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="bg-emerald-50 text-emerald-800 text-[10px] p-2 rounded-lg font-bold border border-emerald-100 flex items-center justify-between gap-1">
-                        <div class="flex items-center gap-1">
-                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            SPK Selesai - Tidak Ada Selisih Material
+                        <div class="bg-emerald-50 text-emerald-800 text-[10px] p-2 rounded-lg font-bold border border-emerald-100 flex items-center justify-between gap-1">
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                SPK Selesai - Tidak Ada Selisih Material
+                            </div>
+                            <button @click="showTransferModal = true" class="px-2 py-1 bg-white border border-emerald-200 text-emerald-700 rounded shadow-sm hover:bg-emerald-100 transition">
+                                + Transfer Gudang
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -485,6 +486,118 @@
         </div>
     </div>
 
+    <!-- Modal Transfer Barang Gudang -->
+    <div x-show="showTransferModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm print:hidden" x-transition>
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl flex flex-col font-sans overflow-hidden" @click.away="showTransferModal = false">
+            <div class="px-6 py-4 bg-emerald-600 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    <h3 class="text-base font-bold">Proses Transfer Barang Jadi ke Gudang</h3>
+                </div>
+                <button @click="showTransferModal = false" class="text-white/80 hover:text-white">&times;</button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                <div class="space-y-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-800">
+                        Pastikan memilih jenis transfer yang tepat. <br>
+                        • <b>Titip Barang:</b> Hanya menumpang fisik di gudang, stok belum dipotong.<br>
+                        • <b>Serah Terima Final:</b> Otomatis memotong stok produksi dan menambah stok gudang.
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Transfer <span class="text-rose-500">*</span></label>
+                        <select x-model="transferForm.type" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                            <option value="Titip Barang (Sementara)">Titip Barang (Sementara - Numpang)</option>
+                            <option value="Serah Terima Final (Potong Stok)">Serah Terima Final (Kasih Barang & Potong Stok)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Quantity (Kg) <span class="text-rose-500">*</span></label>
+                            <input type="number" x-model="transferForm.qty" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: 1000">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Total Pallet</label>
+                            <input type="number" x-model="transferForm.pallet" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: 1">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Operator Produksi (Yg Menyerahkan) <span class="text-rose-500">*</span></label>
+                            <input type="text" x-model="transferForm.opProduksi" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Nama Operator">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Operator Gudang (Yg Menerima) <span class="text-rose-500">*</span></label>
+                            <input type="text" x-model="transferForm.opGudang" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Nama Operator">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal <span class="text-rose-500">*</span></label>
+                            <input type="date" x-model="transferForm.tanggal" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Jam <span class="text-rose-500">*</span></label>
+                            <input type="time" x-model="transferForm.jam" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy font-bold outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan / Notes</label>
+                        <input type="text" x-model="transferForm.notes" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm text-navy outline-none focus:ring-emerald-500 focus:border-emerald-500" placeholder="Contoh: Titip 1 pallet nunggu QC passed">
+                    </div>
+
+                    <div class="mt-6">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase mb-2">Riwayat Transfer</h4>
+                        <div class="border border-slate-200 rounded-lg overflow-x-auto">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="bg-slate-100 border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-2">Waktu & Tanggal</th>
+                                        <th class="p-2">Jenis Slip</th>
+                                        <th class="p-2 text-right">Qty</th>
+                                        <th class="p-2">Operator (Prod &rarr; Gudang)</th>
+                                        <th class="p-2">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(log, idx) in transferLogs" :key="idx">
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                            <td class="p-2 text-slate-500">
+                                                <span class="font-bold text-navy" x-text="log.tanggal"></span><br>
+                                                <span class="text-[10px]" x-text="log.jam"></span>
+                                            </td>
+                                            <td class="p-2 font-bold whitespace-normal min-w-[150px]" :class="log.type.includes('Titip') ? 'text-amber-600' : 'text-emerald-600'" x-text="log.type"></td>
+                                            <td class="p-2 text-right font-bold text-navy" x-text="Number(log.qty).toLocaleString() + ' Kg'"></td>
+                                            <td class="p-2 text-slate-600">
+                                                <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold" x-text="log.opProduksi"></span><br>
+                                                <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold" x-text="log.opGudang"></span>
+                                            </td>
+                                            <td class="p-2 text-emerald-600 font-bold">✓ Accepted</td>
+                                        </tr>
+                                    </template>
+                                    <tr x-show="transferLogs.length === 0">
+                                        <td colspan="5" class="p-4 text-center text-slate-400 font-medium">Belum ada riwayat transfer.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+                <button @click="showTransferModal = false" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 font-bold text-sm rounded-xl hover:bg-slate-100">Batal</button>
+                <button @click="submitTransfer()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow flex items-center gap-1.5">
+                    Proses Transfer
+                </button>
+            </div>
+        </div>
+    </div>
 
 <script>
     document.addEventListener('alpine:init', () => {
@@ -493,11 +606,20 @@
             spk: null,
             printTimestamp: new Date().toLocaleString('id-ID'),
             showPdfModal: false,
-            showPdfModal: false,
-
+            showTransferModal: false,
+            transferForm: {
+                type: 'Titip Barang (Sementara)',
+                qty: '',
+                pallet: '',
+                notes: '',
+                opProduksi: '',
+                opGudang: '',
+                tanggal: new Date().toISOString().split('T')[0],
+                jam: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            },
             transferLogs: [
-                { tanggal: '2026-09-16', jam: '10:00 WIB', type: 'Titip Barang (Sementara)', namaBarang: 'PVC Compound A (Clear)', qty: 1000, opProduksi: 'Mira', opGudang: 'Joko' },
-                { tanggal: '2026-09-16', jam: '14:00 WIB', type: 'Serah Terima Final (Potong Stok)', namaBarang: 'PVC Compound A (Clear)', qty: 2500, opProduksi: 'Putu', opGudang: 'Joko' },
+                { tanggal: '2026-09-16', jam: '10:00 WIB', type: 'Titip Barang (Sementara)', qty: 1000, opProduksi: 'Mira', opGudang: 'Joko' },
+                { tanggal: '2026-09-16', jam: '14:00 WIB', type: 'Serah Terima Final (Potong Stok)', qty: 2500, opProduksi: 'Putu', opGudang: 'Joko' },
             ],
             
             get transferStats() {

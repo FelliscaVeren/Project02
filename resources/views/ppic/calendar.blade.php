@@ -1481,12 +1481,7 @@
                                 <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Rincian Sisa Material Pasca-Batch Produksi</h5>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Selisih antara target kebutuhan BOM dan aktual pemakaian pada mesin</p>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
-                                <a href="{{ route('dokumen.material') }}?doc=moving" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition-colors whitespace-nowrap">
-                                    + Buat Moving Slip Baru
-                                </a>
-                            </div>
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-xl">Selisih Toleransi &lt; 0.5%</span>
                         </div>
                         <table class="w-full text-xs">
                             <thead class="bg-slate-50 border-b border-slate-100">
@@ -1568,48 +1563,59 @@
                                 <h5 class="text-xs font-bold text-navy uppercase tracking-wider">Log Riwayat Penyerahan Barang (Transfer Slip Barang Jadi)</h5>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Daftar bertahap serah terima hasil Bagging dari Lini Produksi ke Gudang Barang Jadi</p>
                             </div>
-                            <a href="{{ route('dokumen.material') }}?doc=transfer" class="px-3 py-1.5 bg-navy text-white text-xs font-bold rounded-xl hover:bg-navy-light transition flex items-center gap-1 shadow-md">
-                                <span>+ Buat Transfer Slip Baru</span>
-                            </a>
+                            <button class="px-3 py-1.5 bg-navy text-white text-xs font-bold rounded-xl hover:bg-navy-light transition flex items-center gap-1">
+                                <span>+ Buat Moving Slip Baru</span>
+                            </button>
                         </div>
                         <table class="w-full text-xs">
                             <thead class="bg-slate-50 border-b border-slate-100">
-                                <tr class="text-[10px] text-slate-500 font-bold uppercase text-left">
-                                    <th class="p-3">Waktu & Tanggal</th>
-                                    <th class="p-3">Jenis Slip</th>
-                                    <th class="p-3 text-right">Qty</th>
-                                    <th class="p-3">Operator (Prod &rarr; Gudang)</th>
-                                    <th class="p-3 text-center">Status</th>
+                                <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                    <th class="p-3 text-left">No. Transfer Slip</th>
+                                    <th class="p-3 text-left">Tanggal & Jam Transfer</th>
+                                    <th class="p-3 text-right">Jumlah Sak</th>
+                                    <th class="p-3 text-right">Total Berat (Kg)</th>
+                                    <th class="p-3 text-left">Petugas Serah (Produksi)</th>
+                                    <th class="p-3 text-left">Petugas Terima (Gudang)</th>
+                                    <th class="p-3 text-center">Status Acceptance</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
                                 <tr class="hover:bg-slate-50">
-                                    <td class="p-3 text-slate-500">
-                                        <span class="font-bold text-navy">28 Aug 2026</span><br>
-                                        <span class="text-[10px]">10:00 WIB</span>
-                                    </td>
-                                    <td class="p-3 font-bold text-amber-600">Titip Barang (Sementara)</td>
-                                    <td class="p-3 text-right font-bold text-navy">1.000 Kg</td>
-                                    <td class="p-3 text-slate-600">
-                                        <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Mira</span><br>
-                                        <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
-                                    </td>
-                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-01</td>
+                                    <td class="p-3 text-slate-600">28 Aug 2026, 14:15</td>
+                                    <td class="p-3 text-right font-bold text-navy">210 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">5.250 Kg</td>
+                                    <td class="p-3 text-slate-600">Putu (Shift 1)</td>
+                                    <td class="p-3 text-slate-600">Suryanto</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50">
-                                    <td class="p-3 text-slate-500">
-                                        <span class="font-bold text-navy">28 Aug 2026</span><br>
-                                        <span class="text-[10px]">14:00 WIB</span>
-                                    </td>
-                                    <td class="p-3 font-bold text-emerald-600">Serah Terima Final (Potong Stok)</td>
-                                    <td class="p-3 text-right font-bold text-navy">2.500 Kg</td>
-                                    <td class="p-3 text-slate-600">
-                                        <span class="text-[10px] text-slate-400">Prod:</span> <span class="font-bold">Putu</span><br>
-                                        <span class="text-[10px] text-slate-400">Gdg:</span> <span class="font-bold">Joko</span>
-                                    </td>
-                                    <td class="p-3 text-center"><span class="text-emerald-600 font-bold">✓ Accepted</span></td>
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-02</td>
+                                    <td class="p-3 text-slate-600">28 Aug 2026, 22:30</td>
+                                    <td class="p-3 text-right font-bold text-navy">200 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">5.000 Kg</td>
+                                    <td class="p-3 text-slate-600">Putri (Shift 2)</td>
+                                    <td class="p-3 text-slate-600">Bambang</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3 font-bold text-navy">TRF-FG-2026-0829-03</td>
+                                    <td class="p-3 text-slate-600">29 Aug 2026, 06:45</td>
+                                    <td class="p-3 text-right font-bold text-navy">190 Sak</td>
+                                    <td class="p-3 text-right font-bold text-navy">4.750 Kg</td>
+                                    <td class="p-3 text-slate-600">Fikri (Shift 3)</td>
+                                    <td class="p-3 text-slate-600">Suryanto</td>
+                                    <td class="p-3 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-bold">Diterima Lengkap</span></td>
                                 </tr>
                             </tbody>
+                            <tfoot class="bg-blue-50/50 border-t border-blue-200">
+                                <tr class="font-bold text-slate-800">
+                                    <td class="p-3 text-navy" colspan="2">TOTAL KESELURUHAN TRANSFER</td>
+                                    <td class="p-3 text-right font-black text-navy">600 Sak</td>
+                                    <td class="p-3 text-right font-black text-navy">15.000 Kg</td>
+                                    <td class="p-3 text-slate-500" colspan="3">Verifikasi 100% Sesuai Target SPK</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

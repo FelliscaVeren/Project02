@@ -134,59 +134,6 @@
                 <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold">✓ Pengecekan Rutin Aktif</span>
             </div>
 
-            <!-- Form Input Dispersi Baru -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden mb-6">
-                <div class="absolute top-0 left-0 w-1 h-full bg-navy"></div>
-                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-navy"></span>
-                    INPUT HASIL PENGECEKAN DISPERSI JAM BARU
-                </h4>
-                
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Jam Pengecekan <span class="text-rose-500">*</span></label>
-                        <select class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
-                            <option>13:00 WIB</option>
-                            <option>14:00 WIB</option>
-                            <option>15:00 WIB</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Rating Dispersi (1-5)</label>
-                        <select class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-cyan outline-none">
-                            <option>Rating 4 - Baik / Standard</option>
-                            <option>Rating 5 - Sangat Baik</option>
-                            <option>Rating 3 - Cukup</option>
-                            <option>Rating 2 - Kurang</option>
-                            <option>Rating 1 - Buruk</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Pengecekan Visual</label>
-                        <input type="text" value="Bebas aglomerat" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-navy focus:ring-2 focus:ring-cyan outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Status QC <span class="text-rose-500">*</span></label>
-                        <select class="w-full bg-emerald-50 border border-emerald-300 text-emerald-700 rounded-lg px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <option>PASS (Hijau - Lolos)</option>
-                            <option>HOLD (Kuning - Evaluasi)</option>
-                            <option>REJECT (Merah - Gagal)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Catatan QC</label>
-                        <input type="text" placeholder="Catatan evaluasi atau alasan penolakan..." class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-500 focus:ring-2 focus:ring-cyan outline-none">
-                    </div>
-                </div>
-                
-                <div class="mt-4 flex justify-end">
-                    <button class="px-5 py-2.5 bg-navy hover:bg-navy-light text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Simpan Hasil Dispersi Jam Ini
-                    </button>
-                </div>
-            </div>
-
             <!-- Filter Log Dispersi (PPIC View) -->
             <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                 <div class="flex-1">
