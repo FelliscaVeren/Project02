@@ -119,12 +119,12 @@
                     <span class="px-1.5 py-0.5 bg-violet-600 text-white text-[10px] rounded-full font-extrabold" x-text="rndTrialRequests.length"></span>
                 </button>
 
-                <!-- Tombol Penugasan Mandor (Foreman) (HANYA TAMPIL DI ROLE KEPALA PRODUKSI / FOREMAN) -->
+                <!-- Tombol Penugasan Operator (Foreman) (HANYA TAMPIL DI ROLE KEPALA PRODUKSI / FOREMAN) -->
                 <button x-show="currentRole === 'foreman'" 
                         @click="showForemanAssignModal = true" 
                         class="relative px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5 ring-2 ring-amber-300">
                     <span class="text-sm">👷</span>
-                    <span>Penugasan Mandor (Foreman)</span>
+                    <span>Penugasan Operator (Foreman)</span>
                     <span x-show="foremanPendingCount() > 0" class="px-1.5 py-0.5 bg-white text-amber-800 text-[10px] rounded-full font-extrabold" x-text="foremanPendingCount()"></span>
                 </button>
 
@@ -213,7 +213,7 @@
                                 <p class="text-[11px] text-slate-500 mt-0.5">PVC Compound A (Clear)</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">06 Sep 2026 (Tentatif)</span></p>
+                                <p x-show="currentRole !== 'operator'" class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">06 Sep 2026 (Tentatif)</span></p>
                                 <p class="text-[10px] text-cyan font-bold mt-1">Mixer A-01 · Ext Line 1 (E-01)</p>
                             </td>
                             <td class="p-3">
@@ -254,7 +254,7 @@
                                 <p class="text-[11px] text-slate-500 mt-0.5">PVC Compound B (Color)</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">08 Sep 2026 (Tentatif)</span></p>
+                                <p x-show="currentRole !== 'operator'" class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-navy">08 Sep 2026 (Tentatif)</span></p>
                                 <p class="text-[10px] text-cyan font-bold mt-1">Mixer B-02 · Ext Line 2 (E-02)</p>
                             </td>
                             <td class="p-3">
@@ -295,8 +295,8 @@
                                 <p class="text-[11px] text-slate-500 mt-0.5">Rigid PVC Granule Grade A</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-emerald-600">03 Sep 2026</span></p>
-                                <p class="text-[10px] text-slate-500 font-bold mt-1">Mixer A-02 · Ext Line 3 (E-03)</p>
+                                <p x-show="currentRole !== 'operator'" class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-emerald-600">03 Sep 2026</span></p>
+                                <p class="text-[10px] text-slate-500 font-bold mt-1">Mixer A-02 · Ext Line 6 (E-06)</p>
                             </td>
                             <td class="p-3">
                                 <p class="text-slate-700">Working Days: <span class="font-bold text-navy">1.5 Days</span></p>
@@ -336,7 +336,7 @@
                                 <p class="text-[11px] text-slate-400 mt-0.5">PVC Compound C (Black)</p>
                             </td>
                             <td class="p-3">
-                                <p class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
+                                <p x-show="currentRole !== 'operator'" class="text-slate-600 font-medium">Tanggal Kirim: <span class="font-bold text-slate-700">09 Sep 2026 (Tentatif)</span></p>
                                 <p class="text-[10px] text-slate-400 mt-1">Belum Alokasi Mesin</p>
                             </td>
                             <td class="p-3">
@@ -887,7 +887,6 @@
                                     <option value="Shift 2">Shift 2 · Team GREEN</option>
                                     <option value="Shift 3">Shift 3 · Team YELLOW</option>
                                 </select>
-                                <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg whitespace-nowrap">Target ≤ 15 menit</span>
                             </div>
                         </div>
                         <div class="relative h-56">
@@ -1147,7 +1146,7 @@
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mesin Extruder</p>
-                            <p class="text-base font-black text-navy mt-2">Extruder E-03</p>
+                            <p class="text-base font-black text-navy mt-2">Extruder E-06</p>
                             <p class="text-[10px] text-slate-500 font-semibold mt-1">Line 1 · Screw Ø 65mm</p>
                         </div>
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
@@ -1556,13 +1555,25 @@
 
                         <!-- Input Form Row -->
                         <div class="p-5 border-b border-slate-100 bg-blue-50/30">
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end mb-3">
+                            <div class="grid grid-cols-2 md:grid-cols-7 gap-3 items-end mb-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Tanggal</label>
+                                    <input type="date" x-model="newEntry.tanggal" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Shift</label>
+                                    <select x-model="newEntry.shift" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
+                                        <option value="Shift 1">Shift 1</option>
+                                        <option value="Shift 2">Shift 2</option>
+                                        <option value="Shift 3">Shift 3</option>
+                                    </select>
+                                </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jam</label>
                                     <input type="time" x-model="newEntry.jam" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Dikerjakan oleh (Operator)</label>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Operator</label>
                                     <input type="text" x-model="newEntry.operator" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none" placeholder="Nama Operator">
                                 </div>
                                 <div>
@@ -1572,9 +1583,9 @@
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hasil Pengecekan</label>
                                     <select x-model="newEntry.checkResult" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-1 focus:ring-blue-400 outline-none">
-                                        <option value="Sesuai">Sesuai (Normal)</option>
-                                        <option value="Warning">Warning (Perhatian)</option>
-                                        <option value="Deviasi">Penyimpangan (Deviasi)</option>
+                                        <option value="Sesuai">✓ Sesuai (Normal)</option>
+                                        <option value="Warning">⚠ Warning (Perhatian)</option>
+                                        <option value="Deviasi">✗ Penyimpangan (Deviasi)</option>
                                     </select>
                                 </div>
                                 <div>
@@ -1626,6 +1637,8 @@
                             <table class="w-full text-xs">
                                 <thead class="bg-slate-50 border-b border-slate-100">
                                     <tr class="text-[10px] text-slate-500 font-bold uppercase">
+                                        <th class="p-3 text-left">Tanggal</th>
+                                        <th class="p-3 text-left">Shift</th>
                                         <th class="p-3 text-left">Jam</th>
                                         <th class="p-3 text-left">Dikerjakan oleh (Operator)</th>
                                         <th class="p-3 text-right">Suhu No. 1 (Zone 1)</th>
@@ -1640,6 +1653,8 @@
                                 <tbody class="divide-y divide-slate-50">
                                     <template x-for="(row, idx) in hourlyData" :key="idx">
                                         <tr class="hover:bg-slate-50">
+                                            <td class="p-3 font-medium text-slate-600" x-text="row.tanggal || '2026-09-25'"></td>
+                                            <td class="p-3 font-medium text-slate-600" x-text="row.shift || 'Shift 1'"></td>
                                             <td class="p-3 font-bold text-navy" x-text="row.jam"></td>
                                             <td class="p-3 font-bold text-slate-700" x-text="row.operator"></td>
                                             <td class="p-3 text-right font-bold text-slate-800" x-text="row.z1 + '°C'"></td>
@@ -1649,8 +1664,8 @@
                                             <td class="p-3 text-center text-slate-500 font-medium" x-text="row.targetSuhu"></td>
                                             <td class="p-3 text-center">
                                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                                                      :class="row.checkResult === 'Sesuai' || row.checkResult === 'Normal' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
-                                                      x-text="row.checkResult"></span>
+                                                      :class="row.checkResult === 'Sesuai' || row.checkResult === 'Normal' || row.checkResult === '✓' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+                                                      x-text="row.checkResult === 'Sesuai' || row.checkResult === 'Normal' ? '✓' : (row.checkResult === 'Warning' ? '⚠' : (row.checkResult === 'Deviasi' ? '✗' : row.checkResult))"></span>
                                             </td>
                                             <td class="p-3 text-slate-600 font-medium" x-text="row.conclusion"></td>
                                         </tr>
@@ -1658,7 +1673,7 @@
                                 </tbody>
                                 <tfoot class="bg-blue-50 border-t-2 border-blue-200">
                                     <tr class="font-black text-blue-800 text-[10px] uppercase">
-                                        <td class="p-3" colspan="2">Rata-rata Suhu & Parameter</td>
+                                        <td class="p-3" colspan="4">Rata-rata Suhu & Parameter</td>
                                         <td class="p-3 text-right" x-text="avg('z1') + '°C'"></td>
                                         <td class="p-3 text-right" x-text="avg('z2') + '°C'"></td>
                                         <td class="p-3 text-right" x-text="avg('z3') + '°C'"></td>
@@ -1670,8 +1685,474 @@
                                 </tfoot>
                             </table>
                         </div>
+    <!-- Removed closing div from here to move it below QC table -->
+                <!-- ============ SECTION QC: MONITORING KUALITAS PRODUK ============ -->
+                <div x-data="{ qcData: { shift1: true, shift2: true, shift3: false } }" class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden mt-5">
+                    <!-- Header -->
+                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50 to-white">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full inline-block"></span>
+                                <p class="text-xs font-bold text-slate-700">Monitoring Kualitas Produk — QC</p>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Hasil pengecekan visual & test oleh analis QC per shift dan per jam. Diisi secara digital.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1.5 bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold rounded-xl">📋 Form Digital QC</span>
+                        </div>
+                    </div>
+
+                    <!-- Info Header: Produk & Mesin -->
+                    <div class="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100 bg-slate-50/60 text-xs">
+                        <div class="px-5 py-3">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Produk</span>
+                            <span class="font-bold text-navy" x-text="selectedEvent.product || 'PVC Compound A (Clear)'"></span>
+                        </div>
+                        <div class="px-5 py-3">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Mesin</span>
+                            <span class="font-bold text-navy" x-text="selectedEvent.machine || 'E-06'"></span>
+                        </div>
+                        <div class="px-5 py-3">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Tanggal</span>
+                            <span class="font-bold text-navy">26 Aug 2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Tabel utama -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <!-- Header Shift -->
+                            <thead>
+                                <tr>
+                                    <th class="p-3 text-left text-[10px] font-bold text-slate-500 uppercase border-r border-slate-100 bg-slate-50 w-36">Item</th>
+                                    <th class="p-3 text-left text-[10px] font-bold text-slate-500 uppercase border-r border-slate-100 bg-slate-50 w-28">Standar</th>
+                                    <!-- Shift 1 -->
+                                    <th colspan="4" class="p-2 text-center text-[10px] font-black text-navy uppercase bg-navy/5 border-r border-slate-200">
+                                        <div>Shift 1</div>
+                                        <div class="font-semibold text-slate-500 text-[9px] mt-0.5">QC: Hendra (QC)</div>
+                                    </th>
+                                    <!-- Shift 2 -->
+                                    <th colspan="4" class="p-2 text-center text-[10px] font-black text-violet-700 uppercase bg-violet-50/50 border-r border-slate-200">
+                                        <div>Shift 2</div>
+                                        <div class="font-semibold text-slate-500 text-[9px] mt-0.5">QC: Ahmad (QC)</div>
+                                    </th>
+                                    <!-- Shift 3 -->
+                                    <th colspan="4" x-show="qcData.shift3" class="p-2 text-center text-[10px] font-black text-amber-700 uppercase bg-amber-50/50">
+                                        <div>Shift 3</div>
+                                        <div class="font-semibold text-slate-500 text-[9px] mt-0.5">— belum diisi —</div>
+                                    </th>
+                                </tr>
+                                <tr class="border-b-2 border-slate-200 bg-slate-50 text-[9px] font-bold text-slate-400 uppercase">
+                                    <th class="px-3 py-2 text-left border-r border-slate-100"></th>
+                                    <th class="px-3 py-2 text-left border-r border-slate-100"></th>
+                                    <th class="px-2 py-2 text-center w-12 border-l border-slate-100">Jam 1</th>
+                                    <th class="px-2 py-2 text-center w-12">Jam 3</th>
+                                    <th class="px-2 py-2 text-center w-12">Jam 5</th>
+                                    <th class="px-2 py-2 text-center w-12 border-r border-slate-200">Jam 7</th>
+                                    <th class="px-2 py-2 text-center w-12">Jam 1</th>
+                                    <th class="px-2 py-2 text-center w-12">Jam 3</th>
+                                    <th class="px-2 py-2 text-center w-12">Jam 5</th>
+                                    <th class="px-2 py-2 text-center w-12 border-r border-slate-200">Jam 7</th>
+                                    <th x-show="qcData.shift3" class="px-2 py-2 text-center w-12">Jam 1</th>
+                                    <th x-show="qcData.shift3" class="px-2 py-2 text-center w-12">Jam 3</th>
+                                    <th x-show="qcData.shift3" class="px-2 py-2 text-center w-12">Jam 5</th>
+                                    <th x-show="qcData.shift3" class="px-2 py-2 text-center w-12">Jam 7</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <!-- A. VISUAL -->
+                                <tr class="bg-blue-50/60">
+                                    <td colspan="14" class="px-4 py-2 text-[10px] font-black text-blue-700 uppercase tracking-widest">A. Visual Check</td>
+                                </tr>
+                                <!-- Ukuran Granula -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Ukuran granula</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">sesuai std</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Warna Granula -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Warna granula</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">sesuai std</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-[10px] text-lg leading-none">✗</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Kandungan Air -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Kandungan Air</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">tidak basah</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Serbuk -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Serbuk</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">tidak ada serbuk</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+
+                                <!-- B. TEST -->
+                                <tr class="bg-violet-50/60">
+                                    <td colspan="14" class="px-4 py-2 text-[10px] font-black text-violet-700 uppercase tracking-widest">B. Test Produk</td>
+                                </tr>
+                                <!-- Press -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Press</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">sesuai std</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Injection -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Injection</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">sesuai std</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Blown Film -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Blown film</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">sesuai std</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-bold text-[10px] text-lg leading-none">✗</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Spectrophotometer -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Spectrophotometer</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">Delta E &lt; 1 = pass</td>
+                                    <td class="p-2 text-center border-l border-slate-100 font-bold text-slate-700 text-[10px]">0.42</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.38</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.51</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px] border-r border-slate-200">0.47</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.55</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.62</td>
+                                    <td class="p-2 text-center font-bold text-rose-700 text-[10px]">1.21</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px] border-r border-slate-200">0.49</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Moisture -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Moisture</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">&lt; 0.1 %</td>
+                                    <td class="p-2 text-center border-l border-slate-100 font-bold text-slate-700 text-[10px]">0.05%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.04%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.06%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px] border-r border-slate-200">0.07%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.08%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.06%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px]">0.09%</td>
+                                    <td class="p-2 text-center font-bold text-slate-700 text-[10px] border-r border-slate-200">0.07%</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <!-- Migrasi -->
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Migrasi</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">Non Migrasi</td>
+                                    <td class="p-2 text-center border-l border-slate-100"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td class="p-2 text-center border-r border-slate-200"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] text-lg leading-none">✓</span></td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                    <td x-show="qcData.shift3" class="p-2 text-center text-slate-300 text-[10px]">—</td>
+                                </tr>
+
+                                <!-- C. LAIN-LAIN -->
+                                <tr class="bg-amber-50/60">
+                                    <td colspan="14" class="px-4 py-2 text-[10px] font-black text-amber-700 uppercase tracking-widest">C. Lain-lain</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Dryer</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">... Jam</td>
+                                    <td colspan="4" class="px-3 py-2.5 font-bold text-navy border-r border-slate-200">3 Jam</td>
+                                    <td colspan="4" class="px-3 py-2.5 font-bold text-navy border-r border-slate-200">4 Jam</td>
+                                    <td colspan="4" x-show="qcData.shift3" class="px-3 py-2.5 text-slate-300 text-[10px]">—</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="px-4 py-2.5 font-semibold text-slate-700 border-r border-slate-100">Inner bags</td>
+                                    <td class="px-3 py-2.5 text-slate-500 border-r border-slate-100">... Pcs</td>
+                                    <td colspan="4" class="px-3 py-2.5 font-bold text-navy border-r border-slate-200">12 Pcs</td>
+                                    <td colspan="4" class="px-3 py-2.5 font-bold text-navy border-r border-slate-200">12 Pcs</td>
+                                    <td colspan="4" x-show="qcData.shift3" class="px-3 py-2.5 text-slate-300 text-[10px]">—</td>
+                                </tr>
+                            </tbody>
+
+                            <!-- Footer: Kesimpulan -->
+                            <tfoot>
+                                <tr class="border-t-2 border-slate-200">
+                                    <td colspan="14" class="px-4 py-0">
+                                        <div class="grid divide-x divide-slate-200" :class="qcData.shift3 ? 'grid-cols-3' : 'grid-cols-2'">
+                                            <!-- Shift 1 Note -->
+                                            <div class="py-4 pr-4">
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kesimpulan Shift 1</span>
+                                                    <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-lg font-black text-[10px]">⚠ PERLU PERHATIAN</span>
+                                                </div>
+                                                <p class="text-[11px] text-slate-600 font-medium mb-2">Blown film Jam 7 NG — penyesuaian suhu die dilakukan.</p>
+                                                <p class="text-[10px] text-slate-400">Cek oleh: <span class="font-bold text-navy">Hendra (QC)</span></p>
+                                            </div>
+                                            <!-- Shift 2 Note -->
+                                            <div class="py-4 px-4">
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kesimpulan Shift 2</span>
+                                                    <span class="px-2.5 py-0.5 bg-rose-100 text-rose-800 border border-rose-200 rounded-lg font-black text-[10px]">✕ NG</span>
+                                                </div>
+                                                <p class="text-[11px] text-slate-600 font-medium mb-2">Delta E Jam 5 = 1.21 melebihi batas. Warna Jam 5 NG. Laporan NC sudah dikirim ke Foreman.</p>
+                                                <p class="text-[10px] text-slate-400">Cek oleh: <span class="font-bold text-navy">Ahmad (QC)</span></p>
+                                            </div>
+                                            <!-- Shift 3 -->
+                                            <div x-show="qcData.shift3" class="py-4 pl-4">
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kesimpulan Shift 3</span>
+                                                    <span class="px-2.5 py-0.5 bg-slate-100 text-slate-500 rounded-lg font-black text-[10px]">— Belum Mulai</span>
+                                                </div>
+                                                <p class="text-[11px] text-slate-300 italic">Shift 3 belum dimulai.</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
+                </div>
+                <!-- ============ END SECTION QC ============ -->
+
+                <!-- ============ SECTION: PENIMBANGAN & SEALING ============ -->
+                <div class="space-y-5">
+
+                    <!-- PENIMBANGAN TABLE -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+                            <div>
+                                <p class="text-xs font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-500 inline-block"></span>
+                                    Penimbangan (Weighing)
+                                </p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Catatan penimbangan bahan baku per shift</p>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-[11px] border-collapse">
+                                <thead>
+                                    <tr class="bg-indigo-50 text-[10px] font-bold text-indigo-800 uppercase tracking-wide">
+                                        <th class="p-2.5 border border-slate-200 text-center w-20">SHIFT</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-40">NAMA BAHAN</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">BATCH KE</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-28">BERAT STANDART (kg)</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-28">BERAT ACTUAL (kg)</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">SELISIH (kg)</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">STATUS</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-36 bg-emerald-50 text-emerald-800">OPERATOR</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-32">CATATAN</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-white">
+                                    <!-- Shift 1 -->
+                                    <tr class="hover:bg-slate-50/70">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-600 bg-indigo-50/30">Shift 1</td>
+                                        <td class="p-2.5 border border-slate-200 font-semibold text-navy">Resin PVC S-65</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-700">1</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">25.0</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">24.9</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-emerald-600 font-bold">-0.1</td>
+                                        <td class="p-2.5 border border-slate-200 text-center">
+                                            <span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-1.5 py-0.5 rounded">OK</span>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/40 text-[10px] text-navy font-semibold">Bagas S.</td>
+                                        <td class="p-2.5 border border-slate-200 text-slate-400 text-[10px]">—</td>
+                                    </tr>
+                                    <!-- Shift 2 -->
+                                    <tr class="hover:bg-slate-50/70">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-600 bg-indigo-50/30">Shift 2</td>
+                                        <td class="p-2.5 border border-slate-200 font-semibold text-navy">Resin PVC S-65</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-700">2</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">25.0</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">25.2</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-amber-600 font-bold">+0.2</td>
+                                        <td class="p-2.5 border border-slate-200 text-center">
+                                            <span class="bg-amber-100 text-amber-700 text-[9px] font-bold px-1.5 py-0.5 rounded">SELISIH</span>
+                                        </td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/40 text-[10px] text-navy font-semibold">Deni K.</td>
+                                        <td class="p-2.5 border border-slate-200 text-slate-500 text-[10px]">Overload sedikit, masih toleransi</td>
+                                    </tr>
+                                    <!-- Shift 3 (kosong) -->
+                                    <tr class="hover:bg-slate-50/70 h-10">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-400 bg-indigo-50/30">Shift 3</td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SEALING TABLE -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+                            <div>
+                                <p class="text-xs font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                                    Sealing (Pengemasan)
+                                </p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Catatan sealing sak & pengemasan produk jadi per shift</p>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-[11px] border-collapse">
+                                <thead>
+                                    <tr class="bg-emerald-50 text-[10px] font-bold text-emerald-800 uppercase tracking-wide">
+                                        <th class="p-2.5 border border-slate-200 text-center w-20">SHIFT</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-40">NAMA PRODUK</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">SAK AWAL</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">SAK AKHIR</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24 bg-amber-50 text-amber-800">TOTAL SAK</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-24">BERAT/SAK (kg)</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-28 bg-cyan/10 text-cyan">TOTAL BERAT (kg)</th>
+                                        <th class="p-2.5 border border-slate-200 text-center w-20">STUMP</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-36 bg-emerald-50 text-emerald-800">OPERATOR</th>
+                                        <th class="p-2.5 border border-slate-200 text-left w-32">CATATAN</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-white">
+                                    <!-- Shift 1 -->
+                                    <tr class="hover:bg-slate-50/70">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-600 bg-emerald-50/30">Shift 1</td>
+                                        <td class="p-2.5 border border-slate-200 font-semibold text-navy">ASIBLOCK AB 0085 HC</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400">—</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400">—</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400 bg-amber-50">—</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">25</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400 bg-cyan/5">—</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400">—</td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/40 text-[10px] text-navy font-semibold">Ifan N.</td>
+                                        <td class="p-2.5 border border-slate-200 text-slate-400 text-[10px]">—</td>
+                                    </tr>
+                                    <!-- Shift 2 -->
+                                    <tr class="hover:bg-slate-50/70">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-600 bg-emerald-50/30">Shift 2</td>
+                                        <td class="p-2.5 border border-slate-200 font-semibold text-navy">ASICLEAR P 0271</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">1</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">10</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-black text-navy bg-amber-50">10</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-navy">25</td>
+                                        <td class="p-2.5 border border-slate-200 text-center font-black text-cyan bg-cyan/5">250</td>
+                                        <td class="p-2.5 border border-slate-200 text-center text-slate-400">—</td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/40 text-[10px] text-navy font-semibold">Muhamad R.</td>
+                                        <td class="p-2.5 border border-slate-200 text-slate-400 text-[10px]">—</td>
+                                    </tr>
+                                    <!-- Shift 3 (kosong) -->
+                                    <tr class="hover:bg-slate-50/70 h-10">
+                                        <td class="p-2.5 border border-slate-200 text-center font-bold text-slate-400 bg-emerald-50/30">Shift 3</td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200 bg-amber-50/30"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200 bg-cyan/5"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                        <td class="p-2.5 border border-slate-200 bg-emerald-50/20"></td>
+                                        <td class="p-2.5 border border-slate-200"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ============ END SECTION PENIMBANGAN & SEALING ============ -->
+
+                </div> <!-- Closing div for activeStep === 'extruder' -->
+
 
                 <!-- ============ PAGE 6: SISA MATERIAL ============ -->
                 <div x-show="activeStep === 'sisa_material'" class="space-y-5">
@@ -1918,115 +2399,76 @@
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-xs border-collapse">
+                            <table class="w-full text-[11px] border-collapse table-fixed">
                                 <thead>
                                     <tr class="bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wide border-b border-slate-300">
-                                        <th class="p-2.5 border border-slate-300 text-center bg-blue-100 text-blue-800 w-24 align-middle" rowspan="2">BAGGING</th>
-                                        <th class="p-2.5 border border-slate-300 text-left">PRODUK</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">NO SAK AWAL</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">NO SAK AKHIR</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-amber-50 text-amber-800">TOTAL SAK</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">STUMP</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap">GUMPALAN</th>
-                                        <th class="p-2.5 border border-slate-300 text-left min-w-[160px]">CATATAN</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 1</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 2</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-emerald-50 text-emerald-800">OPERATOR BAGGING 3</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-rose-50 text-rose-800 min-w-[120px]">PERSONIL TIDAK HADIR / PULANG LEBIH AWAL</th>
-                                        <th class="p-2.5 border border-slate-300 text-center whitespace-nowrap bg-rose-50 text-rose-800 min-w-[160px]">KETERANGAN TIDAK HADIR / PULANG LEBIH AWAL</th>
+                                        <th class="p-2 border border-slate-300 text-center bg-blue-100 text-blue-800 w-24 align-middle" rowspan="2">BAGGING</th>
+                                        <th class="p-2 border border-slate-300 text-left w-36">PRODUK</th>
+                                        <th class="p-2 border border-slate-300 text-center w-16 leading-tight">SAK<br>AWAL</th>
+                                        <th class="p-2 border border-slate-300 text-center w-16 leading-tight">SAK<br>AKHIR</th>
+                                        <th class="p-2 border border-slate-300 text-center bg-amber-50 text-amber-800 w-16 leading-tight">TOTAL<br>SAK</th>
+                                        <th class="p-2 border border-slate-300 text-center w-16">STUMP</th>
+                                        <th class="p-2 border border-slate-300 text-center w-16">GUMP.</th>
+                                        <th class="p-2 border border-slate-300 text-left w-32">CATATAN</th>
+                                        <th class="p-2 border border-slate-300 text-left bg-emerald-50 text-emerald-800 w-36">TIM OPERATOR BAGGING</th>
+                                        <th class="p-2 border border-slate-300 text-left bg-rose-50 text-rose-800 w-40">INFO KETIDAKHADIRAN</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 bg-white">
                                     <!-- Baris 1: ASIBLOCK AB 0085 HC -->
                                     <tr class="hover:bg-slate-50/70 transition-colors">
-                                        <td class="p-2.5 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30">ASIBLOCK AB 0085 HC</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-slate-100 text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-slate-500 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
-                                            <p class="font-semibold text-navy whitespace-nowrap">Ifan Novaldi</p>
+                                        <td class="p-2 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30 text-center">Shift 1</td>
+                                        <td class="p-2 border border-slate-300 font-semibold text-navy">ASIBLOCK AB 0085 HC</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-center bg-slate-100 text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-500 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-500 text-[10px] whitespace-normal">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 bg-emerald-50/40 text-[10px] whitespace-normal leading-tight">
+                                            <ul class="list-disc list-inside text-navy font-semibold">
+                                                <li>Ifan Novaldi</li>
+                                                <li>Muhamad Raafi</li>
+                                                <li>Eko Prihatin</li>
+                                            </ul>
                                         </td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
-                                            <p class="font-semibold text-navy whitespace-nowrap">Muhamad Raafi</p>
-                                            <p class="font-semibold text-navy whitespace-nowrap">Bahtiar</p>
+                                        <td class="p-2 border border-slate-300 bg-rose-50/30 text-[10px] whitespace-normal leading-tight">
+                                            <span class="font-bold text-slate-700">Ari Suryajaya:</span> <span class="text-slate-600">perpanjang sim izin</span>
                                         </td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
-                                            <p class="font-semibold text-navy whitespace-nowrap">Eko Prihatin</p>
-                                        </td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-rose-50/30">
-                                            <p class="font-semibold text-slate-700 whitespace-nowrap">Ari Suryajaya</p>
-                                        </td>
-                                        <td class="p-2.5 border border-slate-300 text-slate-600 bg-rose-50/30">perpanjang sim izin</td>
                                     </tr>
 
                                     <!-- Baris 2: ASICLEAR P 0271 -->
                                     <tr class="hover:bg-slate-50/70 transition-colors">
-                                        <td class="p-2.5 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30">ASICLEAR P 0271</td>
-                                        <td class="p-2.5 border border-slate-300 text-center font-bold text-navy">1</td>
-                                        <td class="p-2.5 border border-slate-300 text-center font-bold text-navy">10</td>
-                                        <td class="p-2.5 border border-slate-300 text-center font-black text-navy bg-amber-50">10</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-slate-500 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
-                                            <p class="font-semibold text-navy whitespace-nowrap">Ifan Novaldi</p>
+                                        <td class="p-2 border border-slate-300 font-semibold text-slate-700 bg-blue-50/30 text-center">Shift 2</td>
+                                        <td class="p-2 border border-slate-300 font-semibold text-navy">ASICLEAR P 0271</td>
+                                        <td class="p-2 border border-slate-300 text-center font-bold text-navy">1</td>
+                                        <td class="p-2 border border-slate-300 text-center font-bold text-navy">10</td>
+                                        <td class="p-2 border border-slate-300 text-center font-black text-navy bg-amber-50">10</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-400 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-center text-slate-500 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 text-slate-500 text-[10px] whitespace-normal">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 bg-emerald-50/40 text-[10px] whitespace-normal leading-tight">
+                                            <ul class="list-disc list-inside text-navy font-semibold">
+                                                <li>Ifan Novaldi</li>
+                                                <li>Muhamad Raafi</li>
+                                                <li>Bahtiar</li>
+                                            </ul>
                                         </td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40">
-                                            <p class="font-semibold text-navy whitespace-nowrap">Muhamad Raafi</p>
-                                            <p class="font-semibold text-navy whitespace-nowrap">Bahtiar</p>
-                                        </td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-emerald-50/40 text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-center bg-rose-50/30 text-slate-400 font-medium">&mdash;</td>
-                                        <td class="p-2.5 border border-slate-300 text-slate-400 bg-rose-50/30 font-medium">&mdash;</td>
+                                        <td class="p-2 border border-slate-300 bg-rose-50/30 text-[10px] text-slate-400 text-center">&mdash;</td>
                                     </tr>
 
                                     <!-- Baris kosong 1 -->
-                                    <tr class="hover:bg-slate-50/70 transition-colors h-9">
-                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
-                                    </tr>
-                                    <!-- Baris kosong 2 -->
-                                    <tr class="hover:bg-slate-50/70 transition-colors h-9 bg-amber-50/30">
-                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-amber-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
-                                    </tr>
-                                    <!-- Baris kosong 3 -->
-                                    <tr class="hover:bg-slate-50/70 transition-colors h-9">
-                                        <td class="p-2.5 border border-slate-300 bg-blue-50/30"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-slate-100"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-emerald-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
-                                        <td class="p-2.5 border border-slate-300 bg-rose-50/20"></td>
+                                    <tr class="hover:bg-slate-50/70 transition-colors h-10">
+                                        <td class="p-2 border border-slate-300 bg-blue-50/30 font-semibold text-slate-400 text-center">Shift 3</td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300 bg-slate-100"></td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300"></td>
+                                        <td class="p-2 border border-slate-300 bg-emerald-50/20"></td>
+                                        <td class="p-2 border border-slate-300 bg-rose-50/20"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -2329,7 +2771,7 @@
                 <div>
                     <h4 class="font-bold text-lg flex items-center gap-2">
                         <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        Daftar Slot Mesin Extruder (E01 – E05)
+                        Daftar Slot Mesin Extruder (E01, E02, E03, E05, E06)
                     </h4>
                     <p class="text-xs text-slate-300 mt-0.5">Daftar alokasi tanggal & No. SPK pada setiap lini mesin Extruder</p>
                 </div>
@@ -2349,12 +2791,12 @@
                     </div>
                     <div class="w-48 flex-shrink-0">
                         <select x-model="slotMachineFilter" class="w-full py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:ring-cyan focus:border-cyan outline-none transition-all">
-                            <option value="all">Semua Mesin (E01–E05)</option>
+                            <option value="all">Semua Mesin (E01 - E06)</option>
                             <option value="Extruder E-01">Extruder E-01</option>
                             <option value="Extruder E-02">Extruder E-02</option>
                             <option value="Extruder E-03">Extruder E-03</option>
-                            <option value="Extruder E-04">Extruder E-04</option>
                             <option value="Extruder E-05">Extruder E-05</option>
+                            <option value="Extruder E-06">Extruder E-06</option>
                         </select>
                     </div>
                 </div>
@@ -2395,8 +2837,8 @@
     </div>
 
     <!-- ================= MODAL 1: FORM PENGAJUAN TRIAL SAMPLE R&D ================= -->
-    <div x-show="showRndModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden" @click.away="showRndModal = false">
+    <div x-show="showRndModal" style="z-index: 9999; display:none;" class="fixed inset-0 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" x-transition>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl overflow-hidden" @click.away="showRndModal = false">
             <div class="p-5 bg-gradient-to-r from-violet-700 to-purple-800 text-white flex justify-between items-center">
                 <div>
                     <h4 class="font-bold text-lg flex items-center gap-2">
@@ -2411,10 +2853,10 @@
             </div>
 
             <div class="p-6 space-y-4 max-h-[78vh] overflow-y-auto text-xs">
-                <!-- Nama Sample / Formula -->
+                <!-- Nama Sample -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nama Sample / Formula Trial <span class="text-rose-500">*</span></label>
-                    <input type="text" x-model="rndForm.sampleName" placeholder="Contoh: Compound PVC High-Impact X-900" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                    <label class="block font-bold text-slate-700 mb-1">Nama Sample <span class="text-rose-500">*</span></label>
+                    <input type="text" x-model="rndForm.sampleName" placeholder="Masukkan Nama Sample" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-semibold focus:ring-violet-500 focus:border-violet-500 outline-none">
                 </div>
 
                 <!-- Mesin Target & Durasi -->
@@ -2425,18 +2867,13 @@
                             <option value="Extruder E-01">Extruder E-01 (Sedang Aktif SPK-2608-001)</option>
                             <option value="Extruder E-02">Extruder E-02 (Kosong / Bebas)</option>
                             <option value="Extruder E-03">Extruder E-03 (Terisi SPK-2608-002)</option>
-                            <option value="Extruder E-04">Extruder E-04 (Cleaning Line)</option>
-                            <option value="Extruder E-05">Extruder E-05 (Terisi SPK-2608-007)</option>
+                            <option value="Extruder E-05">Extruder E-05 (Cleaning Line)</option>
+                            <option value="Extruder E-06">Extruder E-06 (Terisi SPK-2608-007)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Durasi Estimasi Trial</label>
-                        <select x-model="rndForm.durationHour" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
-                            <option value="2">2 Jam Trial</option>
-                            <option value="4">4 Jam Trial (Standard)</option>
-                            <option value="6">6 Jam Trial</option>
-                            <option value="8">8 Jam (1 Shift Full)</option>
-                        </select>
+                        <label class="block font-bold text-slate-700 mb-1">Durasi Estimasi Trial ( Jam )</label>
+                        <input type="text" x-model="rndForm.durationHour" placeholder="Contoh: 4 Jam" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
                         <p class="text-[11px] font-bold text-violet-700 bg-violet-50 border border-violet-200 rounded-lg p-2 mt-2 flex items-center gap-1.5">
                             <svg class="w-4 h-4 text-violet-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             📌 Catatan: Durasi estimasi trial belum termasuk cleaning.
@@ -2454,19 +2891,66 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Shift <span class="text-rose-500">*</span></label>
-                        <select x-model="rndForm.shift" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
-                            <optgroup label="Senin - Jum'at">
-                                <option value="Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)">Shift 1 (Jam 08:00 - 16:00)</option>
-                                <option value="Shift 2 — Jam 16:00 - 00:00 (Senin - Jum'at)">Shift 2 (Jam 16:00 - 00:00)</option>
-                                <option value="Shift 3 — Jam 00:00 - 08:00 (Senin - Jum'at)">Shift 3 (Jam 00:00 - 08:00)</option>
-                            </optgroup>
-                            <optgroup label="Sabtu">
-                                <option value="Shift 1 — Jam 08:00 - 13:00 (Sabtu)">Shift 1 (Jam 08:00 - 13:00)</option>
-                                <option value="Shift 2 — Jam 13:00 - 18:00 (Sabtu)">Shift 2 (Jam 13:00 - 18:00)</option>
-                                <option value="Shift 3 — Jam 18:00 - 23:00 (Sabtu)">Shift 3 (Jam 18:00 - 23:00)</option>
-                            </optgroup>
-                        </select>
+                    <!-- Tanggal Trial & Jam Trial -->
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Trial <span class="text-rose-500">*</span></label>
+                        <input type="date" x-model="rndForm.trialDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Jam Trial <span class="text-rose-500">*</span></label>
+                        <input type="time" x-model="rndForm.shift" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-navy font-bold focus:ring-violet-500 focus:border-violet-500 outline-none">
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Formula (Resep dalam bentuk Tabel Input - Column: MATERIAL, KEBUTUHAN (PER BATCH), TARGET KEBUTUHAN) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block font-bold text-slate-700 text-xs uppercase tracking-wide">
+                            Formula / Resep Trial <span class="text-rose-500">*</span>
+                        </label>
+                        <button type="button" @click="addFormulaRow()" class="px-2.5 py-1 bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-300 text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            + Tambah Material
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-2">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 border-b border-slate-200 text-[10px] uppercase text-slate-700 font-black tracking-wider">
+                                <tr>
+                                    <th class="p-2.5 pl-3">MATERIAL</th>
+                                    <th class="p-2.5 text-right w-44">KEBUTUHAN (PER BATCH)</th>
+                                    <th class="p-2.5 text-right w-40">TARGET KEBUTUHAN</th>
+                                    <th class="p-2.5 text-center w-12">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <template x-for="(item, idx) in (rndForm.formulaItems || [])" :key="idx">
+                                    <tr class="hover:bg-slate-50/60">
+                                        <td class="p-2 pl-3">
+                                            <input type="text" x-model="item.material" placeholder="Nama material / aditif..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-violet-400 outline-none">
+                                        </td>
+                                        <td class="p-2">
+                                            <input type="text" x-model="item.qtyPerBatch" placeholder="Contoh: 25 Kg / 10 phr" class="w-full text-right bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-navy focus:ring-1 focus:ring-violet-400 outline-none">
+                                        </td>
+                                        <td class="p-2">
+                                            <input type="text" x-model="item.targetQty" placeholder="Contoh: 100 Kg" class="w-full text-right bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-violet-700 focus:ring-1 focus:ring-violet-400 outline-none">
+                                        </td>
+                                        <td class="p-2 text-center">
+                                            <button type="button" @click="removeFormulaRow(idx)" class="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors" title="Hapus Row">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                                <template x-if="!rndForm.formulaItems || rndForm.formulaItems.length === 0">
+                                    <tr>
+                                        <td colspan="4" class="p-4 text-center text-slate-400 italic">Belum ada material yang ditambahkan. Klik "+ Tambah Material".</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -2489,6 +2973,12 @@
                     <div class="bg-white/80 rounded-xl p-2.5 border border-amber-200 text-[10px] text-slate-600">
                         <b>Catatan PPIC saat Approval:</b> PPIC akan mengevaluasi apakah SPK eksisting (SPK-2608-001) dipendekkan/diundur durasinya atau trial dialihkan ke Extruder E-02.
                     </div>
+                </div>
+
+                <!-- Upload Dokumen -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Upload Dokumen Pendukung (PDF/Excel/Gambar)</label>
+                    <input type="file" @change="rndForm.hasAttachment = $event.target.files.length > 0" multiple class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-600 focus:ring-violet-500 focus:border-violet-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
                 </div>
 
                 <!-- Catatan / Objektif Trial -->
@@ -2538,12 +3028,13 @@
                             <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
                                 <tr>
                                     <th class="p-3.5 text-left whitespace-nowrap">No. Trial</th>
-                                    <th class="p-3.5 text-left">Sample / Formula Trial</th>
+                                    <th class="p-3.5 text-left">Nama Sample</th>
                                     <th class="p-3.5 text-left whitespace-nowrap">Mesin Target</th>
                                     <th class="p-3.5 text-center whitespace-nowrap">Durasi</th>
-                                    <th class="p-3.5 text-left">Shift Kerja</th>
+                                    <th class="p-3.5 text-left">Jam Trial</th>
                                     <th class="p-3.5 text-left whitespace-nowrap">Tanggal Pengajuan</th>
-                                    <th class="p-3.5 text-center whitespace-nowrap">Status Approval PPIC</th>
+                                    <th class="p-3.5 text-center whitespace-nowrap">Status & Progress Approval</th>
+                                    <th class="p-3.5 text-center whitespace-nowrap">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 bg-white">
@@ -2565,16 +3056,49 @@
                                             <span class="font-medium text-slate-800" x-text="req.shift || 'Shift 1'"></span>
                                         </td>
                                         <td class="p-3.5 text-slate-500 whitespace-nowrap align-top font-medium" x-text="req.autoDate || '17 Sep 2026'"></td>
+                                        <td class="p-3.5 align-top">
+                                            <!-- Layering Approval Visual (PPIC -> Produksi -> QC) -->
+                                            <div class="flex flex-col gap-1.5 w-full min-w-[200px]">
+                                                <!-- Step 1: PPIC (Penjadwalan) -->
+                                                <div class="flex items-center gap-2" :class="req.status === 'pending_ppic' ? 'opacity-100' : 'opacity-60'">
+                                                    <span class="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold" 
+                                                          :class="req.status !== 'pending_ppic' ? 'bg-emerald-500 text-white' : 'bg-amber-400 text-amber-900'">
+                                                        <span x-show="req.status !== 'pending_ppic'">✓</span>
+                                                        <span x-show="req.status === 'pending_ppic'">1</span>
+                                                    </span>
+                                                    <span class="text-[10px] font-bold" :class="req.status !== 'pending_ppic' ? 'text-emerald-700' : 'text-amber-700'">1. Approval Jadwal PPIC</span>
+                                                </div>
+                                                <!-- Step 2: Produksi (Eksekusi Mesin) -->
+                                                <div class="flex items-center gap-2" :class="req.status === 'approved_pending_foreman' ? 'opacity-100' : (req.status === 'assigned_ready' ? 'opacity-60' : 'opacity-30')">
+                                                    <span class="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold" 
+                                                          :class="req.status === 'assigned_ready' ? 'bg-emerald-500 text-white' : (req.status === 'approved_pending_foreman' ? 'bg-amber-400 text-amber-900' : 'bg-slate-300 text-slate-600')">
+                                                        <span x-show="req.status === 'assigned_ready'">✓</span>
+                                                        <span x-show="req.status !== 'assigned_ready'">2</span>
+                                                    </span>
+                                                    <span class="text-[10px] font-bold" :class="req.status === 'assigned_ready' ? 'text-emerald-700' : (req.status === 'approved_pending_foreman' ? 'text-amber-700' : 'text-slate-500')">2. Approval Produksi (Operator)</span>
+                                                </div>
+                                                <!-- Step 3: QC (Verifikasi Hasil) -->
+                                                <div class="flex items-center gap-2 opacity-30">
+                                                    <span class="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold bg-slate-300 text-slate-600">3</span>
+                                                    <span class="text-[10px] font-bold text-slate-500">3. Verifikasi Mutu QC</span>
+                                                </div>
+                                                <!-- Summary Status -->
+                                                <span class="mt-2 px-2 py-1 rounded-lg text-[10px] font-bold inline-block shadow-sm text-center w-fit"
+                                                      :class="{
+                                                          'bg-amber-50 text-amber-800 border border-amber-300': req.status === 'pending_ppic',
+                                                          'bg-cyan/15 text-cyan border border-cyan/30': req.status === 'approved_pending_foreman',
+                                                          'bg-emerald-50 text-emerald-800 border border-emerald-300': req.status === 'assigned_ready',
+                                                          'bg-rose-50 text-rose-700 border border-rose-300': req.status === 'rejected'
+                                                      }"
+                                                      x-text="req.status === 'pending_ppic' ? 'Menunggu PPIC' : (req.status === 'approved_pending_foreman' ? 'Menunggu Eksekusi Produksi' : (req.status === 'assigned_ready' ? 'Siap Produksi' : 'Ditolak PPIC'))">
+                                                </span>
+                                            </div>
+                                        </td>
                                         <td class="p-3.5 text-center whitespace-nowrap align-top">
-                                            <span class="px-3 py-1.5 rounded-xl text-[11px] font-bold inline-block shadow-sm"
-                                                  :class="{
-                                                      'bg-amber-50 text-amber-800 border border-amber-300': req.status === 'pending_ppic',
-                                                      'bg-cyan/15 text-cyan border border-cyan/30': req.status === 'approved_pending_foreman',
-                                                      'bg-emerald-50 text-emerald-800 border border-emerald-300': req.status === 'assigned_ready',
-                                                      'bg-rose-50 text-rose-700 border border-rose-300': req.status === 'rejected'
-                                                  }"
-                                                  x-text="req.status === 'pending_ppic' ? '⏳ Pending Approval PPIC' : (req.status === 'approved_pending_foreman' ? '✓ Disetujui PPIC (Menunggu Foreman)' : (req.status === 'assigned_ready' ? '✅ Siap Produksi Trial' : '❌ Ditolak PPIC'))">
-                                            </span>
+                                            <button @click="editRndTrial(req)" class="px-3 py-1.5 bg-violet-50 text-violet-600 hover:bg-violet-100 border border-violet-200 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 mx-auto shadow-sm">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                                Edit
+                                            </button>
                                         </td>
                                     </tr>
                                 </template>
@@ -2703,10 +3227,10 @@
                                     <span>⏳ Menunggu Persetujuan PPIC</span>
                                 </span>
                                 <span x-show="req.status === 'approved_pending_foreman'" class="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 border border-purple-300 font-bold rounded-xl text-xs shadow-sm whitespace-nowrap">
-                                    <span>✓ Disetujui PPIC (Menunggu Mandor)</span>
+                                    <span>✓ Disetujui PPIC (Menunggu Operator)</span>
                                 </span>
                                 <span x-show="req.status === 'assigned_ready'" class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-600 text-white font-bold rounded-xl text-xs shadow-md whitespace-nowrap">
-                                    <span>✓ Penugasan Mandor Selesai</span>
+                                    <span>✓ Penugasan Operator Selesai</span>
                                 </span>
                                 <span x-show="req.status === 'rejected'" class="inline-flex items-center gap-1 px-3 py-1 bg-rose-100 text-rose-800 border border-rose-300 font-bold rounded-xl text-xs shadow-sm whitespace-nowrap">
                                     <span>✕ Ditolak PPIC</span>
@@ -2715,28 +3239,37 @@
                         </div>
 
                         <!-- Details Grid -->
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px]">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px]">
                             <div>
-                                <p class="text-slate-400 mb-0.5">Target Mesin Requested</p>
+                                <p class="text-slate-400 mb-0.5">Target Mesin</p>
                                 <p class="font-bold text-navy" x-text="req.machine"></p>
                             </div>
                             <div>
-                                <p class="text-slate-400 mb-0.5">Durasi Estimasi</p>
-                                <p class="font-bold text-slate-800" x-text="req.durationHour + ' Jam'"></p>
+                                <p class="text-slate-400 mb-0.5">Estimasi Waktu</p>
+                                <p class="font-bold text-slate-800" x-text="(req.autoDate || '17 Sep 2026') + ' | ' + (req.durationHour || 4) + ' Jam'"></p>
                             </div>
                             <div>
-                                <p class="text-slate-400 mb-0.5">Status Konflik Mesin</p>
+                                <p class="text-slate-400 mb-0.5">Status Konflik</p>
                                 <p class="font-bold" :class="req.conflictWith.includes('SPK') ? 'text-amber-600' : 'text-emerald-600'" x-text="req.conflictWith"></p>
+                            </div>
+                            <div x-show="req.hasAttachment">
+                                <p class="text-slate-400 mb-0.5">Dokumen</p>
+                                <a href="#" @click.prevent="alert('Tampilan dokumen (PDF/Excel) sedang dimuat...')" class="font-bold text-violet-600 hover:text-violet-800 flex items-center gap-1 underline transition cursor-pointer">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                    1 Lampiran
+                                </a>
                             </div>
                         </div>
 
-                        <!-- Catatan R&D & Video Link -->
-                        <div class="space-y-1.5 text-[11px]">
+                        <!-- Catatan R&D -->
+                        <div class="space-y-1.5 text-[11px] pt-1">
+                            <p class="text-slate-600"><b>Formula (Resep):</b> <span class="font-semibold text-slate-800" x-text="req.formula || '-'"></span></p>
                             <p class="text-slate-600"><b>Catatan R&D:</b> <span x-text="req.notes"></span></p>
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-violet-700">Link Video Laporan:</span>
-                                <a :href="req.videoUrl" target="_blank" class="text-cyan font-semibold underline truncate hover:text-navy" x-text="req.videoUrl"></a>
-                            </div>
+                        </div>
+                        
+                        <!-- Feedback Penolakan PPIC -->
+                        <div x-show="req.status === 'rejected' && req.rejectNote" class="mt-2 p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-[11px] text-rose-800">
+                            <b>Catatan Penolakan PPIC:</b> <span x-text="req.rejectNote"></span>
                         </div>
 
                         <!-- Aksi Tombol PPIC (Jika Status Pending) -->
@@ -2775,7 +3308,7 @@
                 <div>
                     <h4 class="font-bold text-lg flex items-center gap-2">
                         <span class="text-xl">👷</span>
-                        Penugasan Mesin & Operator Trial (Mandor / Foreman)
+                        Penugasan Mesin & Operator Trial (Operator)
                     </h4>
                     <p class="text-xs text-amber-100 mt-0.5">Penugasan Ketua Operator & Operator Pendamping untuk trial R&D</p>
                 </div>
@@ -2796,7 +3329,7 @@
                             <span x-show="req.status === 'assigned_ready'" class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-lg text-[10px]">✓ Penugasan Selesai</span>
                         </div>
 
-                        <!-- Form Input Penugasan Mandor -->
+                        <!-- Form Input Penugasan Operator -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-slate-200">
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Ketua Operator (Lead Operator)</label>
@@ -2821,7 +3354,7 @@
                         <div class="flex justify-end">
                             <button @click="assignForemanTrial(req.id, req.assignedLead, req.assignedOperator, 'Persiapan suhu die 175°C & pendampingan R&D.')" 
                                     class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
-                                <span>💾 Simpan Penugasan Mandor</span>
+                                <span>💾 Simpan Penugasan Operator</span>
                             </button>
                         </div>
                     </div>
@@ -2930,7 +3463,7 @@
                                         <p class="text-slate-400">Produk</p>
                                         <p class="font-semibold text-slate-800" x-text="spk.product"></p>
                                     </div>
-                                    <div>
+                                    <div x-show="currentRole !== 'operator'">
                                         <p class="text-slate-400">Jadwal</p>
                                         <p class="font-semibold text-slate-800" x-text="formatDateRange(spk.startDate, spk.endDate)"></p>
                                     </div>
@@ -2988,7 +3521,7 @@
                         <p class="text-slate-400 font-medium">Jumlah Kuantitas</p>
                         <p class="font-bold text-navy" x-text="selectedSpk?.qty + ' Batch'"></p>
                     </div>
-                    <div>
+                    <div x-show="currentRole !== 'operator'">
                         <p class="text-slate-400 font-medium">Jadwal Produksi</p>
                         <p class="font-bold text-navy" x-text="selectedSpk ? formatDateRange(selectedSpk.startDate, selectedSpk.endDate) : ''"></p>
                     </div>
@@ -3153,15 +3686,15 @@
         Alpine.data('extruderHourlyApp', () => ({
             viewModeExtruder: 'all',
             openChartDetail: null,
-            newEntry: { jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '', targetSuhu: '', checkResult: 'Sesuai', conclusion: '' },
+            newEntry: { tanggal: new Date().toISOString().split('T')[0], shift: 'Shift 1', jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: '' },
             hourlyData: [
-                { jam: '06:00', z1: 160, z2: 170, z3: 175, z4: 175, rpm: 35, amp: 41, operator: 'Budi' },
-                { jam: '07:00', z1: 161, z2: 171, z3: 176, z4: 176, rpm: 35, amp: 42, operator: 'Mia' },
-                { jam: '08:00', z1: 160, z2: 172, z3: 178, z4: 178, rpm: 36, amp: 43, operator: 'Ayu' },
-                { jam: '09:00', z1: 162, z2: 170, z3: 177, z4: 179, rpm: 35, amp: 42, operator: 'Bagas' },
-                { jam: '10:00', z1: 160, z2: 173, z3: 180, z4: 180, rpm: 35, amp: 42, operator: 'Rudi' },
-                { jam: '11:00', z1: 161, z2: 172, z3: 179, z4: 178, rpm: 34, amp: 41, operator: 'Putu' },
-                { jam: '12:00', z1: 160, z2: 171, z3: 178, z4: 178, rpm: 35, amp: 42, operator: 'Citra' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '06:00', z1: 160, z2: 170, z3: 175, z4: 175, rpm: 35, amp: 41, operator: 'Budi', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '07:00', z1: 161, z2: 171, z3: 176, z4: 176, rpm: 35, amp: 42, operator: 'Mia', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '08:00', z1: 160, z2: 172, z3: 178, z4: 178, rpm: 36, amp: 43, operator: 'Ayu', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '09:00', z1: 162, z2: 170, z3: 177, z4: 179, rpm: 35, amp: 42, operator: 'Bagas', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '10:00', z1: 160, z2: 173, z3: 180, z4: 180, rpm: 35, amp: 42, operator: 'Rudi', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '11:00', z1: 161, z2: 172, z3: 179, z4: 178, rpm: 34, amp: 41, operator: 'Putu', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
+                { tanggal: '2026-09-25', shift: 'Shift 1', jam: '12:00', z1: 160, z2: 171, z3: 178, z4: 178, rpm: 35, amp: 42, operator: 'Citra', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: 'Normal' },
             ],
             hourlyChart: null,
             init() {
@@ -3194,9 +3727,11 @@
             },
             addHourlyEntry() {
                 if (!this.newEntry.jam) { alert('Jam wajib diisi!'); return; }
+                if (!this.newEntry.tanggal) { this.newEntry.tanggal = new Date().toISOString().split('T')[0]; }
+                if (!this.newEntry.shift) { this.newEntry.shift = 'Shift 1'; }
                 this.hourlyData.push({ ...this.newEntry });
                 this.hourlyData.sort((a, b) => a.jam.localeCompare(b.jam));
-                this.newEntry = { jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '' };
+                this.newEntry = { tanggal: new Date().toISOString().split('T')[0], shift: 'Shift 1', jam: '', z1: null, z2: null, z3: null, z4: null, rpm: null, amp: null, operator: '', targetSuhu: '160-178°C', checkResult: 'Sesuai', conclusion: '' };
                 this.$nextTick(() => this.updateHourlyChart());
             },
             updateHourlyChart() {
@@ -3242,7 +3777,7 @@
                     completedBatch: spkData.completedBatch || 28,
                     totalBatch: spkData.qty || 50,
                     status: spkData.status || 'Running',
-                    machine: spkData.machine || 'Extruder E-03'
+                    machine: spkData.machine || 'Extruder E-06'
                 };
                 this.activeStep = 'cleaning';
                 this.showEventModal = true;
@@ -3250,22 +3785,66 @@
 
             // R&D Trial Form State
             rndForm: {
-                sampleName: 'Compound PVC High-Impact X-900',
+                id: null,
+                sampleName: '',
+                formula: '',
+                formulaItems: [
+                    { material: 'Resin PVC S-65', qtyPerBatch: '25 Kg', targetQty: '100 Kg' },
+                    { material: 'Stabilizer Ca-Zn Grade B', qtyPerBatch: '1 Kg', targetQty: '4 Kg' },
+                    { material: 'Pigment White TiO2', qtyPerBatch: '0.5 Kg', targetQty: '2 Kg' }
+                ],
                 machine: 'Extruder E-01',
-                durationHour: 4,
-                shift: "Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)",
-                isUrgent: true,
-                notes: 'Uji coba aditif modifier impact baru untuk formula bening, mendadak sebelum batch rilis.',
-                videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                durationHour: '',
+                shift: '',
+                trialDate: '',
+                isUrgent: false,
+                notes: '',
+                hasAttachment: false
+            },
+            addFormulaRow() {
+                if (!this.rndForm.formulaItems) this.rndForm.formulaItems = [];
+                this.rndForm.formulaItems.push({ material: '', qtyPerBatch: '', targetQty: '' });
+            },
+            removeFormulaRow(idx) {
+                if (this.rndForm.formulaItems) {
+                    this.rndForm.formulaItems.splice(idx, 1);
+                }
             },
             rndConflict: true,
             rndConflictDetails: 'Mesin Extruder E-01 sedang terpakai oleh SPK-2608-001 (27 Aug - 29 Aug 2026). Aturan: 1 Mesin hanya 1 SPK/Trial.',
+            
+            editRndTrial(req) {
+                this.rndForm = {
+                    id: req.id,
+                    sampleName: req.sampleName,
+                    formula: req.formula || '',
+                    formulaItems: req.formulaItems ? JSON.parse(JSON.stringify(req.formulaItems)) : [
+                        { material: 'Resin PVC S-65', qtyPerBatch: '25 Kg', targetQty: '100 Kg' },
+                        { material: 'Stabilizer Ca-Zn Grade B', qtyPerBatch: '1 Kg', targetQty: '4 Kg' },
+                        { material: 'Pigment White TiO2', qtyPerBatch: '0.5 Kg', targetQty: '2 Kg' }
+                    ],
+                    machine: req.machine,
+                    durationHour: req.durationHour,
+                    shift: req.shift,
+                    trialDate: req.autoDate,
+                    isUrgent: req.isUrgent,
+                    notes: req.notes,
+                    hasAttachment: req.hasAttachment || false
+                };
+                this.showRndModal = true;
+            },
 
             // Daftar Pengajuan Trial R&D (Role Simulation Data)
             rndTrialRequests: [
                 {
                     id: 'TRL-RND-101',
                     sampleName: 'Formula PVC Transparan Rev-04',
+                    formula: 'PVC-TR-04',
+                    formulaItems: [
+                        { material: 'Resin PVC S-65', qtyPerBatch: '25 Kg', targetQty: '100 Kg' },
+                        { material: 'Stabilizer Ca-Zn Grade B', qtyPerBatch: '1 Kg', targetQty: '4 Kg' },
+                        { material: 'Pigment White TiO2', qtyPerBatch: '0.5 Kg', targetQty: '2 Kg' }
+                    ],
                     machine: 'Extruder E-01',
                     durationHour: 4,
                     shift: "Shift 1 — Jam 08:00 - 16:00 (Senin - Jum'at)",
@@ -3279,6 +3858,7 @@
                     assignedLead: 'Budi (Lead Op)',
                     assignedOperator: 'Bagas, Deni',
                     foremanNotes: 'Suhu extruder diset 175°C, didampingi tim R&D.',
+                    hasAttachment: true,
                     rejectionNote: ''
                 }
             ],
@@ -3352,8 +3932,8 @@
                 { machine: 'Extruder E-01', spkNo: 'SPK-2608-001', product: 'PVC Compound A (Clear)', date: '27 Aug - 29 Aug 2026', time: '06:00 - 22:00' },
                 { machine: 'Extruder E-02', spkNo: 'SPK-2608-005', product: 'PVC Compound C (Black)', date: '30 Aug - 31 Aug 2026', time: '08:00 - 16:00' },
                 { machine: 'Extruder E-03', spkNo: 'SPK-2608-002', product: 'PVC Compound B (Color)', date: '30 Aug - 01 Sep 2026', time: '08:00 - 16:00' },
-                { machine: 'Extruder E-04', spkNo: 'CLN-2608-002', product: 'Cleaning Line E-04',    date: '01 Sep 2026',           time: '08:00 - 12:00' },
-                { machine: 'Extruder E-05', spkNo: 'SPK-2608-007', product: 'PVC Compound E (Special)', date: '02 Sep - 04 Sep 2026', time: '08:00 - 18:00' }
+                { machine: 'Extruder E-05', spkNo: 'CLN-2608-002', product: 'Cleaning Line E-05',    date: '01 Sep 2026',           time: '08:00 - 12:00' },
+                { machine: 'Extruder E-06', spkNo: 'SPK-2608-007', product: 'PVC Compound E (Special)', date: '02 Sep - 04 Sep 2026', time: '08:00 - 18:00' }
             ],
             
             tempChartInstance: null,
@@ -3654,31 +4234,74 @@
             },
             submitRndTrial() {
                 if (!this.rndForm.sampleName) {
-                    alert('Harap masukkan Nama Sample / Formula Trial R&D!');
+                    alert('Harap masukkan Nama Sample!');
                     return;
                 }
-                const trialId = 'TRL-RND-' + Math.floor(100 + Math.random() * 900);
-                const todayFormatted = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-                this.rndTrialRequests.unshift({
-                    id: trialId,
-                    sampleName: this.rndForm.sampleName,
-                    machine: this.rndForm.machine,
-                    durationHour: parseInt(this.rndForm.durationHour || 4),
-                    shift: this.rndForm.shift || 'Shift 1 (07:00 - 15:00)',
-                    autoDate: todayFormatted,
-                    isUrgent: this.rndForm.isUrgent,
-                    notes: this.rndForm.notes || 'Pengajuan trial sample formula R&D',
-                    videoUrl: this.rndForm.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                    status: 'pending_ppic',
-                    conflictWith: this.rndConflict ? `Mesin ${this.rndForm.machine} sedang dipakai SPK-2608-001` : 'Tidak Ada (Mesin Bebas)',
-                    requestedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
-                    assignedLead: '',
-                    assignedOperator: '',
-                    foremanNotes: '',
-                    rejectionNote: ''
-                });
-                alert(`Pengajuan Trial Sample R&D (${this.rndForm.sampleName}) BERHASIL dikirim ke PPIC!\n\nStatus: Pending Approval PPIC.\nPPIC menerima notifikasi otomatis untuk mengecek ketersediaan mesin & jadwal.`);
+
+                if (this.rndForm.formulaItems && this.rndForm.formulaItems.length > 0) {
+                    this.rndForm.formula = this.rndForm.formulaItems
+                        .filter(f => f.material.trim() !== '')
+                        .map(f => `${f.material}: ${f.qtyPerBatch} ${f.unit}`).join(', ');
+                }
+
+                if (this.rndForm.id) {
+                    // Update existing
+                    const req = this.rndTrialRequests.find(r => r.id === this.rndForm.id);
+                    if (req) {
+                        req.sampleName = this.rndForm.sampleName;
+                        req.formula = this.rndForm.formula;
+                        req.formulaItems = JSON.parse(JSON.stringify(this.rndForm.formulaItems || []));
+                        req.machine = this.rndForm.machine;
+                        req.durationHour = this.rndForm.durationHour;
+                        req.shift = this.rndForm.shift;
+                        req.autoDate = this.rndForm.trialDate || req.autoDate;
+                        req.isUrgent = this.rndForm.isUrgent;
+                        req.notes = this.rndForm.notes;
+                        req.hasAttachment = this.rndForm.hasAttachment;
+                    }
+                    alert(`Pengajuan Trial (${this.rndForm.sampleName}) BERHASIL diupdate!`);
+                } else {
+                    const trialId = 'TRL-RND-' + Math.floor(100 + Math.random() * 900);
+                    const todayFormatted = this.rndForm.trialDate || new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                    this.rndTrialRequests.unshift({
+                        id: trialId,
+                        sampleName: this.rndForm.sampleName,
+                        formula: this.rndForm.formula,
+                        formulaItems: JSON.parse(JSON.stringify(this.rndForm.formulaItems || [])),
+                        machine: this.rndForm.machine,
+                        durationHour: this.rndForm.durationHour || 4,
+                        shift: this.rndForm.shift,
+                        autoDate: todayFormatted,
+                        isUrgent: this.rndForm.isUrgent,
+                        notes: this.rndForm.notes,
+                        hasAttachment: this.rndForm.hasAttachment,
+                        videoUrl: this.rndForm.videoUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                        status: 'pending_ppic',
+                        conflictWith: this.rndConflict ? `Mesin ${this.rndForm.machine} sedang dipakai SPK-2608-001` : 'Tidak Ada (Mesin Bebas)',
+                        requestedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+                        assignedLead: '',
+                        assignedOperator: '',
+                        foremanNotes: '',
+                        rejectNote: ''
+                    });
+                    alert(`Pengajuan Trial Sample R&D (${this.rndForm.sampleName}) BERHASIL dikirim ke PPIC!\n\nStatus: Pending Approval PPIC.\nPPIC menerima notifikasi otomatis untuk mengecek ketersediaan mesin & jadwal.`);
+                }
+                
                 this.showRndModal = false;
+                
+                // reset form
+                this.rndForm = {
+                    id: null,
+                    sampleName: '',
+                    formula: '',
+                    machine: 'Extruder E-01',
+                    durationHour: '',
+                    shift: '',
+                    trialDate: '',
+                    isUrgent: false,
+                    notes: '',
+                    hasAttachment: false
+                };
             },
             approvePpicTrial(reqId, mode) {
                 const req = this.rndTrialRequests.find(r => r.id === reqId);

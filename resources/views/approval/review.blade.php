@@ -6,13 +6,16 @@
 <div class="max-w-6xl mx-auto h-full flex flex-col gap-6" x-data="approvalFlow()">
     
     <!-- Simulasi Ganti Form Berdasarkan Departemen -->
-    <div class="bg-cyan/10 border border-cyan/20 rounded-xl p-4 flex items-center justify-between">
-        <p class="text-sm text-navy font-bold">Otoritas Approver (Simulasi):</p>
+    <div class="bg-cyan/10 border border-cyan/20 rounded-xl p-4 flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-2">
+            <p class="text-sm text-navy font-bold">Otoritas Approver (Berurutan Mandatory):</p>
+            <span class="bg-cyan text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Sequential Flow</span>
+        </div>
         <select x-model="currentRole" class="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-navy font-bold focus:outline-none focus:border-cyan shadow-sm">
-            <option value="gudang">Dept. Gudang / Inventory</option>
-            <option value="rnd">Dept. R&D (Otoritas Resep)</option>
-            <option value="pe">Dept. Process Engineering (PE)</option>
-            <option value="qc">Dept. Quality Control (QC)</option>
+            <option value="gudang">1. Dept. Gudang / Inventory</option>
+            <option value="pe">2. Dept. Process Engineering (PE)</option>
+            <option value="rnd">3. Dept. R&D (Otoritas Resep)</option>
+            <option value="qc">4. Dept. Quality Control (QC)</option>
         </select>
     </div>
 
@@ -59,30 +62,34 @@
             </div>
             
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">Progress Approval</h4>
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">Progress Approval Berurutan</h4>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'gudang' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">1</div>
-                        <div class="text-sm">
-                            <p class="font-bold" :class="currentRole == 'gudang' ? 'text-navy' : 'text-slate-500'">Dept. Gudang</p>
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'gudang' ? 'bg-cyan text-white shadow-md' : 'bg-emerald-100 text-emerald-700'">1</div>
+                        <div class="text-sm flex-1 flex justify-between items-center">
+                            <p class="font-bold" :class="currentRole == 'gudang' ? 'text-navy' : 'text-slate-700'">Dept. Gudang</p>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" :class="approvalStatus.gudang ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'" x-text="approvalStatus.gudang ? '✓ ACC' : 'Pending'"></span>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'rnd' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">2</div>
-                        <div class="text-sm">
-                            <p class="font-bold" :class="currentRole == 'rnd' ? 'text-navy' : 'text-slate-500'">Dept. R&D</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'pe' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">3</div>
-                        <div class="text-sm">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'pe' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">2</div>
+                        <div class="text-sm flex-1 flex justify-between items-center">
                             <p class="font-bold" :class="currentRole == 'pe' ? 'text-navy' : 'text-slate-500'">Dept. PE</p>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" :class="approvalStatus.pe ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'" x-text="approvalStatus.pe ? '✓ ACC' : 'Menunggu Gudang'"></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'rnd' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">3</div>
+                        <div class="text-sm flex-1 flex justify-between items-center">
+                            <p class="font-bold" :class="currentRole == 'rnd' ? 'text-navy' : 'text-slate-500'">Dept. R&D</p>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" :class="approvalStatus.rnd ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'" x-text="approvalStatus.rnd ? '✓ ACC' : 'Menunggu PE'"></span>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="currentRole == 'qc' ? 'bg-cyan text-white shadow-md' : 'bg-slate-100 text-slate-400'">4</div>
-                        <div class="text-sm">
+                        <div class="text-sm flex-1 flex justify-between items-center">
                             <p class="font-bold" :class="currentRole == 'qc' ? 'text-navy' : 'text-slate-500'">Dept. QC</p>
+                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" :class="approvalStatus.qc ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'" x-text="approvalStatus.qc ? '✓ ACC' : 'Menunggu R&D'"></span>
                         </div>
                     </div>
                 </div>
@@ -99,201 +106,260 @@
                 
                 <div class="p-6 flex-1 space-y-6 overflow-y-auto">
                     
-                    <!-- Form Gudang -->
-                    <div x-show="currentRole === 'gudang'">
-                        <h4 class="font-bold text-navy mb-4">Verifikasi Gudang / Inventory</h4>
+                    <!-- Form Gudang (Step 1) -->
+                    <div x-show="currentRole === 'gudang'" class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                            <h4 class="font-bold text-navy flex items-center gap-2">
+                                <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                1. Verifikasi Stok & Material (Gudang)
+                            </h4>
+                            <span class="text-[10px] bg-cyan/10 text-cyan font-bold px-2 py-0.5 rounded">Langkah 1 dari 4</span>
+                        </div>
+                        
                         <div class="space-y-3">
-                            <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
-                                <input type="checkbox" class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
+                            <label class="flex items-start gap-3 p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors bg-white shadow-sm">
+                                <input type="checkbox" checked class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
                                 <div>
-                                    <span class="block text-sm font-bold text-slate-800">Material Fisik Tersedia</span>
-                                    <span class="block text-xs text-slate-500 mt-1">Stok fisik aktual di gudang sudah diperiksa dan sesuai dengan kebutuhan batch draf SPK.</span>
+                                    <span class="block text-sm font-bold text-slate-800">Verifikasi Stok Fisik Gudang</span>
+                                    <span class="block text-xs text-slate-500 mt-0.5">Lot number diterbitkan langsung dari Gudang saat material ditarik.</span>
                                 </div>
                             </label>
+
+                            <!-- Pilihan Ketersediaan Stok & Opsi Material Alternatif / BOM -->
+                            <div class="p-4 border border-cyan/30 rounded-xl bg-cyan/5 space-y-3">
+                                <label class="block text-xs font-bold text-navy uppercase tracking-wide">Status Ketersediaan Material di Gudang</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" @click="gudangStockMode = 'cukup'" :class="gudangStockMode === 'cukup' ? 'bg-cyan text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'" class="p-2.5 rounded-lg text-xs font-bold transition-all text-left">
+                                        ✓ Stok Lengkap (Cukup)
+                                    </button>
+                                    <button type="button" @click="gudangStockMode = 'alternatif'" :class="gudangStockMode === 'alternatif' ? 'bg-amber-500 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600'" class="p-2.5 rounded-lg text-xs font-bold transition-all text-left">
+                                        ⚠️ Material Kosong / Pilih Alternatif
+                                    </button>
+                                </div>
+
+                                <!-- Panel Material Alternatif / BOM -->
+                                <div x-show="gudangStockMode === 'alternatif'" x-transition class="pt-2 space-y-3 border-t border-cyan/20">
+                                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                        <p class="text-xs font-bold text-amber-800 mb-1">Pilih Material Alternatif dari Stok Gudang yang Tersedia:</p>
+                                        <select x-model="altMaterialSelected" class="w-full bg-white border border-amber-300 rounded-lg px-3 py-2 text-xs font-bold text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                                            <option value="RM-PVC-002 (Resin S-60)">RM-PVC-002: Resin PVC S-60 (Stok: 2,500 Kg)</option>
+                                            <option value="ADD-013 (Stabilizer Ca-Zn Rev2)">ADD-013: Stabilizer Ca-Zn Grade B (Stok: 120 Kg)</option>
+                                            <option value="ADD-019 (TiO2 High Grade)">ADD-019: Pigment TiO2 Brand B (Stok: 45 Kg)</option>
+                                        </select>
+                                        <p class="text-[10px] text-amber-700 mt-1.5 italic">* Pilihan material alternatif akan otomatis menyesuaikan daftar racikan BOM untuk diajukan ke PE & RND.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Form RnD -->
-                    <div x-show="currentRole === 'rnd'">
-                        <h4 class="font-bold text-navy mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
-                            Otoritas Resep (R&D)
-                        </h4>
-                        
-                        <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors mb-6">
-                            <input type="checkbox" class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
+                    <!-- Form PE / Process Engineering (Step 2) -->
+                    <div x-show="currentRole === 'pe'" x-data="peForm()" class="space-y-5">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                            <h4 class="font-bold text-navy flex items-center gap-2">
+                                <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                                2. Alokasi Mesin & Feeder (Process Engineering)
+                            </h4>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded">Langkah 2 dari 4</span>
+                        </div>
+
+                        <!-- Pengkondisian Jenis Produk (Rutin / Tidak Rutin / Trial) -->
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                            <label class="block text-xs font-bold text-slate-700">Kategori & Sifat Produk SPK ini:</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold cursor-pointer hover:border-cyan">
+                                    <input type="radio" name="prodType" value="rutin" x-model="productType" class="text-cyan focus:ring-cyan">
+                                    <span>Produk Rutin</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold cursor-pointer hover:border-amber-400">
+                                    <input type="radio" name="prodType" value="tidak_rutin" x-model="productType" class="text-amber-500 focus:ring-amber-400">
+                                    <span>Tidak Rutin</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold cursor-pointer hover:border-purple-400">
+                                    <input type="radio" name="prodType" value="trial" x-model="productType" class="text-purple-600 focus:ring-purple-400">
+                                    <span>Trial Run</span>
+                                </label>
+                            </div>
+                            <p class="text-[10px] text-slate-500" x-text="productType === 'rutin' ? 'ℹ️ Produk Rutin: Cukup diverifikasi parameter standar oleh PE.' : '⚠️ Produk Tidak Rutin / Trial: Membutuhkan verifikasi & instruksi khusus dari R&D di tahap berikutnya.'"></p>
+                        </div>
+
+                        <!-- Pengaturan Mesin Digunakan Buat Produk Apa & Material per Feeder -->
+                        <div class="p-4 border border-indigo-200 bg-indigo-50/40 rounded-xl space-y-3">
+                            <h5 class="text-xs font-bold text-indigo-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                Configuration Mesin & Material per Feeder
+                            </h5>
+
                             <div>
-                                <span class="block text-sm font-bold text-slate-800">Formula & Resep Valid</span>
-                                <span class="block text-xs text-slate-500 mt-1">Draf formula (Standard) sudah dicek dan sesuai dengan standar R&D terbaru.</span>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Mesin Digunakan Untuk Produk:</label>
+                                <input type="text" x-model="peMachineProduct" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-navy outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Misal: PVC Pipe Grade A / Compound White">
+                            </div>
+
+                            <!-- Feeder Allocation List -->
+                            <div class="space-y-2.5 pt-2">
+                                <div class="flex justify-between items-center">
+                                    <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider">Penentuan Material per Feeder:</label>
+                                    <button type="button" @click="addFeeder()" class="text-[10px] font-bold text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 px-2 py-1 rounded transition-colors">+ Tambah Feeder</button>
+                                </div>
+
+                                <template x-for="(f, idx) in feeders" :key="idx">
+                                    <div class="p-3 bg-white border border-slate-200 rounded-lg shadow-sm space-y-2">
+                                        <div class="flex justify-between items-center border-b border-slate-100 pb-1">
+                                            <span class="text-xs font-bold text-navy" x-text="f.name"></span>
+                                            <button type="button" @click="removeFeeder(idx)" class="text-red-400 hover:text-red-600 text-[10px] font-bold" x-show="feeders.length > 1">Hapus</button>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Material Utama 1</label>
+                                                <input type="text" x-model="f.materialA" class="w-full bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-xs font-medium text-slate-800 outline-none focus:border-indigo-400">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Material Tambahan 2</label>
+                                                <input type="text" x-model="f.materialB" class="w-full bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-xs font-medium text-slate-800 outline-none focus:border-indigo-400">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Review Checklist Mesin (Jumlah di Mesin Dihapus) -->
+                        <div>
+                            <p class="text-xs font-bold text-slate-700 mb-2">Checklist Koreksi Tipe Mesin & Feeder:</p>
+                            <div class="space-y-3">
+                                <template x-for="field in fields" :key="field.id">
+                                    <div class="rounded-xl border transition-all" :class="field.flagged ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-white'">
+                                        <div class="flex items-center gap-3 p-3">
+                                            <input type="checkbox" x-model="field.flagged" class="w-4 h-4 text-amber-500 border-slate-300 rounded focus:ring-amber-400 flex-shrink-0">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex justify-between items-center flex-wrap gap-2">
+                                                    <div>
+                                                        <p class="text-sm font-bold text-slate-800" x-text="field.label"></p>
+                                                        <p class="text-xs text-slate-500 mt-0.5">
+                                                            Mesin Terpilih: 
+                                                            <span class="font-bold" :class="field.flagged ? 'text-red-600 line-through' : 'text-navy'" x-text="field.currentValue"></span>
+                                                        </p>
+                                                    </div>
+                                                    <span x-show="field.flagged" class="text-[9px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded uppercase tracking-wide">Perlu Koreksi</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div x-show="field.flagged" x-transition class="px-3 pb-3 pt-0 border-t border-amber-200">
+                                            <div class="bg-white rounded-lg p-3 border border-amber-100 mt-2 space-y-3">
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Tipe Mesin yang Seharusnya</label>
+                                                    <input type="text" x-model="field.correctedValue" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Alasan Koreksi <span class="text-red-500">*</span></label>
+                                                    <input type="text" x-model="field.reason" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 outline-none" :placeholder="'Contoh: ' + field.exampleReason">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                     </div>
+
+                    <!-- Form R&D (Step 3) -->
+                    <div x-show="currentRole === 'rnd'" class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                            <h4 class="font-bold text-navy flex items-center gap-2">
+                                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                                3. Otoritas Resep & Instruksi Trial (R&D)
+                            </h4>
+                            <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">Langkah 3 dari 4</span>
+                        </div>
+
+                        <!-- Status Kondisional dari PE -->
+                        <div class="p-3.5 rounded-xl border" :class="productType === 'rutin' ? 'bg-emerald-50 border-emerald-200' : (productType === 'trial' ? 'bg-purple-50 border-purple-200' : 'bg-amber-50 border-amber-200')">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-xs" :class="productType === 'rutin' ? 'text-emerald-800' : (productType === 'trial' ? 'text-purple-800' : 'text-amber-800')">
+                                    Status Sifat Produk: <span class="uppercase underline" x-text="productType"></span>
+                                </span>
+                            </div>
+                            <p class="text-xs mt-1" :class="productType === 'rutin' ? 'text-emerald-700' : (productType === 'trial' ? 'text-purple-700' : 'text-amber-700')">
+                                <template x-if="productType === 'rutin'">
+                                    <span>✓ Produk Rutin: Menggunakan formula master R&D standar tanpa memerlukan trial tambahan.</span>
+                                </template>
+                                <template x-if="productType === 'tidak_rutin'">
+                                    <span>⚠️ Produk Tidak Rutin: R&D menyusun instruksi penyesuaian parameter khusus sebelum diproduksi.</span>
+                                </template>
+                                <template x-if="productType === 'trial'">
+                                    <span>🧪 Produk Trial: Wajib menyertakan instruksi uji coba trial run dari R&D untuk dipantau oleh QC.</span>
+                                </template>
+                            </p>
+                        </div>
+                        
+                        <label class="flex items-start gap-3 p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors bg-white">
+                            <input type="checkbox" checked class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
+                            <div>
+                                <span class="block text-sm font-bold text-slate-800">Formula & Resep Valid Disetujui</span>
+                                <span class="block text-xs text-slate-500 mt-0.5">Komposisi racikan dan alokasi material per feeder dari PE sudah teruji standar R&D.</span>
                             </div>
                         </label>
 
                         <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Instruksi / Metode Kerja Tambahan</label>
-                            <textarea rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan outline-none transition-all mb-3" placeholder="Ketik instruksi berupa kalimat (Misal: Suhu mixing 180C, waktu 15 menit...)"></textarea>
-                            <div class="flex items-center justify-center w-full">
-                                <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg class="w-6 h-6 mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                                        <p class="mb-1 text-xs text-slate-500"><span class="font-bold">Klik untuk upload lampiran dokumen</span> atau drag and drop</p>
-                                        <p class="text-[10px] text-slate-400">PDF, DOCX, XLSX (MAX. 5MB)</p>
-                                    </div>
-                                    <input id="dropzone-file" type="file" class="hidden" />
-                                </label>
-                            </div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Instruksi Khusus / Parameter Trial R&D:</label>
+                            <textarea rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-amber-400 outline-none transition-all mb-3" placeholder="Ketik instruksi khusus (Misal: Suhu zone 1-4 175C, RPM Feeder 1 45 rpm, RPM Feeder 2 12 rpm...)"></textarea>
                         </div>
                     </div>
 
-                    <!-- Form PE (Process Engineering) -->
-                    <div x-show="currentRole === 'pe'" x-data="peForm()">
-                        <h4 class="font-bold text-navy mb-1 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Review Mesin (Process Engineering)
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-4">Centang field yang perlu dikoreksi, isi nilai yang benar, lalu tambahkan catatan.</p>
-
-                        <!-- Field-level Revision Checklist -->
-                        <div class="space-y-3 mb-5">
-                            <template x-for="field in fields" :key="field.id">
-                                <div class="rounded-xl border transition-all" :class="field.flagged ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-white'">
-                                    <!-- Row header: checkbox + label + current value -->
-                                    <div class="flex items-center gap-3 p-3">
-                                        <input type="checkbox" x-model="field.flagged" class="w-4 h-4 text-amber-500 border-slate-300 rounded focus:ring-amber-400 flex-shrink-0">
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex justify-between items-center flex-wrap gap-2">
-                                                <div>
-                                                    <p class="text-sm font-bold text-slate-800" x-text="field.label"></p>
-                                                    <p class="text-xs text-slate-500 mt-0.5">
-                                                        Nilai saat ini: 
-                                                        <span class="font-bold" :class="field.flagged ? 'text-red-600 line-through' : 'text-navy'" x-text="field.currentValue"></span>
-                                                    </p>
-                                                </div>
-                                                <span x-show="field.flagged" class="text-[9px] font-bold text-amber-700 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded uppercase tracking-wide">Perlu Koreksi</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Expanded correction form (when flagged) -->
-                                    <div x-show="field.flagged" x-transition class="px-3 pb-3 pt-0 border-t border-amber-200">
-                                        <div class="bg-white rounded-lg p-3 border border-amber-100 mt-2 space-y-3">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Nilai yang Benar / Seharusnya</label>
-                                                <div class="flex gap-2 items-center">
-                                                    <!-- Dynamic input type based on field -->
-                                                    <template x-if="field.type === 'select'">
-                                                        <select x-model="field.correctedValue" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
-                                                            <template x-for="opt in field.options" :key="opt">
-                                                                <option :value="opt" x-text="opt"></option>
-                                                            </template>
-                                                        </select>
-                                                    </template>
-                                                    <template x-if="field.type === 'number'">
-                                                        <input type="number" x-model="field.correctedValue" class="w-28 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
-                                                    </template>
-                                                    <template x-if="field.type === 'text'">
-                                                        <input type="text" x-model="field.correctedValue" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold text-navy focus:ring-2 focus:ring-amber-400 outline-none">
-                                                    </template>
-                                                    <span x-show="field.unit" class="text-xs text-slate-500 font-medium flex-shrink-0" x-text="field.unit"></span>
-                                                </div>
-                                                <!-- Show diff -->
-                                                <p x-show="field.correctedValue" class="text-[10px] mt-1.5 text-slate-500">
-                                                    <span class="text-red-500 line-through font-medium" x-text="field.currentValue"></span>
-                                                    <svg class="w-3 h-3 inline text-slate-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                                    <span class="text-emerald-600 font-bold" x-text="field.correctedValue + (field.unit ? ' ' + field.unit : '')"></span>
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">Alasan Koreksi <span class="text-red-500">*</span></label>
-                                                <input type="text" x-model="field.reason" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-400 outline-none" :placeholder="'Contoh: ' + field.exampleReason">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
+                    <!-- Form QC / Quality Control (Step 4) -->
+                    <div x-show="currentRole === 'qc'" class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                            <h4 class="font-bold text-navy flex items-center gap-2">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                4. Final Approval & Metode Pengujian QC
+                            </h4>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Langkah 4 dari 4 (Final)</span>
                         </div>
 
-                        <!-- Summary of flagged items -->
-                        <div x-show="flaggedCount > 0" x-transition class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                            <p class="text-xs font-bold text-amber-800 flex items-center gap-2 mb-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                <span x-text="flaggedCount + ' item memerlukan koreksi dari PPIC'"></span>
-                            </p>
-                            <template x-for="field in fields.filter(f => f.flagged && f.correctedValue)" :key="field.id">
-                                <p class="text-[11px] text-amber-700 ml-6 mb-1">
-                                    • <span class="font-bold" x-text="field.label"></span>: 
-                                    <span class="line-through opacity-60" x-text="field.currentValue"></span> → 
-                                    <span class="font-bold text-amber-900" x-text="field.correctedValue + (field.unit ? ' ' + field.unit : '')"></span>
-                                    <span x-show="field.reason" class="text-amber-600 italic" x-text="' (' + field.reason + ')'"></span>
-                                </p>
-                            </template>
-                        </div>
-
-                        <!-- Tabel Catatan Internal PE -->
-                        <div class="mt-5">
-                            <div class="flex justify-between items-center mb-2">
-                                <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                    Catatan Internal PE
-                                </h5>
-                                <button @click="showNoteInput = !showNoteInput" class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-1 rounded-lg transition-colors flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                    Tambah Catatan
-                                </button>
-                            </div>
-                            <div x-show="showNoteInput" x-transition class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 mb-2">
-                                <div class="grid grid-cols-3 gap-2 mb-2">
-                                    <input type="text" x-model="newNote.poin" placeholder="Poin / Topik..." class="col-span-1 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none">
-                                    <textarea x-model="newNote.detail" rows="1" placeholder="Detail catatan..." class="col-span-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-300 outline-none resize-none"></textarea>
-                                </div>
-                                <div class="flex justify-end gap-2">
-                                    <button @click="showNoteInput = false" class="text-xs text-slate-500 px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50">Batal</button>
-                                    <button @click="saveNote()" class="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg transition-colors">Simpan</button>
-                                </div>
-                            </div>
-                            <div class="border border-slate-200 rounded-xl overflow-hidden">
-                                <table class="w-full text-xs text-left">
-                                    <thead class="bg-slate-50 border-b border-slate-200">
-                                        <tr class="text-[10px] uppercase text-slate-400 font-bold">
-                                            <th class="px-3 py-2 w-6">#</th>
-                                            <th class="px-3 py-2">Poin</th>
-                                            <th class="px-3 py-2">Detail Catatan</th>
-                                            <th class="px-3 py-2">Oleh</th>
-                                            <th class="px-3 py-2">Waktu</th>
-                                            <th class="px-3 py-2 w-8"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100">
-                                        <template x-for="(note, idx) in notes" :key="idx">
-                                            <tr class="hover:bg-slate-50 transition-colors">
-                                                <td class="px-3 py-2 text-slate-400" x-text="idx + 1"></td>
-                                                <td class="px-3 py-2 font-bold text-navy" x-text="note.poin"></td>
-                                                <td class="px-3 py-2 text-slate-600" x-text="note.detail"></td>
-                                                <td class="px-3 py-2 text-slate-500" x-text="note.by"></td>
-                                                <td class="px-3 py-2 text-slate-400" x-text="note.time"></td>
-                                                <td class="px-3 py-2">
-                                                    <button @click="notes.splice(idx,1)" class="text-red-400 hover:text-red-600">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </template>
-                                        <tr x-show="notes.length === 0">
-                                            <td colspan="6" class="px-3 py-4 text-center text-slate-400 italic">Belum ada catatan. Klik "+ Tambah Catatan".</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                     </div>
-
-                    <!-- Form QC -->
-                    <div x-show="currentRole === 'qc'">
-                        <h4 class="font-bold text-navy mb-4">Verifikasi Quality Control</h4>
-                        <label class="flex items-start gap-3 p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors">
-                            <input type="checkbox" class="mt-1 w-4 h-4 text-cyan border-slate-300 rounded focus:ring-cyan">
+                        <!-- Form Metode Pengujian QC & Tambahan Instruksi (Manpower Dihilangkan) -->
+                        <div class="p-4 border border-emerald-200 bg-emerald-50/40 rounded-xl space-y-4">
                             <div>
-                                <span class="block text-sm font-bold text-slate-800">Kapasitas Manpower & Jadwal Valid</span>
-                                <span class="block text-xs text-slate-500 mt-1">Estimasi manpower telah sesuai standar pengawasan Quality Control.</span>
+                                <label class="block text-xs font-bold text-emerald-900 mb-1.5">
+                                    Metode Pengujian / QC Inspection Method <span class="text-red-500">*</span>
+                                </label>
+                                <select x-model="qcMethod" class="w-full bg-white border border-emerald-300 rounded-lg px-3 py-2 text-xs font-bold text-navy focus:ring-2 focus:ring-emerald-400 outline-none">
+                                    <option value="Physical & Mechanical Test (MFI, Tensile, Density)">Physical & Mechanical Test (MFI, Tensile, Density)</option>
+                                    <option value="Pengujian Dispersi & Visual Standard (1 Jam Sekali)">Pengujian Dispersi & Visual Standard (1 Jam Sekali)</option>
+                                    <option value="QC Goods Check & KPI Bagging Final">QC Goods Check & KPI Bagging Final</option>
+                                    <option value="Full Lab Sampling & Complete Verification">Full Lab Sampling & Complete Verification</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-emerald-900 mb-1.5">
+                                    Tambahan Instruksi Khusus QC
+                                </label>
+                                <textarea rows="2" x-model="qcInstructions" class="w-full bg-white border border-emerald-300 rounded-lg px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-emerald-400 outline-none" placeholder="Ketik tambahan instruksi khusus QC (misal: Cek kecerahan warna per 30 menit, toleransi SG 1.34 +/- 0.02)..."></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 pt-3 border-t border-emerald-200/60 items-end">
+                                <div class="flex flex-col">
+                                    <label class="block text-xs font-bold text-emerald-900 mb-1.5 min-h-[24px] flex items-end">
+                                        Tanggal Eksekusi SPK & Formula
+                                    </label>
+                                    <input type="date" x-model="qcStartDate" class="w-full h-10 bg-white border border-emerald-300 rounded-lg px-3 text-xs font-bold text-navy focus:ring-2 focus:ring-emerald-400 outline-none">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label class="block text-xs font-bold text-emerald-900 mb-1.5 min-h-[24px] flex items-end">
+                                        Jam Start Run Mesin
+                                    </label>
+                                    <input type="time" x-model="qcStartTime" class="w-full h-10 bg-white border border-emerald-300 rounded-lg px-3 text-xs font-bold text-navy focus:ring-2 focus:ring-emerald-400 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="flex items-start gap-3 p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors bg-white">
+                            <input type="checkbox" x-model="qcFormulaConfirmed" class="mt-1 w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500">
+                            <div>
+                                <span class="block text-sm font-bold text-slate-800">Verifikasi QC, Metode & Jadwal Lengkap</span>
+                                <span class="block text-xs text-slate-500 mt-0.5">Formula, metode pengujian QC, instruksi khusus, dan jadwal run telah divalidasi penuh.</span>
                             </div>
                         </label>
                     </div>
@@ -301,12 +367,15 @@
                 </div>
 
                 <!-- 3 Tombol Aksi -->
-                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-end gap-3 items-center mt-auto">
-                    <button class="px-5 py-2 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors">Tolak SPK</button>
-                    <button @click="openRevisionModal" class="px-5 py-2 text-sm font-bold text-amber-600 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-colors">Minta Revisi</button>
-                    <a href="{{ route('produksi.alokasi') }}" class="px-8 py-2.5 text-sm font-bold text-white bg-cyan hover:bg-cyan/90 rounded-lg shadow-md shadow-cyan/20 transition-colors">
-                        Setujui (ACC)
-                    </a>
+                <div class="p-5 bg-slate-50 border-t border-slate-200 flex justify-between items-center mt-auto">
+                    <button type="button" class="px-4 py-2 text-xs font-bold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors">Tolak SPK</button>
+                    <div class="flex gap-2">
+                        <button type="button" @click="openRevisionModal" class="px-4 py-2 text-xs font-bold text-amber-600 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-colors">Minta Revisi</button>
+                        <button type="button" @click="approveCurrentStep()" class="px-6 py-2.5 text-xs font-bold text-white bg-cyan hover:bg-cyan/90 rounded-lg shadow-md shadow-cyan/20 transition-colors flex items-center gap-1.5">
+                            <span>Setujui (ACC <span class="uppercase font-black" x-text="currentRole"></span>)</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Modal Revisi Wajib (Alpine) -->
@@ -380,6 +449,35 @@
             revisionNote: '',
             revisionError: false,
             
+            // Status approval per departemen (Berurutan / Sequential mandatory: Gudang -> PE -> RND -> QC)
+            approvalStatus: {
+                gudang: false,
+                pe: false,
+                rnd: false,
+                qc: false
+            },
+
+            // Pengkondisian Jenis Produk (Ditentukan oleh PE / PPIC): 'rutin' | 'tidak_rutin' | 'trial'
+            productType: 'rutin',
+
+            // State Gudang - Material Alternatif / BOM
+            gudangStockMode: 'cukup', // 'cukup' | 'alternatif'
+            altMaterialSelected: 'RM-PVC-002 (Resin S-60)',
+
+            // State Feeder & Material per Feeder (Ditentukan oleh PE)
+            peMachineProduct: 'PVC Compound A High Impact',
+            feeders: [
+                { name: 'Feeder 1', materialA: 'Resin PVC S-65', materialB: 'Pigment White TiO2' },
+                { name: 'Feeder 2', materialA: 'Stabilizer Ca-Zn', materialB: 'Lubricant Wax' }
+            ],
+
+            // State QC - Metode & Tambahan Instruksi (Manpower Dihilangkan)
+            qcMethod: 'Physical & Mechanical Test (MFI, Tensile, Density)',
+            qcInstructions: 'Cek kecerahan warna per 30 menit, toleransi SG 1.34 +/- 0.02.',
+            qcStartDate: '2026-08-28',
+            qcStartTime: '08:00',
+            qcFormulaConfirmed: true,
+
             revisionLogs: [
                 { type: 'revision', action: 'Draft Dikembalikan (Revisi)', user: 'Ir. Budi (PE)', time: '27 Aug, 10:15', note: 'Mohon sesuaikan jadwal, Mixer A-01 sedang maintenance rutin pada tgl 12-13.' },
                 { type: 'create', action: 'Draft Dibuat & Diajukan', user: 'Jane Doe (PPIC)', time: '27 Aug, 09:00', note: null }
@@ -397,7 +495,6 @@
                     return;
                 }
                 
-                // Tambahkan log baru ke array (Real-time update)
                 let userDept = this.currentRole.toUpperCase();
                 this.revisionLogs.unshift({
                     type: 'revision',
@@ -409,6 +506,43 @@
                 
                 this.showRevisionModal = false;
                 alert('Catatan revisi berhasil dikirim! Seluruh modul yang terkait akan terupdate.');
+            },
+
+            addFeeder() {
+                const nextNum = this.feeders.length + 1;
+                this.feeders.push({
+                    name: `Feeder ${nextNum}`,
+                    materialA: 'Material Baru',
+                    materialB: '-'
+                });
+            },
+
+            removeFeeder(idx) {
+                if (this.feeders.length > 1) {
+                    this.feeders.splice(idx, 1);
+                }
+            },
+
+            approveCurrentStep() {
+                this.approvalStatus[this.currentRole] = true;
+                const roleDeptName = { gudang: 'Gudang', pe: 'PE', rnd: 'R&D', qc: 'QC' }[this.currentRole];
+                
+                this.revisionLogs.unshift({
+                    type: 'acc',
+                    action: `SPK Disetujui (${roleDeptName})`,
+                    user: `Simulasi (${roleDeptName})`,
+                    time: 'Baru saja',
+                    note: this.currentRole === 'qc' ? `Metode QC: ${this.qcMethod}, Jadwal Run: ${this.qcStartDate} ${this.qcStartTime}` : 'Disetujui tanpa catatan'
+                });
+
+                // Auto advance to next role in sequence Gudang -> PE -> RND -> QC
+                if (this.currentRole === 'gudang') this.currentRole = 'pe';
+                else if (this.currentRole === 'pe') this.currentRole = 'rnd';
+                else if (this.currentRole === 'rnd') this.currentRole = 'qc';
+                else if (this.currentRole === 'qc') {
+                    alert('🎉 Seluruh persetujuan (Gudang -> PE -> RND -> QC) telah LENGKAP! SPK Siap dijalankan ke Produksi.');
+                    window.location.href = "{{ route('produksi.alokasi') }}";
+                }
             }
         }));
 
@@ -417,12 +551,12 @@
                 {
                     id: 'mixer',
                     label: 'Mesin Mixer',
-                    currentValue: 'Mixer A-01 (Jumlah: 2)',
-                    correctedValue: 'Mixer B-02 (Jumlah: 3)',
+                    currentValue: 'Mixer A-01',
+                    correctedValue: 'Mixer B-02',
                     type: 'text',
                     unit: '',
                     reason: '',
-                    exampleReason: 'Mixer A-01 kapasitas 2 kurang, harusnya pakai Mixer B-02 jumlah 3 unit',
+                    exampleReason: 'Mixer A-01 kapasitas kurang, harusnya pakai Mixer B-02',
                     flagged: true
                 },
                 {

@@ -47,14 +47,22 @@
 
         <!-- Tabel Monitoring & Lot -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 flex flex-col">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h4 class="font-bold text-navy">Daftar Item Inventaris (Monitoring Khusus)</h4>
-                <div class="flex gap-2">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 flex-wrap gap-3">
+                <div>
+                    <h4 class="font-bold text-navy">Daftar Item Inventaris (Monitoring Khusus)</h4>
+                    <span class="text-xs text-slate-500">* Lot Number diterbitkan & dikelola sepenuhnya oleh Dept. Gudang</span>
+                </div>
+                <div class="flex gap-2 flex-wrap items-center">
                     <input type="text" x-model="searchQuery" class="bg-white border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-cyan focus:border-cyan px-3 py-2" placeholder="Cari Item/Kode...">
                     <select x-model="categoryFilter" class="bg-white border border-slate-200 text-slate-700 text-sm rounded-lg px-3 py-2 outline-none">
                         <option value="">Semua Kategori</option>
                         <option value="Raw Material">Raw Material</option>
                         <option value="Additive">Additive</option>
+                    </select>
+                    <!-- Filter Tanggal STSPK / Lot Terlama (FIFO) -->
+                    <select x-model="dateSort" class="bg-white border border-cyan/40 text-navy font-semibold text-sm rounded-lg px-3 py-2 outline-none shadow-sm">
+                        <option value="oldest">Lot Terlama</option>
+                        <option value="newest">Lot Terbaru</option>
                     </select>
                 </div>
             </div>
@@ -90,26 +98,26 @@
                         <tr x-show="expanded === 1" x-transition class="bg-slate-50/50">
                             <td colspan="6" class="p-0">
                                 <div class="px-8 py-4 border-l-4 border-cyan">
-                                    <p class="text-xs font-bold text-navy mb-2 uppercase tracking-wide">Riwayat Kedatangan Barang (Tracking per Lot)</p>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <p class="text-xs font-bold text-navy uppercase tracking-wide">Riwayat Kedatangan Barang (Lot dari Gudang)</p>
+                                        <span class="text-[10px] bg-cyan/10 text-cyan font-bold px-2 py-0.5 rounded" x-text="dateSort === 'oldest' ? 'Urutan: Lot/STSPK Terlama (FIFO)' : 'Urutan: Lot Terbaru'"></span>
+                                    </div>
                                     <table class="w-full text-xs text-left">
                                         <tr class="text-slate-500 border-b border-slate-200">
-                                            <th class="py-2 w-32">Nomor Lot</th>
-                                            <th class="py-2">Tanggal Masuk (IN)</th>
-                                            <th class="py-2">Supplier</th>
+                                            <th class="py-2 w-36">Nomor Lot (Gudang)</th>
+                                            <th class="py-2">Tanggal Masuk / STSPK</th>
                                             <th class="py-2 text-right">Kuantitas</th>
                                             <th class="py-2 pl-4">Catatan QC</th>
                                         </tr>
                                         <tr class="border-b border-slate-100">
                                             <td class="py-2 font-bold text-slate-700">LOT-001-A</td>
-                                            <td class="py-2">01 Aug 2026</td>
-                                            <td class="py-2">PT. Chemindo</td>
+                                            <td class="py-2">01 Aug 2026 <span class="text-[10px] text-amber-600 font-bold ml-1">(Terlama)</span></td>
                                             <td class="py-2 text-right font-medium">3,500 Kg</td>
                                             <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
                                         </tr>
                                         <tr>
                                             <td class="py-2 font-bold text-slate-700">LOT-001-B</td>
                                             <td class="py-2">10 Aug 2026</td>
-                                            <td class="py-2">PT. Chemindo</td>
                                             <td class="py-2 text-right font-medium">5,000 Kg</td>
                                             <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
                                         </tr>
@@ -136,19 +144,20 @@
                         <tr x-show="expanded === 2" x-transition class="bg-slate-50/50">
                             <td colspan="6" class="p-0">
                                 <div class="px-8 py-4 border-l-4 border-amber-400">
-                                    <p class="text-xs font-bold text-navy mb-2 uppercase tracking-wide">Riwayat Kedatangan Barang (Tracking per Lot)</p>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <p class="text-xs font-bold text-navy uppercase tracking-wide">Riwayat Kedatangan Barang (Lot dari Gudang)</p>
+                                        <span class="text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded" x-text="dateSort === 'oldest' ? 'Urutan: Lot/STSPK Terlama (FIFO)' : 'Urutan: Lot Terbaru'"></span>
+                                    </div>
                                     <table class="w-full text-xs text-left">
                                         <tr class="text-slate-500 border-b border-slate-200">
-                                            <th class="py-2 w-32">Nomor Lot</th>
-                                            <th class="py-2">Tanggal Masuk (IN)</th>
-                                            <th class="py-2">Supplier</th>
+                                            <th class="py-2 w-36">Nomor Lot (Gudang)</th>
+                                            <th class="py-2">Tanggal Masuk</th>
                                             <th class="py-2 text-right">Kuantitas</th>
                                             <th class="py-2 pl-4">Catatan QC</th>
                                         </tr>
                                         <tr>
                                             <td class="py-2 font-bold text-slate-700">LOT-STB-11</td>
-                                            <td class="py-2">20 Jul 2026</td>
-                                            <td class="py-2">CV. Maju Jaya</td>
+                                            <td class="py-2">20 Jul 2026 <span class="text-[10px] text-amber-600 font-bold ml-1">(Terlama)</span></td>
                                             <td class="py-2 text-right font-medium text-amber-600">45 Kg (Sisa)</td>
                                             <td class="py-2 pl-4 text-emerald-600 font-medium">Lolos Uji</td>
                                         </tr>
@@ -303,6 +312,7 @@
             tab: 'monitoring',
             searchQuery: '',
             categoryFilter: '',
+            dateSort: 'oldest',
             startDateFilter: '',
             endDateFilter: '',
             slipSearchQuery: '',

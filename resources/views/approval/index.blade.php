@@ -43,10 +43,14 @@
                             <td class="p-4" x-text="formatDate(spk.startDate)"></td>
                             <td class="p-4">
                                 <div class="flex flex-col gap-1">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.gudang === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">Gudang</span>
-                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.rnd === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : (spk.approvals.rnd === 'Revised' ? 'bg-red-50 text-red-700 font-bold border border-red-100' : 'bg-amber-50 text-amber-600 border border-amber-100')">R&D</span>
-                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.pe === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">PE</span>
+                                    <div class="flex items-center gap-1 flex-wrap">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.gudang === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">1. Gudang</span>
+                                        <span class="text-slate-300 text-[10px]">→</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.pe === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">2. PE</span>
+                                        <span class="text-slate-300 text-[10px]">→</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.rnd === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : (spk.approvals.rnd === 'Revised' ? 'bg-red-50 text-red-700 font-bold border border-red-100' : 'bg-amber-50 text-amber-600 border border-amber-100')">3. R&D</span>
+                                        <span class="text-slate-300 text-[10px]">→</span>
+                                        <span class="px-1.5 py-0.5 rounded text-[10px]" :class="spk.approvals.qc === 'Acc' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">4. QC</span>
                                     </div>
                                     <span class="text-[10px] text-slate-400 font-medium" x-text="'Induk: ' + spk.status"></span>
                                 </div>

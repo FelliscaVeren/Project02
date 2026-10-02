@@ -28,6 +28,21 @@
 
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
+            <!-- 0. Sistem Produksi -->
+            <div>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Sistem Produksi</label>
+                <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" x-model="spkSystem" value="batch" class="w-4 h-4 text-cyan focus:ring-cyan border-slate-300">
+                        <span class="text-sm font-medium text-slate-700">Batch</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" x-model="spkSystem" value="continuous" class="w-4 h-4 text-cyan focus:ring-cyan border-slate-300">
+                        <span class="text-sm font-medium text-slate-700">Continuous (Non-Batch)</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- 1. Produk + Qty: dua parameter inti yang memicu simulasi stok -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Produk Akhir</label>
@@ -38,10 +53,10 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Quantity (Total Batch)</label>
+                <label class="block text-sm font-bold text-slate-700 mb-2">Quantity (Qty) <span class="text-red-500">*</span></label>
                 <div class="relative">
-                    <input type="number" x-model.number="qty" @input="calculateStock" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 50">
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 text-sm font-medium">Batch</div>
+                    <input type="number" x-model.number="qty" @input="calculateStock" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-16 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 50">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 text-sm font-medium" x-text="spkSystem === 'batch' ? 'Batch' : 'Kg/Pcs'"></div>
                 </div>
             </div>
 
@@ -54,28 +69,20 @@
                 </select>
             </div>
 
-            <!-- 2. Info pesanan -->
-            <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Nama Customer</label>
-                <input type="text" x-model="customerName" @input="formatCustomerName()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: PT Chemindo Utama">
-            </div>
+            <!-- 2. Target Output -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Target OP (Output / Hour)</label>
                 <input type="text" x-model="targetOp" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all" placeholder="Misal: 500 Kg / Jam">
             </div>
 
-            <!-- 3. Lini waktu produksi: berurutan mulai -> selesai -> kirim -->
+            <!-- 3. Lini waktu produksi -->
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Mulai Produksi</label>
                 <input type="date" x-model="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
             <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Selesai Produksi</label>
-                <input type="date" x-model="finishDate" :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
-            </div>
-            <div>
-                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (tentatif)</label>
-                <input type="date" x-model="tentativeShipDate" :min="finishDate || startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Tanggal Kirim (Wajib) <span class="text-red-500">*</span></label>
+                <input type="date" x-model="tentativeShipDate" required :min="startDate" @change="validateDates()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan focus:border-cyan outline-none transition-all">
             </div>
 
             <!-- 4. Metadata otomatis, read-only -->
@@ -210,15 +217,12 @@
                 });
             },
 
+            spkSystem: 'batch', // batch or continuous
+
             validateDates() {
-                // Tanggal selesai produksi tidak boleh sebelum tanggal mulai
-                if (this.startDate && this.finishDate && this.finishDate < this.startDate) {
-                    this.finishDate = this.startDate;
-                }
-                // Tanggal kirim tentatif tidak boleh sebelum tanggal selesai produksi (fallback: tanggal mulai)
-                let minShip = this.finishDate || this.startDate;
-                if (minShip && this.tentativeShipDate && this.tentativeShipDate < minShip) {
-                    this.tentativeShipDate = minShip;
+                // Tanggal kirim tidak boleh sebelum tanggal mulai
+                if (this.startDate && this.tentativeShipDate && this.tentativeShipDate < this.startDate) {
+                    this.tentativeShipDate = this.startDate;
                 }
             },
 
@@ -259,10 +263,9 @@
                     product: this.product,
                     formula: this.formula,
                     qty: this.qty,
-                    customerName: this.customerName,
+                    spkSystem: this.spkSystem,
                     targetOp: this.targetOp,
                     startDate: this.startDate,
-                    finishDate: this.finishDate,
                     tentativeShipDate: this.tentativeShipDate,
                     keterangan: this.keterangan,
                     remarks: this.remarks,
